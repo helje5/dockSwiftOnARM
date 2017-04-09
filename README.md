@@ -112,6 +112,7 @@ Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 ImportError: cannot import name diagnostics
 ```
+Update: this is because the build-script sets up an incorrect PYTHONPATH.
 
 
 ### Status
