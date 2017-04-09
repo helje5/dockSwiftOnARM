@@ -1,6 +1,6 @@
 <h2>dockSwiftOnARM
   <img src="http://zeezide.com/img/rpi-swift.svg?2"
-       align="right" width="128" height="128" />
+       align="right" width="180" height="180" />
 </h2>
 
 ![Swift3](https://img.shields.io/badge/swift-3-blue.svg)
