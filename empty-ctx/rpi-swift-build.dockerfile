@@ -19,7 +19,15 @@ RUN bash -c 'git clone https://github.com/uraimo/buildSwiftOnARM.git; \
 
 WORKDIR /swiftsrc
 
-RUN find . -maxdepth 1 -type d \( ! -name . \) \
-      -exec bash -c "echo Applying patches to '{}';cd '{}'; patch -p1 < ../'{}'.diffs/*.diff" \;
+RUN bash -c "for DIR in *; do \
+               if test -d \"\${DIR}\"; then \
+                 if test -d \"\${DIR}.diffs\"; then \
+                   echo \"Applying patches to \${DIR}\" ; \
+                   cd \"\${DIR}\"; \
+                   patch -p1 < ../\${DIR}.diffs/*.diff; \
+                   cd ..; \
+                 fi; \
+               fi; \
+             done"
 
 RUN ./build.sh
