@@ -91,7 +91,7 @@ No idea, still investigating this :-)
 
 ### Who
 
-**mod_swift** is brought to you by
+Brought to you by
 [The Always Right Institute](http://www.alwaysrightinstitute.com).
 We like feedback, GitHub stars,
 presumably any form of praise you can think of.
