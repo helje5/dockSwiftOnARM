@@ -5,6 +5,7 @@
 
 ![Swift3](https://img.shields.io/badge/swift-3-blue.svg)
 ![tuxOS](https://img.shields.io/badge/os-tuxOS-green.svg?style=flat)
+![ARM](https://img.shields.io/badge/cpu-ARM-red.svg?style=flat)
 
 Playing with dockerizing Swift for Raspberry Pi.
 
