@@ -1,5 +1,5 @@
 <h2>dockSwiftOnARM
-  <img src="http://zeezide.com/img/rpi-swift.svg"
+  <img src="http://zeezide.com/img/rpi-swift.svg?2"
        align="right" width="128" height="128" />
 </h2>
 
