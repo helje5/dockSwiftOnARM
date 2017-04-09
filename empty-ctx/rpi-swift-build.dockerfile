@@ -1,6 +1,8 @@
 # Dockerfile
 #
 # https://github.com/uraimo/buildSwiftOnARM.git
+#
+# docker run --rm --interactive --tty helje5/rpi-swift-build
 
 FROM helje5/rpi-raspbian-swift-build302-env
 
@@ -30,4 +32,5 @@ RUN bash -c "for DIR in *; do \
                fi; \
              done"
 
+RUN mkdir -p /swiftsrc/install/usr/lib/swift
 RUN ./build.sh
