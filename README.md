@@ -86,34 +86,6 @@ Finally, trigger the actual build:
 And hope.
 (I'm told that it takes 7 hours on a Raspi2 and 8 DAYS on a Raspi1 :-)
 
-Current Build Issue is:
-```
-Step 7/7 : RUN ./build.sh
- ---> Running in 7319556b76d4
-Traceback (most recent call last):
-  File "./swift/utils/build-script", line 27, in <module>
-    from SwiftBuildSupport import (
-  File "/swiftsrc/swift/utils/SwiftBuildSupport.py", line 26, in <module>
-    from swift_build_support import diagnostics  # noqa (E402)
-ImportError: cannot import name diagnostics
-```
-
-I'm not exactly sure why, everything kinda looks OK. But it doesn't work in
-Python either:
-```
-root@8f60be757fc5:/swiftsrc# python
-Python 2.7.9 (default, Sep 17 2016, 20:26:04) 
-[GCC 4.9.2] on linux2
-Type "help", "copyright", "credits" or "license" for more information.
->>> import sys, os
->>> sys.path = ['/swiftsrc/swift/utils', '/usr/lib/python2.7', '/usr/lib/python2.7/plat-arm-linux-gnueabihf', '/usr/lib/python2.7/lib-tk', '/usr/lib/python2.7/lib-old', '/usr/lib/python2.7/lib-dynload', '/usr/local/lib/python2.7/dist-packages', '/usr/lib/python2.7/dist-packages', './swift/utils', '/swiftsrc/swift/utils/swift_build_support']
->>> from swift_build_support import diagnostics
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-ImportError: cannot import name diagnostics
-```
-Update: this is because the build-script sets up an incorrect PYTHONPATH.
-
 
 ### Status
 
