@@ -16,7 +16,9 @@ build-rpi-swift-build302 : # build-rpi-raspbian-swift-build302-env
 		     -f empty-ctx/rpi-swift-build.dockerfile \
 		     empty-ctx
 	docker images | grep helje5/rpi-swift-build
-	
+
+# A basic setup containing the necessary packages to build Swift
+# (clang and such, also sets clang as the compiler)
 build-rpi-raspbian-swift-build-env :
 	docker build -t helje5/rpi-raspbian-swift-build-env \
 	       	     -f empty-ctx/rpi-raspbian-swift-build-env.dockerfile \
