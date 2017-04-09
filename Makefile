@@ -12,6 +12,7 @@ build-rpi-swift :
 
 build-rpi-swift-build302 : # build-rpi-raspbian-swift-build302-env
 	docker build -t helje5/rpi-swift-build \
+                     --no-cache \
 		     -f empty-ctx/rpi-swift-build.dockerfile \
 		     empty-ctx
 	docker images | grep helje5/rpi-swift-build
