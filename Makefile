@@ -1,11 +1,17 @@
 # Makefile
 
-all : build-rpi-swift # build-rpi-swift-build302
+all : build-rpi-swift build-rpi-swift-dev # build-rpi-swift-build302
 
 build-rpi-swift :
 	docker build -t helje5/rpi-swift \
 		     -f rpi-swift-ctx/rpi-swift.dockerfile \
 		     rpi-swift-ctx
+	docker images | grep helje5
+
+build-rpi-swift-dev : build-rpi-swift
+	docker build -t helje5/rpi-swift-dev \
+		     -f empty-ctx/rpi-swift-dev.dockerfile \
+		     empty-ctx
 	docker images | grep helje5
 
 # ---------------------------
@@ -50,3 +56,4 @@ fetch-swift-tarballs :
 
 publish :
 	docker push helje5/rpi-swift
+	docker push helje5/rpi-swift-dev
