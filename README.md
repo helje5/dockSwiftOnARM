@@ -28,6 +28,48 @@ REPL still crashes despite `--privileged`:
     root@e3cdb56fe385:/# swift
     error: failed to launch REPL process: process launch failed: 'A' packet returned an error: 8
 
+### Setup Raspi w/ Docker and remote-control it from macOS
+
+- on the Mac (replace XYZ wit the disk number)
+  - [Download Hypriot](https://blog.hypriot.com/downloads/) image
+  - unzip
+  - insert an empty SD card into your Mac
+  - diskutil list
+  - diskutil unmountdisk /dev/diskXYZ
+  - sudo dd if=~/Downloads/hypriotos-rpi-v1.4.0.img of=/dev/diskXYZ bs=1m
+  - diskutil unmountdisk /dev/diskXYZ
+- insert Hypriot SD card into RaspberryPi, connect to network, then power
+- on the Mac
+  - find zPi3 IP address
+    - grab your IP (e.g. ipconfig getifaddr en0)
+    - nmap -sP 192.168.0.100/24 | grep black-pearl
+  - ssh pirate@THE-IP-ADDRESS
+    - docker info
+
+- on the Mac, patch Hypriot to work with docker-machine: [001-fix](https://github.com/DieterReuter/arm-docker-fixes/tree/master/001-fix-docker-machine-1.8.0-create-for-arm): 
+
+    ssh pirate@THE-IP-ADDRESS \
+      "curl -sSL https://github.com/DieterReuter/arm-docker-fixes/raw/master/001-fix-docker-machine-1.8.0-create-for-arm/apply-fix-001.sh | bash"`
+
+- tweet a a success message to @Quintus23M
+
+- on the Mac, connect to Raspi via docker-machine:
+
+    docker-machine create \
+      --driver=generic --engine-storage-driver=overlay \
+      --generic-ip-address=THE-IP-ADDRESS \
+      --generic-ssh-user=pirate raspberry
+    
+    docker-machine ls
+
+- direct the docker client to the RaspberryPi and run commands:
+
+    eval $(docker-machine env zpi3)
+    docker images
+    docker ps
+    docker run --rm helje5/rpi-swift swift --version
+
+
 ### Building Swift w/ Docker on macOS
 
 I also tried to actually build Swift itself based on 
