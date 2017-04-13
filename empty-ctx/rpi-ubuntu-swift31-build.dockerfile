@@ -34,4 +34,15 @@ RUN bash -c "for DIR in *; do \
 
 ENV SWIFT_SOURCE_ROOT /swiftsrc
 
+# this fails because the script patches the PYTHONPATH so that
+# swiftsrc/swift/utils is before swiftsrc/swift/utils/swift_build_support
+# (and hence picks up the duplicate swift_build_support directory)
+# sys.path.append(os.path.dirname(__file__)) ...
+RUN bash -c "mv swift/utils/build-script swift/utils/build-script.orig;   \
+             cat swift/utils/build-script.orig \
+             | sed '/import sys/a sys.path.append(os.path.join(os.path.dirname(__file__), \"swift_build_support\"))' \
+             | sed '/import sys/a sys.path = sys.path[1:]' \
+               >> swift/utils/build-script; \
+             chmod +x swift/utils/build-script"
+
 RUN ./build.sh
