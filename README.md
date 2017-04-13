@@ -136,6 +136,29 @@ And hope.
 (I'm told that it takes 7 hours on a Raspi2 and 8 DAYS on a Raspi1 :-)
 
 
+#### Update 2017-04-13
+
+The build takes about a day in the emulator, I was hoping it would be roughly
+the same speed (running on a MacPro), but it isn't.
+
+The same process also works when it is triggered in the Raspi, remote
+controlled from macOS. That build runs about 7 hours on a Raspi3, but
+eventually breaks with:
+
+```
+--- bootstrap: note: building stage1: /swiftsrc/build/buildbot_linux/llbuild-linux-armv7/bin/swift-build-tool -f /swiftsrc/build/buildbot_linux/swiftpm-linux-armv7/.bootstrap/build.swift-build
+*** Error in `/swiftsrc/build/buildbot_linux/llbuild-linux-armv7/bin/swift-build-tool': malloc(): memory corruption: 0x76c3257e ***
+--- bootstrap: error: build failed with exit status -6
+./swift/utils/build-script: fatal error: command terminated with a non-zero exit status 1, aborting
+```
+
+I think this is the state from which
+[uraimo/buildSwiftOnARM](https://github.com/uraimo/buildSwiftOnARM)
+creates the tarball we currently use in helje5/rpi-swift / helje5/rpi-swift-dev.
+At this point pretty much everything is built, including Foundation.
+But Swift Package Manager cores with the malloc issue.
+
+
 ### Status
 
 No idea, still investigating this :-)
