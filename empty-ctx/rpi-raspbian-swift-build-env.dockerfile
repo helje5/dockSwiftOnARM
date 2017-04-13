@@ -14,10 +14,11 @@ RUN apt-get install -y \
   libedit2      \
   libpython2.7 curl libxml2 \
   \
-  cmake ninja-build clang-3.7 python uuid-dev libicu-dev \
-  icu-devtools libbsd-dev libedit-dev libxml2-dev libsqlite3-dev \
-  swig libpython-dev libncurses5-dev pkg-config libblocksruntime-dev \
-  libcurl4-openssl-dev autoconf libtool systemtap-sdt-dev libkqueue-dev
+  cmake ninja-build clang-3.7 python uuid-dev libicu-dev                \
+  icu-devtools libbsd-dev libedit-dev libxml2-dev libsqlite3-dev        \
+  swig libpython-dev libncurses5-dev pkg-config libblocksruntime-dev    \
+  libcurl4-openssl-dev autoconf libtool systemtap-sdt-dev libkqueue-dev \
+  automake
   
 RUN update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-3.7 100
 RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-3.7 100
