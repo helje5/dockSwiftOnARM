@@ -31,12 +31,27 @@ build-rpi-raspbian-swift-build-env :
 		     empty-ctx
 	docker images | grep helje5/rpi-raspbian-swift-build-env
 
+# A basic setup containing the necessary packages to build Swift
+# (clang and such, also sets clang as the compiler)
+build-rpi-ubuntu-swift-build-env :
+	docker build -t helje5/rpi-ubuntu-swift-build-env \
+	       	     -f empty-ctx/rpi-ubuntu-swift-build-env.dockerfile \
+		     empty-ctx
+	docker images | grep helje5/rpi-ubuntu-swift-build-env
+
 # contains the 3.0.2 Swift Sources
 build-rpi-raspbian-swift-build302-env : build-rpi-raspbian-swift-build-env
 	docker build -t helje5/rpi-raspbian-swift-build302-env \
 	       	     -f rpi-swift-302-ctx/rpi-raspbian-swift-build302-env.dockerfile \
 		     rpi-swift-302-ctx
 	docker images | grep helje5/rpi-raspbian-swift-build302-env
+
+# contains the 3.1 Swift Sources
+build-rpi-ubuntu-swift-build31-env : build-rpi-ubuntu-swift-build-env
+	docker build -t helje5/rpi-ubuntu-swift-build31-env \
+	       	     -f rpi-swift-31-ctx/rpi-ubuntu-swift-build31-env.dockerfile \
+		     rpi-swift-31-ctx
+	docker images | grep helje5/rpi-ubuntu-swift-build31-env
 
 
 # ---------------------------
