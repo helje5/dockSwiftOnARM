@@ -45,4 +45,19 @@ RUN bash -c "mv swift/utils/build-script swift/utils/build-script.orig;   \
                >> swift/utils/build-script; \
              chmod +x swift/utils/build-script"
 
+# Workaround for the failing 5537ff94b5b636f451c046429cbb35e1e5b0908f.diff
+# patch on swift-corelibs-foundation:
+#     Applying patches to swift-corelibs-foundation
+#     patching file CoreFoundation/Base.subproj/SwiftRuntime/CoreFoundation.h
+#     patching file CoreFoundation/URL.subproj/CFURLSessionInterface.h
+#     patching file build.py
+#     Hunk #1 FAILED at 81.
+# https://github.com/uraimo/buildSwiftOnARM/issues/1
+# -if triple.endswith("-linux-gnu") or triple == "armv7-none-linux-androideabi":
+# +if triple.find("linux") != -1:
+RUN bash -c "mv swift-corelibs-foundation/build.py swift-corelibs-foundation/build.py.dockorig; \
+             cat swift-corelibs-foundation/build.py.dockorig \
+             | sed 's/triple.endswith(\"-linux-gnu\")/triple.find(\"linux\") != -1/g' \
+             > swift-corelibs-foundation/build.py"
+
 RUN ./build.sh
