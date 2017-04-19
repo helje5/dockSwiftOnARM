@@ -33,12 +33,12 @@ error: failed to stop process at REPL breakpoint
 
 Moved to Wiki:
 - [Setup Docker on Raspi](https://github.com/helje5/dockSwiftOnARM/wiki/Setup-Docker-on-Raspi)
-- [Remote Control Raspi Docker from Mac](https://github.com/helje5/dockSwiftOnARM/wiki/Remote-Control-Rasp-Docker)
+- [Remote Control Raspi Docker from Mac](https://github.com/helje5/dockSwiftOnARM/wiki/Remote-Control-Raspi-Docker) (via docker-machine)
 
 ### Building Swift w/ Docker on macOS
 
 Moved to Wiki:
-- [Building Swift in a Docker container Docker](https://github.com/helje5/dockSwiftOnARM/wiki/Building-Swift-with--Docker)
+- [Building Swift in a Docker container](https://github.com/helje5/dockSwiftOnARM/wiki/Building-Swift-with--Docker) (either on a real Raspi or in macOS Docker QEmu)
 
 ### Status
 
