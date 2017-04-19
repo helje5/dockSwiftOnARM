@@ -29,6 +29,11 @@ docker run   --privileged=true --rm --interactive --tty helje5/rpi-swift   swift
 error: failed to stop process at REPL breakpoint
 ```
 
+DockerHub:
+- [rpi-swift](https://hub.docker.com/r/helje5/rpi-swift/)
+- [rpi-swift-dev](https://hub.docker.com/r/helje5/rpi-swift-dev/) 
+  (w/ Emacs/vi/etc)
+
 ### Setup Raspi w/ Docker and remote-control it from macOS
 
 Moved to Wiki:
