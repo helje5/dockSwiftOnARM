@@ -36,10 +36,19 @@ RUN apt-get install -y \
   curl libcurl4-openssl-dev \
   libedit-dev \
   libxml2 \
-  wget
+  wget sudo
 
 RUN update-alternatives --quiet --install /usr/bin/clang   clang   /usr/bin/clang-$CLANG_VERSION   100
 RUN update-alternatives --quiet --install /usr/bin/clang++ clang++ /usr/bin/clang++-$CLANG_VERSION 100
+
+
+# setup sudo
+
+RUN adduser swift sudo
+RUN echo 'swift ALL=(ALL:ALL) ALL' > /etc/sudoers.d/swift
+RUN chmod 0440 /etc/sudoers.d/swift
+RUN echo 'swift:swift' | chpasswd
+
 
 USER swift
 WORKDIR /home/swift
