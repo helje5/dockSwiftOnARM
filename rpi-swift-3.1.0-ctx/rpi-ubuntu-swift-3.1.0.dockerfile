@@ -16,7 +16,7 @@ RUN apt-get install -y \
   git           \
   libedit2      \
   libpython2.7 libcurl3 libxml2 libicu55 \
-  sudo
+  libc6-dev
 
 ADD $TARBALL /usr/
 
