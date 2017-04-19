@@ -1,31 +1,43 @@
 # Makefile
 
-all : build-rpi-swift build-rpi-swift-dev # build-rpi-swift-build302
+#all : # build-rpi-swift build-rpi-swift-dev # build-rpi-swift-build302
+all : build-rpi-ubuntu-swift-31
 
-build-rpi-swift :
+build-rpi-ubuntu-swift-31 :
+	docker build -t helje5/rpi-swift:latest -t helje5/rpi-swift:3.1.0 \
+		     -f rpi-swift-3.1.0-ctx/rpi-ubuntu-swift-3.1.0.dockerfile \
+		     rpi-swift-3.1.0-ctx
+	docker images | grep helje5
+
+build-rpi-swift-302 :
 	docker build -t helje5/rpi-swift \
-		     -f rpi-swift-ctx/rpi-swift.dockerfile \
-		     rpi-swift-ctx
+		     -f rpi-swift-302-ctx/rpi-raspbian-swift-302.dockerfile \
+		     rpi-swift-302-ctx
 	docker images | grep helje5
 
 build-rpi-swift-dev : build-rpi-swift
 	docker build -t helje5/rpi-swift-dev \
-		     -f empty-ctx/rpi-swift-dev.dockerfile \
+		     -f empty-ctx/rpi-raspbian-swift302-dev.dockerfile \
 		     empty-ctx
 	docker images | grep helje5
 
 # ---------------------------
 
+EXTRAFLAGS=
+ifeq ($(nocache),yes)
+EXTRAFLAGS += --no-cache
+endif
+
 build-rpi-ubuntu-swift31-build : # build-rpi-raspbian-swift-build302-env
 	time docker build -t helje5/rpi-ubuntu-swift31-build \
-                     --no-cache \
+                     $(EXTRAFLAGS) \
 		     -f empty-ctx/rpi-ubuntu-swift31-build.dockerfile \
 		     empty-ctx
 	docker images | grep helje5/rpi-ubuntu-swift31
 
 build-rpi-swift-build302 : # build-rpi-raspbian-swift-build302-env
 	time docker build -t helje5/rpi-swift-build \
-                     --no-cache \
+                     $(EXTRAFLAGS) \
 		     -f empty-ctx/rpi-raspbian-swift302-build.dockerfile \
 		     empty-ctx
 	docker images | grep helje5/rpi-swift-build
@@ -50,14 +62,14 @@ build-rpi-ubuntu-swift-build-env :
 build-rpi-raspbian-swift-build302-env : build-rpi-raspbian-swift-build-env
 	time docker build -t helje5/rpi-raspbian-swift-build302-env \
 	       	     -f rpi-swift-302-ctx/rpi-raspbian-swift-build302-env.dockerfile \
-		     rpi-swift-302-ctx
+		     rpi-swift-302-build-ctx
 	docker images | grep helje5/rpi-raspbian-swift-build302-env
 
 # contains the 3.1 Swift Sources
 build-rpi-ubuntu-swift-build31-env : build-rpi-ubuntu-swift-build-env
 	time docker build -t helje5/rpi-ubuntu-swift-build31-env \
 	       	     -f rpi-swift-31-ctx/rpi-ubuntu-swift-build31-env.dockerfile \
-		     rpi-swift-31-ctx
+		     rpi-swift-31-build-ctx
 	docker images | grep helje5/rpi-ubuntu-swift-build31-env
 
 

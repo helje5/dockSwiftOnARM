@@ -46,3 +46,15 @@ RUN bash -c "mv swift/utils/build-script swift/utils/build-script.orig;   \
              chmod +x swift/utils/build-script"
 
 RUN ./build.sh
+
+# the results will be in
+#   /swiftsrc/install/usr/[bin|include|lib|libexec|local|share]
+
+WORKDIR /swiftsrc/install/usr/
+
+RUN apt-get install -y lsb-release
+
+# takes ~4mins on RPi3, ~122MB (BZip2 takes ~8mins on RPi3, saves 12MB)
+RUN tar zcf "/swiftsrc/swift-3.1-$(uname -m)-$(lsb_release -i -s | tr A-Z a-z)-$(lsb_release -r -s).tar.gz" *
+
+RUN 
