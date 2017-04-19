@@ -54,7 +54,9 @@ WORKDIR /swiftsrc/install/usr/
 
 RUN apt-get install -y lsb-release
 
+VOLUME /package
+
 # takes ~4mins on RPi3, ~122MB (BZip2 takes ~8mins on RPi3, saves 12MB)
-RUN tar zcf "/swiftsrc/swift-3.1-$(uname -m)-$(lsb_release -i -s | tr A-Z a-z)-$(lsb_release -r -s).tar.gz" *
+RUN tar zcf "/package/swift-3.1-$(uname -m)-$(lsb_release -i -s | tr A-Z a-z)-$(lsb_release -r -s).tar.gz" *
 
 RUN 
