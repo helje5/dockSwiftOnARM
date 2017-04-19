@@ -3,6 +3,8 @@
 #all : # build-rpi-swift build-rpi-swift-dev # build-rpi-swift-build302
 all : build-rpi-ubuntu-swift-31
 
+PACKAGE_TARGET_DIR=/tmp
+
 build-rpi-ubuntu-swift-31 :
 	docker build -t helje5/rpi-swift:latest -t helje5/rpi-swift:3.1.0 \
 		     -f rpi-swift-3.1.0-ctx/rpi-ubuntu-swift-3.1.0.dockerfile \
@@ -32,6 +34,7 @@ build-rpi-ubuntu-swift31-build : # build-rpi-raspbian-swift-build302-env
 	time docker build -t helje5/rpi-ubuntu-swift31-build \
                      $(EXTRAFLAGS) \
 		     -f empty-ctx/rpi-ubuntu-swift31-build.dockerfile \
+		     -v $(PACKAGE_TARGET_DIR):/package \
 		     empty-ctx
 	docker images | grep helje5/rpi-ubuntu-swift31
 
