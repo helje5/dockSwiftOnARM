@@ -4,6 +4,9 @@
 #
 FROM helje5/rpi-swift:3.1.0
 
+# rpi-swift sets it to swift
+USER root
+
 ENV DEBIAN_FRONTEND noninteractive
 
 ARG CLANG_VERSION=3.8
@@ -37,3 +40,6 @@ RUN apt-get install -y \
 
 RUN update-alternatives --quiet --install /usr/bin/clang   clang   /usr/bin/clang-$CLANG_VERSION   100
 RUN update-alternatives --quiet --install /usr/bin/clang++ clang++ /usr/bin/clang++-$CLANG_VERSION 100
+
+USER swift
+WORKDIR /home/swift
