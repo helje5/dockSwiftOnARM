@@ -1,14 +1,21 @@
 # Makefile
 
 #all : # build-rpi-swift build-rpi-swift-dev # build-rpi-swift-build302
-all : build-rpi-ubuntu-swift-31
+all : build-rpi-swift-31 build-rpi-swift-31-dev
 
 PACKAGE_TARGET_DIR=/tmp
 
-build-rpi-ubuntu-swift-31 :
+build-rpi-swift-31 :
 	docker build -t helje5/rpi-swift:latest -t helje5/rpi-swift:3.1.0 \
 		     -f rpi-swift-3.1.0-ctx/rpi-ubuntu-swift-3.1.0.dockerfile \
 		     rpi-swift-3.1.0-ctx
+	docker images | grep helje5
+
+build-rpi-swift-31-dev : 
+	docker build -t helje5/rpi-swift-dev:latest \
+	             -t helje5/rpi-swift-dev:3.1.0  \
+		     -f empty-ctx/rpi-swift-3.1.0-dev.dockerfile \
+		     empty-ctx
 	docker images | grep helje5
 
 build-rpi-swift-302 :

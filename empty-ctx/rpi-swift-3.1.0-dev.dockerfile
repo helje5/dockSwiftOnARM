@@ -1,8 +1,10 @@
 # Dockerfile
 #
-FROM helje5/rpi-swift:3.0.2
+FROM helje5/rpi-swift:3.1.0
 
 ENV DEBIAN_FRONTEND noninteractive
+
+ARG CLANG_VERSION=3.8
 
 RUN apt-get install -y apt-utils
 RUN apt-get install -y vim emacs make
@@ -16,7 +18,7 @@ RUN rmdir /usr/lib/python2.7/site-packages.swift
 
 RUN apt-get install -y python
 
-RUN apt-get install -y clang-3.9 libc6-dev
+RUN apt-get install -y clang-$CLANG_VERSION libc6-dev
 
 RUN apt-get install -y \
   libicu-dev      \
@@ -31,5 +33,5 @@ RUN apt-get install -y \
   libxml2 \
   wget
 
-RUN sudo update-alternatives --quiet --install /usr/bin/clang clang /usr/bin/clang-3.9 100
-RUN sudo update-alternatives --quiet --install /usr/bin/clang++ clang++ /usr/bin/clang++-3.9 100
+RUN sudo update-alternatives --quiet --install /usr/bin/clang   clang   /usr/bin/clang-$CLANG_VERSION   100
+RUN sudo update-alternatives --quiet --install /usr/bin/clang++ clang++ /usr/bin/clang++-$CLANG_VERSION 100
