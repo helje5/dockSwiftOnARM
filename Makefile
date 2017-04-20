@@ -37,11 +37,13 @@ ifeq ($(nocache),yes)
 EXTRAFLAGS += --no-cache
 endif
 
+# -v $(PACKAGE_TARGET_DIR):/package \
+# is non-sense here ... Do not build an image, but rather run a script in the
+# Ubuntu base docker ...
 build-rpi-ubuntu-swift31-build : # build-rpi-raspbian-swift-build302-env
 	time docker build -t helje5/rpi-ubuntu-swift31-build \
                      $(EXTRAFLAGS) \
 		     -f empty-ctx/rpi-ubuntu-swift31-build.dockerfile \
-		     -v $(PACKAGE_TARGET_DIR):/package \
 		     empty-ctx
 	docker images | grep helje5/rpi-ubuntu-swift31
 
