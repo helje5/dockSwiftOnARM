@@ -1,6 +1,6 @@
 # Dockerfile
 #
-# docker run --privileged=true -i --tty --rm helje5/rpi-swift-dev:3.1.0
+# docker run -p 8042:8042 -d helje5/rpi-mod_swift-demo
 #
 FROM helje5/rpi-swift:3.1.0
 
@@ -62,6 +62,8 @@ RUN bash -c "curl -L https://github.com/AlwaysRightInstitute/mod_swift/archive/$
 WORKDIR /home/swift/mod_swift-$MOD_SWIFT_VERSION
 
 RUN make all
+
+EXPOSE 8042
 
 CMD LD_LIBRARY_PATH="$PWD/.libs:$LD_LIBRARY_PATH" \
     EXPRESS_VIEWS=mods_expressdemo/views apache2 \
