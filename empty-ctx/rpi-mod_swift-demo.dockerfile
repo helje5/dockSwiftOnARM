@@ -45,12 +45,12 @@ RUN apt-get install -y wget curl \
 # dirty hack to get Swift module for APR working on Linux
 # (Note: I've found a better way, stay tuned.)
 RUN bash -c "\
-    head -n -6 /usr/include/apr-1.0/apr.h > /tmp/zz-apr.h; \
+    head -n -6 /usr/include/apr-1.0/apr.h \
+    | sed 's/typedef  off64_t/typedef  off_t/' > /tmp/zz-apr.h; \
     echo ''                              >> /tmp/zz-apr.h; \
     echo '// mod_swift build hack'       >> /tmp/zz-apr.h; \
     echo 'typedef int pid_t;'            >> /tmp/zz-apr.h; \
-    tail -n 6 /usr/include/apr-1.0/apr.h \
-    | sed 's/typedef  off64_t/typedef  off_t/' >> /tmp/zz-apr.h; \
+    tail -n 6 /usr/include/apr-1.0/apr.h >> /tmp/zz-apr.h; \
     mv /usr/include/apr-1.0/apr.h /usr/include/apr-1.0/apr-original.h; \
     mv /tmp/zz-apr.h /usr/include/apr-1.0/apr.h"
 
