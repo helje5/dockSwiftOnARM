@@ -41,6 +41,7 @@ RUN update-alternatives --quiet --install /usr/bin/clang++ clang++ /usr/bin/clan
 RUN apt-get install -y wget curl \
        autoconf libtool pkg-config \
        apache2 apache2-dev libaprutil1-dbd-sqlite3
+RUN a2enmod dbd
 
 # dirty hack to get Swift module for APR working on Linux
 # (Note: I've found a better way, stay tuned.)
@@ -69,6 +70,7 @@ EXPOSE 8042
 # hack SQLite3 DB path, which has to be absolute
 RUN sed < apache-ubuntu.conf \
     "s#/home/helge/dev/Swift/mod_swift-helje5#/home/swift/mod_swift-0.7.6#" \
+    | sed "s/#LoadModule dbd_module/LoadModule dbd_module/g" \
     > apache-ubuntu-hack.conf
 
 CMD LD_LIBRARY_PATH="$PWD/.libs:$LD_LIBRARY_PATH" \
