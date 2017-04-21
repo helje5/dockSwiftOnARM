@@ -1,6 +1,10 @@
 # Dockerfile
 #
-# docker run -i --tty --rm -p 8042:8042 modswift/rpi-mod_swift-demo-dev
+#   docker run -i --tty --rm -p 8042:8042 modswift/rpi-mod_swift-demo-dev
+#
+#   LD_LIBRARY_PATH="$PWD/.libs:$LD_LIBRARY_PATH" \
+#     EXPRESS_VIEWS=mods_expressdemo/views apache2 \
+#     -X -d $PWD -f apache-ubuntu.conf
 #
 FROM modswift/rpi-mod_swift-demo
 
@@ -21,6 +25,8 @@ RUN echo 'swift:swift' | chpasswd
 
 
 USER swift
-WORKDIR /home/swift
+
+ARG MOD_SWIFT_VERSION=0.7.6
+WORKDIR /home/swift/mod_swift-$MOD_SWIFT_VERSION
 
 CMD bash

@@ -1,6 +1,6 @@
 # Dockerfile
 #
-# docker run -p 8042:8042 -d modswift/rpi-mod_swift-demo
+#   docker run -p 8042:8042 -d --name mod_swift modswift/rpi-mod_swift-demo
 #
 FROM helje5/rpi-swift:3.1.0
 
@@ -40,13 +40,13 @@ RUN update-alternatives --quiet --install /usr/bin/clang++ clang++ /usr/bin/clan
 
 RUN apt-get install -y wget curl \
        autoconf libtool pkg-config \
-       apache2 apache2-dev
+       apache2 apache2-dev libaprutil1-dbd-sqlite3
 
 # dirty hack to get Swift module for APR working on Linux
 # (Note: I've found a better way, stay tuned.)
 RUN bash -c "\
     head -n -6 /usr/include/apr-1.0/apr.h \
-    | sed 's/typedef  off64_t/typedef  off_t/' > /tmp/zz-apr.h; \
+    | sed 's/typedef  off64_t/typedef  apr_int64_t/' > /tmp/zz-apr.h; \
     echo ''                              >> /tmp/zz-apr.h; \
     echo '// mod_swift build hack'       >> /tmp/zz-apr.h; \
     echo 'typedef int pid_t;'            >> /tmp/zz-apr.h; \
@@ -65,6 +65,12 @@ RUN make all
 
 EXPOSE 8042
 
+
+# hack SQLite3 DB path, which has to be absolute
+RUN sed < apache-ubuntu.conf \
+    "s#/home/helge/dev/Swift/mod_swift-helje5#/home/swift/mod_swift-0.7.6#" \
+    > apache-ubuntu-hack.conf
+
 CMD LD_LIBRARY_PATH="$PWD/.libs:$LD_LIBRARY_PATH" \
     EXPRESS_VIEWS=mods_expressdemo/views apache2 \
-    -X -d $PWD -f apache-ubuntu.conf
+    -X -d $PWD -f apache-ubuntu-hack.conf
