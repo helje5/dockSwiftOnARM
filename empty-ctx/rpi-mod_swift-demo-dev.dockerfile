@@ -1,8 +1,8 @@
 # Dockerfile
 #
-# docker run -i --tty --rm -p 8042:8042 helje5/rpi-mod_swift-demo-dev
+# docker run -i --tty --rm -p 8042:8042 modswift/rpi-mod_swift-demo-dev
 #
-FROM helje5/rpi-mod_swift-demo
+FROM modswift/rpi-mod_swift-demo
 
 # rpi-swift sets it to swift
 USER root

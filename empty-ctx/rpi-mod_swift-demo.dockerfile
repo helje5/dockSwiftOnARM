@@ -1,6 +1,6 @@
 # Dockerfile
 #
-# docker run -p 8042:8042 -d helje5/rpi-mod_swift-demo
+# docker run -p 8042:8042 -d modswift/rpi-mod_swift-demo
 #
 FROM helje5/rpi-swift:3.1.0
 
