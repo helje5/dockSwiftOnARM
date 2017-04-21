@@ -30,6 +30,13 @@ build-rpi-swift-dev : build-rpi-swift
 		     empty-ctx
 	docker images | grep helje5
 
+build-rpi-mod_swift-demo :
+	time docker build -t helje5/rpi-mod_swift-demo:latest \
+	             -t helje5/rpi-mod_swift-demo:3.1.0  \
+		     -f empty-ctx/rpi-mod_swift-demo.dockerfile \
+		     empty-ctx
+	docker images | grep helje5
+
 # ---------------------------
 
 EXTRAFLAGS=
