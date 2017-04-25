@@ -2,3 +2,5 @@
 *.bz2
 *.gz
 swift-checkout
+buildSwiftOnARM
+
