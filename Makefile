@@ -7,13 +7,13 @@ PACKAGE_TARGET_DIR=/tmp
 
 # --------------------------- 3.1.1
 
-build-rpi-swift-31 :
-	time docker build -t helje5/rpi-swift:latest -t helje5/rpi-swift:3.1.0 \
+build-rpi-swift-311 :
+	time docker build -t helje5/rpi-swift:latest -t helje5/rpi-swift:3.1.1 \
 		     -f rpi-swift-3.1.1-ctx/rpi-ubuntu-swift-3.1.1.dockerfile \
 		     rpi-swift-3.1.1-ctx
 	docker images | grep helje5
 
-build-rpi-swift-31-dev : 
+build-rpi-swift-311-dev : 
 	time docker build -t helje5/rpi-swift-dev:latest \
 	             -t helje5/rpi-swift-dev:3.1.1  \
 		     -f empty-ctx/rpi-swift-3.1.1-dev.dockerfile \
@@ -65,7 +65,8 @@ build-rpi-mod_swift-demo-dev :
 		     empty-ctx
 	docker images | grep modswift
 
-# ---------------------------
+
+# --------------------------- Building Swift itself
 
 EXTRAFLAGS=
 ifeq ($(nocache),yes)
@@ -75,10 +76,17 @@ endif
 # -v $(PACKAGE_TARGET_DIR):/package \
 # is non-sense here ... Do not build an image, but rather run a script in the
 # Ubuntu base docker ...
-build-rpi-ubuntu-swift31-build : # build-rpi-raspbian-swift-build302-env
+build-rpi-ubuntu-swift311-build :
+	time docker build -t helje5/rpi-ubuntu-swift311-build \
+                     $(EXTRAFLAGS) \
+		     -f empty-ctx/rpi-ubuntu-swift-3.1.1-build.dockerfile \
+		     empty-ctx
+	docker images | grep helje5/rpi-ubuntu-swift311
+
+build-rpi-ubuntu-swift31-build :
 	time docker build -t helje5/rpi-ubuntu-swift31-build \
                      $(EXTRAFLAGS) \
-		     -f empty-ctx/rpi-ubuntu-swift31-build.dockerfile \
+		     -f empty-ctx/rpi-ubuntu-swift-3.1.0-build.dockerfile \
 		     empty-ctx
 	docker images | grep helje5/rpi-ubuntu-swift31
 
