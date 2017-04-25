@@ -5,6 +5,23 @@ all : build-rpi-swift-31 build-rpi-swift-31-dev
 
 PACKAGE_TARGET_DIR=/tmp
 
+# --------------------------- 3.1.1
+
+build-rpi-swift-31 :
+	time docker build -t helje5/rpi-swift:latest -t helje5/rpi-swift:3.1.0 \
+		     -f rpi-swift-3.1.1-ctx/rpi-ubuntu-swift-3.1.1.dockerfile \
+		     rpi-swift-3.1.1-ctx
+	docker images | grep helje5
+
+build-rpi-swift-31-dev : 
+	time docker build -t helje5/rpi-swift-dev:latest \
+	             -t helje5/rpi-swift-dev:3.1.1  \
+		     -f empty-ctx/rpi-swift-3.1.1-dev.dockerfile \
+		     empty-ctx
+	docker images | grep helje5
+	
+# --------------------------- 3.1.0
+
 build-rpi-swift-31 :
 	time docker build -t helje5/rpi-swift:latest -t helje5/rpi-swift:3.1.0 \
 		     -f rpi-swift-3.1.0-ctx/rpi-ubuntu-swift-3.1.0.dockerfile \
@@ -18,6 +35,8 @@ build-rpi-swift-31-dev :
 		     empty-ctx
 	docker images | grep helje5
 
+# --------------------------- 3.0.2
+
 build-rpi-swift-302 :
 	docker build -t helje5/rpi-swift \
 		     -f rpi-swift-302-ctx/rpi-raspbian-swift-302.dockerfile \
@@ -29,6 +48,8 @@ build-rpi-swift-dev : build-rpi-swift
 		     -f empty-ctx/rpi-raspbian-swift302-dev.dockerfile \
 		     empty-ctx
 	docker images | grep helje5
+
+# ---------------------------  mod_swift
 
 build-rpi-mod_swift-demo :
 	time docker build -t modswift/rpi-mod_swift-demo:latest \

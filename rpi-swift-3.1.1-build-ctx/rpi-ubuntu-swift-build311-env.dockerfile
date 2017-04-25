@@ -5,6 +5,4 @@
 
 FROM helje5/rpi-ubuntu-swift-build-env
 
-ENV DEBIAN_FRONTEND noninteractive
-
 ADD swift-3.1.1-RELEASE.tgz /swiftsrc
