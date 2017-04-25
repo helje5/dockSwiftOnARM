@@ -102,9 +102,9 @@ build-rpi-ubuntu-swift-build31-env : build-rpi-ubuntu-swift-build-env
 # contains the 3.1.1 Swift Sources
 build-rpi-ubuntu-swift-build311-env :
 	time docker build -t helje5/rpi-ubuntu-swift-build311-env \
-	       	     -f rpi-swift-3.1.1-ctx/rpi-ubuntu-swift-build31-env.dockerfile \
-		     rpi-swift-31-build-ctx
-	docker images | grep helje5/rpi-ubuntu-swift-build31-env
+	       	     -f rpi-swift-3.1.1-build-ctx/rpi-ubuntu-swift-build311-env.dockerfile \
+		     rpi-swift-3.1.1-build-ctx
+	docker images | grep helje5/rpi-ubuntu-swift-build311-env
 
 
 # ---------------------------

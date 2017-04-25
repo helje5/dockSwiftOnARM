@@ -1,49 +1,27 @@
 # Dockerfile
 #
-# https://github.com/uraimo/buildSwiftOnARM.git
+# docker run --rm --interactive --tty helje5/rpi-ubuntu-swift-build311-env bash
 #
-# docker run --rm --interactive --tty helje5/rpi-swift-build
+# 2017-04-25: @ffried says only those two should be necessary for 3.1.1:
+# https://github.com/swift-arm/swift-llvm/commit/95581a28b69cc7ea811055891b499576fdfc8ed7
+# https://github.com/apple/swift-corelibs-libdispatch/pull/233/commits/d53fe63ef8ab88018bec940d067ae965144e2dab
+#
 
 FROM helje5/rpi-ubuntu-swift-build311-env
 
-ENV DEBIAN_FRONTEND noninteractive
-
 # swiftsrc is in /swiftsrc
-
-RUN bash -c 'git clone https://github.com/uraimo/buildSwiftOnARM.git; \
-             cd buildSwiftOnARM; \
-             git archive -9 --format tgz master -o ../buildSwiftOnARM-3.1.tgz; \
-             cd ..; \
-             rm -rf buildSwiftOnARM; \
-             cd /swiftsrc; \
-             tar zxf ../buildSwiftOnARM-3.1.tgz; \
-             rm ../buildSwiftOnARM-3.1.tgz'
-
 WORKDIR /swiftsrc
 
-RUN bash -c "for DIR in *; do \
-               if test -d \"\${DIR}\"; then \
-                 if test -d \"\${DIR}.diffs\"; then \
-                   echo \"Applying patches to \${DIR}\" ; \
-                   cd \"\${DIR}\"; \
-                   patch -l -p1 < ../\${DIR}.diffs/*.diff; \
-                   cd ..; \
-                 fi; \
-               fi; \
-             done"
+RUN bash -c "curl -L -o swift-llvm-fdfc8ed7.diff https://github.com/swift-arm/swift-llvm/commit/95581a28b69cc7ea811055891b499576fdfc8ed7.diff;\
+             curl -L -o swift-corelibs-libdispatch-233.diff https://github.com/apple/swift-corelibs-libdispatch/pull/233.diff"
+             
+RUN bash -c "cd swift-corelibs-libdispatch && \
+             patch -l -p1 < ../swift-corelibs-libdispatch-233.diff; \
+             cd ..; \
+             cd llvm && \
+             patch -l -p1 < ../swift-llvm-fdfc8ed7.diff"
 
 ENV SWIFT_SOURCE_ROOT /swiftsrc
-
-# this fails because the script patches the PYTHONPATH so that
-# swiftsrc/swift/utils is before swiftsrc/swift/utils/swift_build_support
-# (and hence picks up the duplicate swift_build_support directory)
-# sys.path.append(os.path.dirname(__file__)) ...
-RUN bash -c "mv swift/utils/build-script swift/utils/build-script.orig;   \
-             cat swift/utils/build-script.orig \
-             | sed '/import sys/a sys.path.append(os.path.join(os.path.dirname(__file__), \"swift_build_support\"))' \
-             | sed '/import sys/a sys.path = sys.path[1:]' \
-               >> swift/utils/build-script; \
-             chmod +x swift/utils/build-script"
 
 RUN ./build.sh
 
@@ -51,8 +29,6 @@ RUN ./build.sh
 #   /swiftsrc/install/usr/[bin|include|lib|libexec|local|share]
 
 WORKDIR /swiftsrc/install/usr/
-
-RUN apt-get install -y lsb-release
 
 VOLUME /package
 
