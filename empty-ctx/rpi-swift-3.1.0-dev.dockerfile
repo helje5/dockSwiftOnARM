@@ -42,7 +42,7 @@ RUN update-alternatives --quiet --install /usr/bin/clang   clang   /usr/bin/clan
 RUN update-alternatives --quiet --install /usr/bin/clang++ clang++ /usr/bin/clang++-$CLANG_VERSION 100
 
 
-# setup sudo
+# setup sudo # TODO: sounds like we are supposed to use gosu instead
 
 RUN adduser swift sudo
 RUN echo 'swift ALL=(ALL:ALL) ALL' > /etc/sudoers.d/swift

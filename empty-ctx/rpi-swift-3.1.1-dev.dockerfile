@@ -46,7 +46,7 @@ RUN bash -c "update-alternatives --quiet --install /usr/bin/clang \
              update-alternatives --quiet --install /usr/bin/clang++ \
                clang++ /usr/bin/clang++-$CLANG_VERSION 100"
 
-# setup sudo
+# setup sudo # TODO: sounds like we are supposed to use gosu instead
 
 RUN bash -c "\
   adduser swift sudo; \

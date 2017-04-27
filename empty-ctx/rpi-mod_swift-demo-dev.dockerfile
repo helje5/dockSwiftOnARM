@@ -16,7 +16,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get install -y vim emacs make wget sudo
 
 
-# setup sudo
+# setup sudo # TODO: sounds like we are supposed to use gosu instead
 
 RUN adduser swift sudo
 RUN echo 'swift ALL=(ALL:ALL) ALL' > /etc/sudoers.d/swift
