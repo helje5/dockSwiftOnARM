@@ -35,7 +35,9 @@ RUN bash -c "mv swift/utils/build-script swift/utils/build-script.orig;   \
 
 # embedded buildSwiftOnArm
 
-ENV REL=3.1.1 INSTALL_DIR=$PWD/install PACKAGE=$PWD/swift-${REL}.tgz \
+ENV REL=3.1.1 \
+    INSTALL_DIR=/swiftsrc/install \
+    PACKAGE=/swiftsrc/swift-3.1.1.tgz \
     BRANCH=swift-3.1.1-RELEASE \
     SWIFT_SOURCE_ROOT=/swiftsrc
 
