@@ -76,7 +76,18 @@ RUN tar -C ${INSTALL_DIR} -czf ${PACKAGE} .
 
 WORKDIR /swiftsrc/install/usr/
 
-VOLUME /package
+
+# This is all wrong :-) Well, kinda. Building Swift in Docker is useful to
+# reuse build steps in a clean way and not clutter the host with patched
+# sources and such.
+# But it would probably be better (and faster) to just run a script instead
+# of building images.
+#
+# Hence the stuff below doesn't make sense. To pull out the built binary,
+# you need to run a container with the image built by this dockerfile.
+
+#VOLUME /package
 
 # takes ~4mins on RPi3, ~122MB (BZip2 takes ~8mins on RPi3, saves 12MB)
-RUN tar zcf "/package/swift-3.1-$(uname -m)-$(lsb_release -i -s | tr A-Z a-z)-$(lsb_release -r -s).tar.gz" *
+#RUN tar zcf "/package/swift-3.1-$(uname -m)-$(lsb_release -i -s | tr A-Z a-z)-$(lsb_release -r -s).tar.gz" *
+RUN bash
