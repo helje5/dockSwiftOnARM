@@ -1,6 +1,10 @@
 # Dockerfile
 #
 # docker run --rm --interactive --tty helje5/rpi-ubuntu-swift-build311-env bash
+# 
+# TODO: need a script within the image for this:
+# docker run --rm -v /home/pirate:/package helje5/rpi-ubuntu-swift311-build \
+#   tar zcf '/package/swift-3.1.1-$(uname -m)-$(lsb_release -i -s | tr A-Z a-z)-$(lsb_release -r -s).tar.gz' *
 #
 # 2017-04-25: @ffried says only those two should be necessary for 3.1.1:
 # https://github.com/swift-arm/swift-llvm/commit/95581a28b69cc7ea811055891b499576fdfc8ed7
@@ -89,5 +93,7 @@ WORKDIR /swiftsrc/install/usr/
 #VOLUME /package
 
 # takes ~4mins on RPi3, ~122MB (BZip2 takes ~8mins on RPi3, saves 12MB)
-#RUN tar zcf "/package/swift-3.1-$(uname -m)-$(lsb_release -i -s | tr A-Z a-z)-$(lsb_release -r -s).tar.gz" *
+#RUN tar zcf "/package/swift-3.1.1-$(uname -m)-$(lsb_release -i -s | tr A-Z a-z)-$(lsb_release -r -s).tar.gz" *
+# tar zcf "/package/swift-3.1.1-$(uname -m)-$(lsb_release -i -s | tr A-Z a-z)-$(lsb_release -r -s).tar.gz" *
+
 RUN bash
