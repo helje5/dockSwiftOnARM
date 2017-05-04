@@ -83,6 +83,13 @@ build-rpi-ubuntu-swift311-build :
 		     empty-ctx
 	docker images | grep helje5/rpi-ubuntu-swift311
 
+build-rpi-raspbian-swift311-build :
+	time docker build -t helje5/rpi-raspbian-swift311-build \
+                     $(EXTRAFLAGS) \
+		     -f empty-ctx/rpi-raspbian-swift-3.1.1-build.dockerfile \
+		     empty-ctx
+	docker images | grep helje5/rpi-raspbian-swift311
+
 build-rpi-ubuntu-swift31-build :
 	time docker build -t helje5/rpi-ubuntu-swift31-build \
                      $(EXTRAFLAGS) \
@@ -135,6 +142,13 @@ build-rpi-ubuntu-swift-build311-env :
 	       	     -f rpi-swift-3.1.1-build-ctx/rpi-ubuntu-swift-build311-env.dockerfile \
 		     rpi-swift-3.1.1-build-ctx
 	docker images | grep helje5/rpi-ubuntu-swift-build311-env
+
+# contains the 3.1.1 Swift Sources
+build-rpi-raspbian-swift-build311-env :
+	time docker build -t helje5/rpi-raspbian-swift-build311-env \
+	       	     -f rpi-swift-3.1.1-build-ctx/rpi-raspbian-swift-build311-env.dockerfile \
+		     rpi-swift-3.1.1-build-ctx
+	docker images | grep helje5/rpi-raspbian-swift-build311-env
 
 
 # ---------------------------
