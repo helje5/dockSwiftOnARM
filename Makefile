@@ -101,6 +101,7 @@ build-rpi-swift-build302 : # build-rpi-raspbian-swift-build302-env
 # (clang and such, also sets clang as the compiler)
 build-rpi-raspbian-swift-build-env :
 	time docker build -t helje5/rpi-raspbian-swift-build-env \
+                     $(EXTRAFLAGS) \
 	       	     -f empty-ctx/rpi-raspbian-swift-build-env.dockerfile \
 		     empty-ctx
 	docker images | grep helje5/rpi-raspbian-swift-build-env
