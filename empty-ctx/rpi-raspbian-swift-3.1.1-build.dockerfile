@@ -43,11 +43,11 @@ RUN bash -c "mv swift/utils/build-script swift/utils/build-script.orig;   \
 RUN bash -c "\
   cd /swiftsrc/llvm/utils/TableGen; \
   mv CMakeLists.txt CMakeLists.txt.orig; \
-  echo 'set (CMAKE_CXX_FLAGS_RELEASE \"\")' > CMakeLists.txt; \
+  echo 'set (CMAKE_CXX_FLAGS_RELEASE \"-O1\")' > CMakeLists.txt; \
   cat CMakeLists.txt.orig >> CMakeLists.txt; \
   cd /swiftsrc/clang/utils/TableGen; \
   mv CMakeLists.txt CMakeLists.txt.orig; \
-  echo 'set (CMAKE_CXX_FLAGS_RELEASE \"\")' > CMakeLists.txt; \
+  echo 'set (CMAKE_CXX_FLAGS_RELEASE \"-O1\")' > CMakeLists.txt; \
   cat CMakeLists.txt.orig >> CMakeLists.txt \
   "
 
