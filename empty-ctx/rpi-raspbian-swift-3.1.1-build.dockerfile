@@ -40,7 +40,7 @@ RUN bash -c "mv swift/utils/build-script swift/utils/build-script.orig;   \
 
 # Patch TableGen clang/llvm, those bus-error when built w/ optimization
 # (presumably a clang-3.9 on ARM issue)
-RUN bash -s "\
+RUN bash -c "\
   cd /swiftsrc/llvm/utils/TableGen; \
   mv CMakeLists.txt CMakeLists.txt.orig; \
   echo 'set (CMAKE_CXX_FLAGS_RELEASE \"\")' > CMakeLists.txt; \
