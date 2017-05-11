@@ -41,18 +41,19 @@ for ARM Ubuntu Xenial.
 ### Step 1: Install recent Swift Snapshot
 
 To do this, we need to install a recent version of Swift Package Manager.
+One containing the required support for 'destinations'.
 And the easiest way to do this, is to install a recent 
 [Swift snapshot](https://swift.org/download/#snapshots).
-We tried `swift-DEVELOPMENT-SNAPSHOT-2017-05-09-a`:
-[Download](https://swift.org/builds/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2017-05-09-a/swift-DEVELOPMENT-SNAPSHOT-2017-05-09-a-osx.pkg).
-Download the Xcode package and install it on your Mac.
+We tried `swift-DEVELOPMENT-SNAPSHOT-2017-05-09-a`,
+[Download](https://swift.org/builds/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2017-05-09-a/swift-DEVELOPMENT-SNAPSHOT-2017-05-09-a-osx.pkg)
+the Xcode package and install it on your Mac.
 
 *Note*: Snapshots require macOS 10.12, they do not run on macOS 10.11.
 
 *Note*: We are indeed building a 3.1.1 toolchain! We are just using the
         Swift Package Manager from the snapshot.
 
-The next step is to enable the swift tools from that snapshot. I use 
+The next step is to enable the Swift tools from that snapshot. I use 
 [swiftenv](https://swiftenv.fuller.li/en/latest/installation.html#via-homebrew)
 for that, if you don't have it:
 
@@ -100,6 +101,7 @@ Those are a little heavy (~400 MB), so grab a 🍺 or 🍻.
 Once they are available, build the actual toolchain using the script:
 
 ```
+pushd /tmp
 ./build_rpi_ubuntu_cross_compilation_toolchain \
   /tmp/ \
   /tmp/swift-3.1.1-RELEASE-osx.pkg \
@@ -123,6 +125,23 @@ mkdir helloworld && cd helloworld
 swift package init --type=executable
 swift build --destination /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
 ```
+
+Which gives:
+```
+Compile Swift Module 'helloworld' (1 sources)
+Linking ./.build/debug/helloworld
+```
+
+Check whether it actually produced an ARM binary:
+```
+file .build/debug/helloworld
+.build/debug/helloworld: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, not stripped
+```
+
+Excellent! It worked. Now either copy your binary to a Raspi (you may
+need to setup the LD_LIBRARY_PATH if you are not using my 
+[Docker image](https://hub.docker.com/r/helje5/rpi-swift/)),
+or try this:
 
 ## Testing builds using Docker on macOS
 
