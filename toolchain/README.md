@@ -149,8 +149,9 @@ Docker for Mac comes with QEmu support enabled, meaning that you can run
 simple ARM binaries without an actual Raspberry Pi.
 
 ```
-docker run --rm --tty -i -v $PWD:/host helje5/rpi-swift:3.1.1 \
-       /host/.build/debug/helloworld 
+docker run --rm --tty -i -v "$PWD/.build/debug/:/home/swift" \
+  helje5/rpi-swift:3.1.1 \
+  ./helloworld
 ```
 
 This works for simple builds, more complex stuff does not run in QEmu. Use
@@ -163,7 +164,7 @@ a proper Pi for that :-)
   different destinations. So make sure you clean before building for a
   different architecture.
 - Ubuntu system headers and such for the toolchain are directly pulled
-  from the Debian packages
+  from the Debian packages (which are retrieved from the Ubuntu repository)
 - The cross compiler is just a regular clang/swiftc provided as part of
   a macOS toolchain. Yes, clang/swift are always setup as cross compilers
   and can produce binaries for all supported targets! (didn't know that)
