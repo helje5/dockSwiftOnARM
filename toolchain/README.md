@@ -27,18 +27,18 @@ mkdir helloworld && cd helloworld
 swift package init --type=executable
 swift build --destination /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
 file .build/debug/helloworld
-.build/debug/my-test-app: ELF 32-bit LSB executable, ARM, 
-                          EABI5 version 1 (SYSV), dynamically linked, 
-                          interpreter /lib/ld-linux-armhf.so.3, 
-                          for GNU/Linux 3.2.0, not stripped
+.build/debug/helloworld: ELF 32-bit LSB executable, ARM, 
+                         EABI5 version 1 (SYSV), dynamically linked, 
+                         interpreter /lib/ld-linux-armhf.so.3, 
+                         for GNU/Linux 3.2.0, not stripped
 ```
 
-### Building the ARM toolchain
+## Building the ARM toolchain
 
 What we are going to do is build a Swift 3.1.1 cross compilation toolchain
 for ARM Ubuntu Xenial.
 
-#### Step 1: Install recent Swift Snapshot
+### Step 1: Install recent Swift Snapshot
 
 To do this, we need to install a recent version of Swift Package Manager.
 And the easiest way to do this, is to install a recent 
@@ -71,7 +71,7 @@ swiftenv global DEVELOPMENT-SNAPSHOT-2017-05-09-a
 
 OK, good to go :-)
 
-#### Step 2: Build Toolchain using Script
+### Step 2: Build Toolchain using Script
 
 First download our script and make it executable:
 [build_rpi_ubuntu_cross_compilation_toolchain](https://raw.githubusercontent.com/helje5/dockSwiftOnARM/master/toolchain/build_rpi_ubuntu_cross_compilation_toolchain),
@@ -106,9 +106,25 @@ Once they are available, build the actual toolchain using the script:
   /tmp/swift-3.1.1-armv7l-ubuntu16.04.tar.gz
 ```
 
-TODO
+If everything worked fine, it'll end like that:
+```
+OK, your cross compilation toolchain for Raspi Ubuntu Xenial is now ready to be used
+ - SDK: /tmp/cross-toolchain/rpi-ubuntu-xenial.sdk
+ - toolchain: /tmp/cross-toolchain/swift.xctoolchain
+ - SwiftPM destination.json: /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
+```
 
-### Testing builds using Docker on macOS
+### Step 3: Use the Toolchain
+
+Let create a simple `helloworld` tool first:
+
+```
+mkdir helloworld && cd helloworld
+swift package init --type=executable
+swift build --destination /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
+```
+
+## Testing builds using Docker on macOS
 
 Docker for Mac comes with QEmu support enabled, meaning that you can run
 simple ARM binaries without an actual Raspberry Pi.
@@ -122,7 +138,7 @@ This works for simple builds, more complex stuff does not run in QEmu. Use
 a proper Pi for that :-)
 
 
-### Notes of interest
+## Notes of interest
 
 - SwiftPM reuses the name `.build` directory even if you call it w/ 
   different destinations. So make sure you clean before building for a
