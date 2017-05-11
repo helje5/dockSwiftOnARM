@@ -14,7 +14,7 @@ Inspired by
 
 ### Running Swift w/ Docker on macOS
 
-Note: Not completely working yet, but a little:
+Works:
 
 ```shell
 docker run --rm  helje5/rpi-swift swift --version
@@ -22,17 +22,15 @@ Swift version 3.1 (swift-3.1-RELEASE)
 Target: armv7-unknown-linux-gnueabihf
 ```
 
-REPL fails despite `--privileged`:
-
-```shell
-docker run   --privileged=true --rm --interactive --tty helje5/rpi-swift   swift 
-error: failed to stop process at REPL breakpoint
-```
+Note that the REPL doesn't work on the Raspi.
 
 DockerHub:
 - [rpi-swift](https://hub.docker.com/r/helje5/rpi-swift/)
 - [rpi-swift-dev](https://hub.docker.com/r/helje5/rpi-swift-dev/) 
   (w/ Emacs/vi/etc)
+  
+Want to run Server Side Swift on a Raspberry Pi? Use
+[mod_swift](http://mod-swift.org/raspberrypi/).
 
 ### Setup Raspi w/ Docker and remote-control it from macOS
 
