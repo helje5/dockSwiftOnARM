@@ -1,10 +1,10 @@
-<h2>Raspi Cross Compilation Toolchain
+<h2>macOS -> RasPi Cross Compilation Toolchain
   <img src="http://zeezide.com/img/rpi-swift.svg?2"
        align="right" width="180" height="180" />
 </h2>
 
 ![Swift3](https://img.shields.io/badge/swift-3-blue.svg)
-![tuxOS](https://img.shields.io/badge/os-tuxOS-green.svg?style=flat)
+![tuxOS](https://img.shields.io/badge/os-Xenial-green.svg?style=flat)
 ![ARM](https://img.shields.io/badge/cpu-ARM-red.svg?style=flat)
 
 End of April
@@ -13,16 +13,15 @@ added
 [custom toolchain support](https://github.com/apple/swift-package-manager/pull/1098)
 to 
 [Swift Package Manager](https://github.com/apple/swift-package-manager).
-
 Johannes also provided 
 [a script](https://github.com/apple/swift-package-manager/blob/master/Utilities/build_ubuntu_cross_compilation_toolchain)
 which shows how to build an Ubuntu toolchain for x86-64.
 
 So what we did is take that script and make it produce a Swift 3.1.1 cross 
-compiler toolchain for the RaspberryPi (armhf) Ubuntu Xenial port.
+compiler toolchain for the Raspberry Pi (armhf) Ubuntu Xenial port.
 
 What this is good for?
-You can build RaspberryPi Swift binaries on a Mac:
+You can build Raspberry Pi Swift binaries on a Mac. Like this:
 ```
 mkdir helloworld && cd helloworld
 swift package init --type=executable
@@ -74,11 +73,37 @@ OK, good to go :-)
 
 #### Step 2: Build Toolchain using Script
 
+First download our script and make it executable:
+[build_rpi_ubuntu_cross_compilation_toolchain](https://raw.githubusercontent.com/helje5/dockSwiftOnARM/master/toolchain/build_rpi_ubuntu_cross_compilation_toolchain),
+e.g. like:
+
+```
+pushd /tmp
+curl https://raw.githubusercontent.com/helje5/dockSwiftOnARM/master/toolchain/build_rpi_ubuntu_cross_compilation_toolchain \
+  | sed "s/$(printf '\r')\$//" \
+  > build_rpi_ubuntu_cross_compilation_toolchain
+chmod +x build_rpi_ubuntu_cross_compilation_toolchain
+```
+
+You can just call the script and it'll give you instructions, but let's just
+go ahead.
+Next step is to download Swift 3.1.1 tarballs. 
+We need the macOS pkg for the host compiler and a Raspberry Pi tarball for the
+Swift runtime. We use the one provided by Florian Friedrich for the latter:
+
+```
+pushd /tmp
+curl -o /tmp/swift-3.1.1-armv7l-ubuntu16.04.tar.gz https://cloud.sersoft.de/nextcloud/index.php/s/0qty8wJxlgfVCcx/download
+curl -o /tmp/swift-3.1.1-RELEASE-osx.pkg https://swift.org/builds/swift-3.1.1-release/xcode/swift-3.1.1-RELEASE/swift-3.1.1-RELEASE-osx.pkg
+```
+Those are a little heavy (~400 MB), so grab a 🍺 or 🍻.
+Once they are available, build the actual toolchain using the script:
+
 ```
 ./build_rpi_ubuntu_cross_compilation_toolchain \
   /tmp/ \
-  ~/Downloads/swift-3.1.1-RELEASE-osx.pkg \
-  ~/Downloads/swift-3.1.1-armv7l-ubuntu16.04.tar.gz
+  /tmp/swift-3.1.1-RELEASE-osx.pkg \
+  /tmp/swift-3.1.1-armv7l-ubuntu16.04.tar.gz
 ```
 
 TODO
@@ -86,7 +111,7 @@ TODO
 ### Testing builds using Docker on macOS
 
 Docker for Mac comes with QEmu support enabled, meaning that you can run
-simple ARM binaries without an actual RaspberryPi.
+simple ARM binaries without an actual Raspberry Pi.
 
 ```
 docker run --rm --tty -i -v $PWD:/host helje5/rpi-swift:3.1.1 \
@@ -121,4 +146,4 @@ presumably any form of praise you can think of.
 We don't like people who are wrong.
 
 There is the [swift-arm](https://slackpass.io/swift-arm) Slack channel
-if you have questions about running Swift on ARM/RaspberryPis.
+if you have questions about running Swift on ARM/Raspberry Pi.
