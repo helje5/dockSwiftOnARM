@@ -160,7 +160,7 @@ a proper Pi for that :-)
 
 ## Notes of interest
 
-- SwiftPM reuses the name `.build` directory even if you call it w/ 
+- SwiftPM reuses the `.build` directory even if you call it w/ 
   different destinations. So make sure you clean before building for a
   different architecture.
 - Ubuntu system headers and such for the toolchain are directly pulled
@@ -169,7 +169,7 @@ a proper Pi for that :-)
   a macOS toolchain. Yes, clang/swift are always setup as cross compilers
   and can produce binaries for all supported targets! (didn't know that)
 - To trace filesystem calls on macOS you can use `fs_usage`, e.g.:
-  `sudo fs_usage -w -f pathname swift` (only new `strace` ;-)
+  `sudo fs_usage -w -f pathname swift` (I only knew `strace` ;-)
 
 ### Who
 
