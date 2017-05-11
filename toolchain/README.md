@@ -157,6 +157,71 @@ docker run --rm --tty -i -v "$PWD/.build/debug/:/home/swift" \
 This works for simple builds, more complex stuff does not run in QEmu. Use
 a proper Pi for that :-)
 
+## OK, no README w/o 🐄🐄🐄
+
+Lets build something very useful, an ASCII cow generator.
+The snapshot's `swift package init` produces a Swift 4 setup by default.
+We want to use 3.1, so we do the setup manually:
+
+```
+mkdir vaca && cd vaca
+cat > Package.swift <<EOF
+import PackageDescription
+
+let package = Package(
+  name: "vaca",
+  dependencies: [
+    .Package(url: "git@github.com:AlwaysRightInstitute/cows.git",
+             majorVersion: 1, minor: 0)
+  ]
+)
+EOF
+
+cat > main.swift <<EOF
+import cows
+print(vaca())
+EOF
+```
+
+Then build the thing:
+
+```
+swift build \
+  --destination /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
+Fetching https://github.com/AlwaysRightInstitute/cows.git
+Cloning https://github.com/AlwaysRightInstitute/cows.git
+Resolving https://github.com/AlwaysRightInstitute/cows.git at 1.0.1
+Compile Swift Module 'cows' (3 sources)
+Compile Swift Module 'vaca' (1 sources)
+Linking ./.build/debug/vaca
+```
+
+And you get the most awesome Swift tool:
+
+```
+docker run --rm --tty -i -v "$PWD/.build/debug/:/home/swift" \
+           helje5/rpi-swift:3.1.1 ./vaca
+   (___)
+   (o o)
+  __\_/__
+ //^^*^^\
+ /   *   \
+/ |  *  | \
+\ |=====| /
+ "|_____|"
+   | | |
+   | | |
+   |_|_|
+    ^ ^
+   COWNT
+```
+
+Wanna have Server Side Cows on the Pi? Try this:
+[mod_swift](http://mod-swift.org/raspberrypi/).
+
+Having the cows on your Raspi is not enough?
+Get: [CodeCows](https://itunes.apple.com/de/app/codecows/id1176112058)
+and [ASCII Cows](https://itunes.apple.com/de/app/ascii-cows/id1176152684).
 
 ## Notes of interest
 
