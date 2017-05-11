@@ -1,9 +1,10 @@
 # Dockerfile
 #
-# docker run --privileged=true -i --tty --rm helje5/rpi-swift:3.1.0
+# docker run -i --tty --rm helje5/rpi-swift:3.1.1
 # 
-
 FROM ioft/armhf-ubuntu:16.04
+
+LABEL maintainer "Helge Heß <me@helgehess.eu>"
 
 ARG TARBALL=swift-3.1.1-armv7l-ubuntu-16.04.tar.gz
 
@@ -20,7 +21,13 @@ RUN apt-get install -y \
 
 ADD $TARBALL /usr/
 
+RUN bash -c "echo '/usr/lib/swift/linux' > /etc/ld.so.conf.d/swift.conf;\
+             echo '/usr/lib/swift/clang/lib/linux' >> /etc/ld.so.conf.d/swift.conf;\
+             echo '/usr/lib/swift/pm' >> /etc/ld.so.conf.d/swift.conf;\
+             ldconfig"
+
 RUN useradd --create-home --shell /bin/bash swift
 
 USER swift
 WORKDIR /home/swift
+
