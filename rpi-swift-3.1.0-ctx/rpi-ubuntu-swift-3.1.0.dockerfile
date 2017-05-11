@@ -1,9 +1,10 @@
 # Dockerfile
 #
-# docker run --privileged=true -i --tty --rm helje5/rpi-swift:3.1.0
+# docker run -i --tty --rm helje5/rpi-swift:3.1.0
 # 
-
 FROM ioft/armhf-ubuntu:16.04
+
+LABEL maintainer "Helge Heß <me@helgehess.eu>"
 
 ARG TARBALL=swift-3.1-armv7l-ubuntu-16.04.tar.gz
 

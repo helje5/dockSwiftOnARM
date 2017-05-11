@@ -1,6 +1,6 @@
 # Dockerfile
 #
-# docker run --rm --interactive --tty helje5/rpi-ubuntu-swift-build311-env bash
+# docker run --rm -i --tty helje5/rpi-ubuntu-swift-build311-env bash
 # 
 # TODO: need a script within the image for this:
 # docker run --rm -v /home/pirate:/package helje5/rpi-ubuntu-swift311-build \

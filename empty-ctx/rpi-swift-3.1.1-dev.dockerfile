@@ -4,6 +4,8 @@
 #
 FROM helje5/rpi-swift:3.1.1
 
+LABEL maintainer "Helge Heß <me@helgehess.eu>"
+
 # rpi-swift sets it to swift
 USER root
 
