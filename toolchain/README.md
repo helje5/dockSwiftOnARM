@@ -138,10 +138,22 @@ file .build/debug/helloworld
 .build/debug/helloworld: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, not stripped
 ```
 
-Excellent! It worked. Now either copy your binary to a Raspi (you may
-need to setup the LD_LIBRARY_PATH if you are not using my 
-[Docker image](https://hub.docker.com/r/helje5/rpi-swift/)),
-or try this:
+Excellent! It worked. Now either copy your binary to a Raspi or test it using
+QEmu as described below.
+
+If you are not using our 
+[Docker image](https://hub.docker.com/r/helje5/rpi-swift/),
+you may need to setup the `LD_LIBRARY_PATH`, so that the dynamic linker finds
+the Swift runtime. E.g. like that:
+
+```
+sudo cat > /etc/ld.so.conf.d/swift.conf <<EOF
+/usr/lib/swift/linux
+/usr/lib/swift/clang/lib/linux
+/usr/lib/swift/pm
+EOF
+sudo ldconfig
+```
 
 ## Testing builds using Docker on macOS
 
