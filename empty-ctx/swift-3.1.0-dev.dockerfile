@@ -16,6 +16,8 @@ LABEL maintainer "Helge Heß <me@helgehess.eu>"
 
 USER root
 
+ARG CLANG_VERSION=3.8
+
 # b0rked in the official image
 RUN chmod -R o+r /usr/lib/swift/CoreFoundation
 
@@ -34,7 +36,15 @@ RUN apt-get update && apt-get install -y \
   curl libcurl4-openssl-dev \
   libedit-dev \
   libxml2 \
-  wget sudo gosu
+  wget sudo gosu \
+  clang-$CLANG_VERSION libc6-dev
+
+RUN bash -c "update-alternatives --quiet --install /usr/bin/clang \
+               clang   /usr/bin/clang-$CLANG_VERSION   100;\
+             update-alternatives --quiet --install /usr/bin/clang++ \
+               clang++ /usr/bin/clang++-$CLANG_VERSION 100"
+
+# setup sudo # TODO: sounds like we are supposed to use gosu instead
 
 RUN bash -c "\
   useradd --groups sudo -ms /bin/bash swift; \
