@@ -41,7 +41,7 @@ RUN apt-get install -y \
   curl libcurl4-openssl-dev   \
   libedit-dev                 \
   libxml2                     \
-  wget sudo
+  wget sudo gosu
 
 RUN bash -c "update-alternatives --quiet --install /usr/bin/clang \
                clang   /usr/bin/clang-$CLANG_VERSION   100;\
@@ -59,3 +59,10 @@ RUN bash -c "\
 
 USER swift
 WORKDIR /home/swift
+
+RUN bash -c "\
+  mkdir -p /home/swift/.emacs.d/lisp; \
+  curl -L -o /home/swift/.emacs.d/lisp/swift-mode.el https://raw.githubusercontent.com/iamleeg/swift-mode/master/swift-mode.el; \
+  echo \"(add-to-list 'load-path \\\"~/.emacs.d/lisp/\\\")\" >> .emacs; \
+  echo \"(require 'swift-mode)\" >> .emacs \
+"
