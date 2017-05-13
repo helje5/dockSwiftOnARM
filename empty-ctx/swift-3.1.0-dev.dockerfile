@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y \
   libedit-dev \
   libxml2 \
   wget sudo gosu \
-  clang-$CLANG_VERSION libc6-dev libxml2-dev bison lsb-release
+  clang-$CLANG_VERSION libc6-dev libxml2-dev bison lsb-release gdb
 
 RUN bash -c "update-alternatives --quiet --install /usr/bin/clang \
                clang   /usr/bin/clang-$CLANG_VERSION   100;\

@@ -29,7 +29,7 @@ RUN bash -c "\
 RUN apt-get install -y \
   python                      \
   \
-  clang-$CLANG_VERSION libc6-dev libxml2-dev bison lsb-release \
+  clang-$CLANG_VERSION libc6-dev libxml2-dev bison lsb-release gdb \
   \
   libicu-dev                  \
   autoconf libtool pkg-config \
