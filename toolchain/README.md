@@ -118,7 +118,7 @@ OK, your cross compilation toolchain for Raspi Ubuntu Xenial is now ready to be 
 
 ### Step 3: Use the Toolchain
 
-Let create a simple `helloworld` tool first:
+Lets create a simple `helloworld` tool first:
 
 ```
 mkdir helloworld && cd helloworld
