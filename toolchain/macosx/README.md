@@ -13,7 +13,9 @@ except for the
 those are cool).
 Everyone knows that with just 16GB of RAM it isn't really a Pro machine and
 you can hardly do any work on it.
-As an occasional Swift developer who also runs the Slack app once in a while
+As an occasional Swift developer who also 
+[runs the Slack app](https://twitter.com/helje5/status/771699792808386560)
+once in a while
 I'm always looking for ways to workaround that frustrating limitation.
 
 So while working on the cross-compiler toolchain which allows you to compile
