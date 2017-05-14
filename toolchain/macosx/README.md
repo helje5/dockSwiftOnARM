@@ -30,7 +30,7 @@ of the Raspberry Pis sitting around in the house, usually idle.
 
 Like that:
 
-<img src="zeezide.com/img/raspi2mac.gif" />
+<img src="http://zeezide.com/img/raspi2mac.gif" />
 
 
 ## Building the macOS toolchain for ARM
