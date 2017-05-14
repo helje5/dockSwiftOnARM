@@ -28,21 +28,10 @@ That of course is the solution. Instead of bothering the Mac to produce Swift
 binaries for the Mac, why not cross compile the Swift code for the Mac on one 
 of the Raspberry Pis sitting around in the house, usually idle.
 
+Like that:
 
+<img src="zeezide.com/img/raspi2mac.gif" />
 
-
-What this is good for?
-You can build Raspberry Pi Swift binaries on a Mac. Like this:
-```
-mkdir helloworld && cd helloworld
-swift package init --type=executable
-swift build --destination /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
-file .build/debug/helloworld
-.build/debug/helloworld: ELF 32-bit LSB executable, ARM, 
-                         EABI5 version 1 (SYSV), dynamically linked, 
-                         interpreter /lib/ld-linux-armhf.so.3, 
-                         for GNU/Linux 3.2.0, not stripped
-```
 
 ## Building the macOS toolchain for ARM
 
