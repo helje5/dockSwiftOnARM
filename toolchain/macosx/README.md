@@ -8,7 +8,9 @@
 ![ARM](https://img.shields.io/badge/cpu-ARM-red.svg?style=flat)
 
 So, I got that new late-2016 MacBook Pro (yes, the touchbar is aweful,
-except for the Lemmings, those are cool).
+except for the 
+[Lemmings](https://github.com/erikolsson/Touch-Bar-Lemmings),
+those are cool).
 Everyone knows that with just 16GB of RAM it isn't really a Pro machine and
 you can hardly do any work on it.
 As an occasional Swift developer who also runs the Slack app once in a while
@@ -18,13 +20,13 @@ So while working on the cross-compiler toolchain which allows you to compile
 Swift code for the Raspberry Pi on a Mac (read about it [here](../README.md)),
 a brilliant idea was formed:
 
-> the real question is can you cross compile to macOS from your Raspberry Pi 
-> build fleet
+> "The real question is can you cross compile to macOS from your Raspberry Pi
+> build fleet"<br>
 > *ducks*
 
 That of course is the solution. Instead of bothering the Mac to produce Swift
 binaries for the Mac, why not cross compile the Swift code for the Mac on one 
-of the Raspberry Pis sitting around idle in the house.
+of the Raspberry Pis sitting around in the house, usually idle.
 
 
 
@@ -42,10 +44,10 @@ file .build/debug/helloworld
                          for GNU/Linux 3.2.0, not stripped
 ```
 
-## Building the MacOSX toolchain on ARM
+## Building the macOS toolchain for ARM
 
 What we are going to do is build a Swift 3.1.1 cross compilation toolchain
-running on ARM Ubuntu Xenial, targetting MacOSX.
+running on ARM Ubuntu Xenial, targetting macOS.
 
 This is a little harder that the [Mac to Raspi cross compiler](../README.md),
 but still reasonably easy.
@@ -101,7 +103,7 @@ curl https://raw.githubusercontent.com/helje5/dockSwiftOnARM/master/toolchain/ma
 chmod +x build-rpi-ubuntu-2-macos-x-toolchain
 ```
 
-You can just call the script and it'll give you instructions, but let's just
+You can call the script and it'll give you instructions, but let's just
 go ahead.
 Next step is to download Swift 3.1.1 tarballs. 
 We need the macOS toolchain tarballs we created in Step 1
@@ -141,7 +143,7 @@ Manager.
 On a regular x86-64 Ubuntu or macOS we could just grab a snapshot,
 but the Swift project doesn't yet provide such for Raspberry Pis.
 
-Instead we are going to do is fetch a recent Swift Package Manager,
+Instead we are going to fetch a recent Swift Package Manager,
 but use it with the Swift 3.1 installation.
 
 ```bash
