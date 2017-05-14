@@ -33,6 +33,9 @@ file .build/debug/helloworld
                          for GNU/Linux 3.2.0, not stripped
 ```
 
+(We also have a toolchain kit which does the reverse, compile macOS Swift 
+ binaries on a Raspberry Pi: [toolchain/macos](macosx/README.md))
+
 ## Building the ARM toolchain
 
 What we are going to do is build a Swift 3.1.1 cross compilation toolchain
@@ -183,7 +186,7 @@ import PackageDescription
 let package = Package(
   name: "vaca",
   dependencies: [
-    .Package(url: "git@github.com:AlwaysRightInstitute/cows.git",
+    .Package(url: "https://github.com/AlwaysRightInstitute/cows.git",
              majorVersion: 1, minor: 0)
   ]
 )

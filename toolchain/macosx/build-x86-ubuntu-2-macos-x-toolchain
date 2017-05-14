@@ -1,0 +1,281 @@
+#!/bin/bash
+#
+# Based on
+#     - https://github.com/apple/swift-package-manager/blob/master/Utilities/build_ubuntu_cross_compilation_toolchain
+
+# by Johannes Weiß
+# MacOS adjustments by Helge Heß <me@helgehess.eu>
+#
+# In this setup:
+# - SWIFT-FOR-LINUX.tar.gz is the cross compiler
+# - the Swift binary files come from the .pkg (libs and such)
+# But we also need a tarball containing the macOS system headers:
+#   (cd /; tar zcf /tmp/x-macos-$(uname -s | tr [:upper:] [:lower:])-$(uname -m)-usr.tgz usr/lib usr/include)
+# NOTE:
+# - the Ubuntu variant also contains some /etc and /lib
+#
+# Requirements:
+# - Make sure you have those installed:
+#   - clang (3.8)
+#   - bison
+#   - libxml2-dev
+#   - cpio
+#   - lsb-release
+
+set -eu
+
+export PATH="/bin:/usr/bin"
+
+export TC_TARGET="x86_64-apple-darwin16.5.0"
+
+function usage() {
+    echo >&2 "Usage: $0 SWIFT-FOR-LINUX.tar.gz SWIFT-FOR-MACOS.pkg MACOS-SDK.tar.gz"
+    echo >&2
+    echo >&2 "Example: $0 /tmp/ ~/Downloads/swift-3.1-RELEASE-osx.pkg ~/Downloads/swift-3.1-RELEASE-ubuntu16.04.tar.gz"
+    echo >&2
+    echo >&2 "Complete example:"
+    echo >&2 "  # grab /usr/include and /usr/lib from a Mac"
+    echo >&2 "  (cd /; tar zcf /tmp/x-macos-linux-x86_64-usr.tgz usr/lib usr/include)"
+    echo >&2
+    echo >&2 "  # Download the Swift binaries for Ubuntu and macOS"
+    echo >&2 "  curl -o /tmp/swift-3.1.1-RELEASE-osx.pkg https://swift.org/builds/swift-3.1.1-release/xcode/swift-3.1.1-RELEASE/swift-3.1.1-RELEASE-osx.pkg"
+    echo >&2 "  curl -o /tmp/swift-3.1.1-RELEASE-ubuntu16.04.tar.gz https://swift.org/builds/swift-3.1.1-release/ubuntu1604/swift-3.1.1-RELEASE/swift-3.1.1-RELEASE-ubuntu16.04.tar.gz"
+#    echo >&2 "  curl -o /tmp/swift-3.1.1-RELEASE-ubuntu16.10.tar.gz https://swift.org/builds/swift-3.1.1-release/ubuntu1610/swift-3.1.1-RELEASE/swift-3.1.1-RELEASE-ubuntu16.10.tar.gz"
+    echo >&2
+    echo >&2 "  # Compile the SDK and toolchain from that"
+    echo >&2 "  $0 /tmp/ /tmp/swift-3.1.1-RELEASE-ubuntu16.04.tar.gz /tmp/swift-3.1.1-RELEASE-osx.pkg /tmp/x-macos-darwin-x86_64-usr.tgz"
+    echo >&2
+    echo >&2 "  # Create a test application"
+    echo >&2 "  mkdir my-test-app && cd my-test-app"
+    echo >&2 "  swift package init --type=executable"
+    echo >&2 "  # Build it for macOS"
+    echo >&2 "  swift build --destination /tmp/cross-toolchain/macos-destination.json"
+
+}
+
+if [[ $# -ne 4 ]]; then
+    usage
+    exit 1
+fi
+
+function realpath() {
+    if [[ "${1:0:1}" = / ]]; then
+        echo "$1"
+    else
+        (
+        cd "$(dirname "$1")"
+        echo "$(pwd)/$(basename "$1")"
+        )
+    fi
+}
+
+# set -xv
+# where to get stuff from
+dest=$(realpath "$1")
+linux_swift_pkg=$(realpath "$2")
+macos_swift_pkg=$(realpath "$3")
+macos_sdk_pkg=$(realpath "$4")
+
+if [[ ! -f "$linux_swift_pkg" ]]; then echo "missing: $linux_swift_pkg"; exit 42; fi
+if [[ ! -f "$macos_swift_pkg" ]]; then echo "missing: $macos_swift_pkg"; exit 42; fi
+if [[ ! -f "$macos_sdk_pkg"   ]]; then echo "missing $macos_sdk_pkg";    exit 42; fi
+
+# config
+xc_tc_name="swift.xctoolchain"
+target_sdk_name="MacOSX.sdk"
+cross_tc_basename="cross-toolchain"
+cctools_pkg_url="https://github.com/tpoechtrager/osxcross/raw/master/tarballs/cctools-895-ld64-274.2_8e9c3f2.tar.xz"
+xar_pkg_url="https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/xar/xar-1.5.2.tar.gz"
+
+# url
+function download_stdout() {
+    curl --fail -s "$1"
+}
+
+# url, key
+function download_with_cache() {
+    mkdir -p "$dest/cache"
+    local out
+    out="$dest/cache/$2"
+    if [[ ! -f "$out" ]]; then
+        curl --fail -L -s -o "$out" "$1"
+    fi
+    echo "$out"
+}
+
+# dst, file
+function unpack() {
+    local tmp
+    tmp=$(mktemp -d /tmp/.unpack_pkg_XXXXXX)
+    (
+      cd "$tmp"
+      "$XAR" -xf "$2"
+    )
+    (
+      cd "$1"
+      cat "$tmp"/*.pkg/Payload | gunzip -dc | cpio -i
+    )
+    rm -rf "$tmp"
+}
+
+
+# ------------------------------------------------
+
+echo "Starting, go to destination directory: $dest ..."
+cd "$dest"
+
+rm -rf $cross_tc_basename # cross-toolchain
+mkdir -p "$cross_tc_basename/$target_sdk_name"
+echo "  target: $cross_tc_basename/$target_sdk_name"
+
+
+# ------------------ untar SDK (macos.sdk/usr/) ----------------------------
+
+echo "  unpacking SDK to: $dest/$cross_tc_basename/$target_sdk_name"
+# unpack macOS SDK
+#   $macos_sdk_pkg - tarball containing usr/include, usr/lib
+tar -C "$dest/$cross_tc_basename/$target_sdk_name" -xf "$macos_sdk_pkg"
+
+
+# ------------------ cctools ---------------------------
+
+echo "  grabbing cctools ..."
+(
+  cd $cross_tc_basename # cross-toolchain
+  mkdir -p "$xc_tc_name/usr/bin" # xc_tc_name = swift.xctoolchain
+
+  cctools_pkg="$(download_with_cache "$cctools_pkg_url" cctools.tar.gz)"
+  echo "   download to: $cctools_pkg"
+  tmp=$(mktemp -d "$dest/tmp_pkgs_cctools_XXXXXX")
+  (
+    cd "$tmp"
+    tar -Jxf "$cctools_pkg"
+    cd cctools-*
+    cd cctools
+    echo "  configure cctools in $(pwd) ..."
+    ./configure "--prefix=${dest}/${cross_tc_basename}/${xc_tc_name}/usr" --target=${TC_TARGET} 
+    # --target=x86_64-apple-darwin11
+    make -j
+    make install
+  )
+  ln "${xc_tc_name}/usr/bin/${TC_TARGET}-ld" "${xc_tc_name}/usr/bin/ld"
+  rm -rf "$tmp"
+)
+
+echo "  cctools ld in: $xc_tc_name/usr/bin/x86_64-apple-darwin11-ld"
+
+
+# ------------------ dsymutil ---------------------------
+
+# Yeah, hack. Would need to port that ;->
+(
+  cd $cross_tc_basename # cross-toolchain
+  mkdir -p "$xc_tc_name/usr/bin" # xc_tc_name = swift.xctoolchain
+  cd "$xc_tc_name/usr/bin"
+  echo "#!/bin/bash" > dsymutil
+  echo "echo 'dsymutil \$@'" >> dsymutil
+  chmod +x dsymutil
+)
+
+
+
+# ------------------ xar ----------------------------
+
+if [[ -f /tmp/xar ]]; then
+  echo "  reusing xar in /tmp ..."
+  XAR=/tmp/xar
+else
+  echo "  grabbing xar ..."
+  XAR_TEMP=$(mktemp -d "$dest/tmp_pkgs_xar_XXXXXX")
+  xar_pkg="$(download_with_cache "$xar_pkg_url" xar.tar.gz)"
+  cd "$XAR_TEMP"
+  tar -xf "$xar_pkg"
+  cd xar-*
+  ./configure
+  make
+  cp "$(pwd)/src/xar" "$dest/build-toolchain-xar"
+  XAR="$dest/build-toolchain-xar"
+  rm -rf "$XAR_TEMP"
+  # TODO: delete xar
+fi
+echo "   xar: $XAR"
+
+
+# ------------------ symlinks ----------------------------
+
+echo "  fixing absolute symlinks in $target_sdk_name ..."
+# fix absolute symlinks
+cd "$dest"
+cd $cross_tc_basename # cross-toolchain
+find "$target_sdk_name" -type l | while read -r line; do
+    dst=$(readlink "$line")
+    if [[ "${dst:0:1}" = / ]]; then
+        rm "$line"
+        echo ln -s "$dest/$cross_tc_basename/$target_sdk_name$dst" "$line"
+        ln -s "$dest/$cross_tc_basename/$target_sdk_name$dst" "$line"
+    fi
+done
+# no gcc on macOS? ;-)
+#ln -s 5 "$target_sdk_name/usr/lib/gcc/${TC_TARGET}/5.4.0"
+
+
+# ------------------ untar Linux Swift ----------------------------
+# In this setup:
+# - SWIFT-FOR-LINUX.tar.gz is the cross compiler
+#   aka what goes into "swift.xctoolchain"
+
+tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
+echo "  Unpacking Linux Swift SDK: $linux_swift_pkg to $tmp..."
+
+# official release tarballs have a dirname, the Raspi ones usually don't but
+# just directly contain 'usr'
+#   --strip-components 1
+tar -C "$tmp" --strip-components 1 -xf "$linux_swift_pkg"
+echo "  Moving Linux Swift SDK from $tmp to $xc_tc_name ..." # xc_tc_name = swift.xctoolchain
+rsync -a "$tmp/" "$xc_tc_name"
+rm -rf "$tmp"
+
+
+# ------------------ untar macOS Swift ----------------------------
+
+# TODO: this is the wrong way around here.
+tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
+echo "  Unpacking macOS Swift SDK: $macos_swift_pkg to $tmp..."
+unpack "$tmp" "$macos_swift_pkg"
+
+echo "  Moving macOS Swift SDK $tmp/usr/lib/swift... to $xc_tc_name/usr/lib/swift ..."
+rsync -a "$tmp/usr/lib/swift/macosx"        "$xc_tc_name/usr/lib/swift/"
+rsync -a "$tmp/usr/lib/swift_static/macosx" "$xc_tc_name/usr/lib/swift_static/"
+rsync -a "$tmp/usr/lib/swift/shims"         "$xc_tc_name/usr/lib/swift/"
+
+rm -rf "$tmp"
+
+
+cd $dest
+
+echo "**** emit json to $cross_tc_basename/macos-destination.json"
+
+cat > "$cross_tc_basename/macos-destination.json" <<EOF
+{
+    "version":           1,
+    "sdk":               "$(pwd)/$cross_tc_basename/$target_sdk_name",
+    "toolchain-bin-dir": "$(pwd)/$cross_tc_basename/$xc_tc_name/usr/bin",
+    "target":            "${TC_TARGET}",
+    "dynamic-library-extension": "dylib",
+    "extra-cc-flags": [
+        "-fPIC"
+    ],
+    "extra-swiftc-flags": [
+        "-tools-directory", "$(pwd)/$cross_tc_basename/$xc_tc_name/usr/bin"
+    ],
+    "extra-cpp-flags": [
+        "-lstdc++"
+    ]
+}
+EOF
+
+echo
+echo "OK, your cross compilation toolchain for macOS is now ready to be used"
+echo " - SDK: $(pwd)/$cross_tc_basename/$target_sdk_name"
+echo " - toolchain: $(pwd)/$cross_tc_basename/$xc_tc_name"
+echo " - SwiftPM destination.json: $(pwd)/$cross_tc_basename/macos-destination.json"
