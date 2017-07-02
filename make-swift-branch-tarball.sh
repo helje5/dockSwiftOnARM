@@ -3,6 +3,7 @@
 #  ./make-swift-branch-tarball.sh swift-checkout swift-3.1.1-RELEASE
 #  ./make-swift-branch-tarball.sh swift-checkout swift-3.1-RELEASE
 #  ./make-swift-branch-tarball.sh swift-checkout swift-3.0.2-RELEASE
+#  ./make-swift-branch-tarball.sh swift-checkout swift-4.0-branch
 
 OWN_DIR="`pwd`"
 SWIFT_DIR="$1"
