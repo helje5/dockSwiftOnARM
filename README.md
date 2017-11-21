@@ -131,6 +131,12 @@ EOF
 sudo ldconfig
 ```
 
+If that didn't work, you'll see an error like:
+
+    ./helloworld: error while loading shared libraries: libswiftCore.so: \
+      cannot open shared object file: No such file or directory
+
+
 ## Testing builds using Docker on macOS
 
 Docker for Mac comes with QEmu support enabled, meaning that you can run
@@ -145,7 +151,8 @@ docker run --rm --tty -i -v "$PWD/.build/debug/:/home/swift" \
 This works for simple builds, more complex stuff does not run in QEmu. Use
 a proper Pi for that :-)
 
-## OK, no README w/o 🐄🐄🐄
+
+## No README w/o 🐄🐄🐄
 
 Lets build something very useful, an ASCII cow generator.
 The snapshot's `swift package init` produces a Swift 4 setup by default.
@@ -206,10 +213,12 @@ docker run --rm --tty -i -v "$PWD/.build/debug/:/home/swift" \
 
 Wanna have Server Side Cows on the Pi? Try this:
 [mod_swift](http://mod-swift.org/raspberrypi/).
-
 Having the cows on your Raspi is not enough?
-Get: [CodeCows](https://itunes.apple.com/de/app/codecows/id1176112058)
-and [ASCII Cows](https://itunes.apple.com/de/app/ascii-cows/id1176152684).
+Get: [CodeCows](https://itunes.apple.com/de/app/codecows/id1176112058) 
+for Xcode and macOS,
+and [ASCII Cows](https://itunes.apple.com/de/app/ascii-cows/id1176152684)
+for iOS.
+
 
 ## Notes of interest
 
