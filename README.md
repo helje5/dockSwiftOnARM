@@ -40,42 +40,14 @@ file .build/debug/helloworld
 
 What we are going to do is build a Swift 3.1.1 cross compilation toolchain
 for ARM Ubuntu Xenial.
+Note that we are going to use the Swift 4 package manager, but the Swift 3.1
+compiler (because Swift 4 on Raspi is not in shape yet).
 
-### Step 1: Install recent Swift Snapshot
+Requirements:
+- Xcode 9 or later (http://developer.apple.com/)
+- a Raspi 3 w/ Ubuntu [xyz]
 
-To do this, we need to install a recent version of Swift Package Manager.
-One containing the required support for 'destinations'.
-And the easiest way to do this, is to install a recent 
-[Swift snapshot](https://swift.org/download/#snapshots).
-We tried `swift-DEVELOPMENT-SNAPSHOT-2017-05-09-a`,
-[Download](https://swift.org/builds/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2017-05-09-a/swift-DEVELOPMENT-SNAPSHOT-2017-05-09-a-osx.pkg)
-the Xcode package and install it on your Mac.
-
-*Note*: Snapshots require macOS 10.12, they do not run on macOS 10.11.
-
-*Note*: We are indeed building a 3.1.1 toolchain! We are just using the
-        Swift Package Manager from the snapshot.
-
-The next step is to enable the Swift tools from that snapshot. I use 
-[swiftenv](https://swiftenv.fuller.li/en/latest/installation.html#via-homebrew)
-for that, if you don't have it:
-
-```
-brew install kylef/formulae/swiftenv
-echo 'if which swiftenv > /dev/null; then eval "$(swiftenv init -)"; fi' >> ~/.bash_profile
-eval "$(swiftenv init -)"
-```
-
-And then enable the snapshot (use `swiftenv versions` to list the ones you
-have available):
-
-```
-swiftenv global DEVELOPMENT-SNAPSHOT-2017-05-09-a
-```
-
-OK, good to go :-)
-
-### Step 2: Build Toolchain using Script
+### Build Toolchain using Script
 
 First download our script and make it executable:
 [build_rpi_ubuntu_cross_compilation_toolchain](https://raw.githubusercontent.com/helje5/dockSwiftOnARM/master/toolchain/build_rpi_ubuntu_cross_compilation_toolchain),
