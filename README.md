@@ -46,6 +46,9 @@ Requirements:
 - Xcode 9 or later (http://developer.apple.com/)
 - a Raspi 3 w/ Ubuntu Xenial
 
+Recommended:
+- [Docker for Mac](https://docs.docker.com/docker-for-mac/install/)
+
 ### Build Toolchain using Script
 
 First download our script and make it executable:
@@ -70,7 +73,8 @@ curl -o /tmp/swift-3.1.1-armv7l-ubuntu16.04.tar.gz https://cloud.sersoft.de/next
 curl -o /tmp/swift-3.1.1-RELEASE-osx.pkg https://swift.org/builds/swift-3.1.1-release/xcode/swift-3.1.1-RELEASE/swift-3.1.1-RELEASE-osx.pkg
 ```
 Those are a little heavy (~400 MB), so grab a 🍺 or 🍻.
-Once they are available, build the actual toolchain using the script:
+Once they are available, build the actual toolchain using the script
+(it will take a minute or two to build through the dependencies):
 
 ```
 pushd /tmp
@@ -88,7 +92,7 @@ OK, your cross compilation toolchain for Raspi Ubuntu Xenial is now ready to be 
  - SwiftPM destination.json: /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
 ```
 
-### Step 3: Use the Toolchain
+### Use the Toolchain
 
 Lets create a simple `helloworld` tool first:
 
@@ -219,6 +223,8 @@ and [ASCII Cows](https://itunes.apple.com/de/app/ascii-cows/id1176152684).
   and can produce binaries for all supported targets! (didn't know that)
 - To trace filesystem calls on macOS you can use `fs_usage`, e.g.:
   `sudo fs_usage -w -f pathname swift` (I only knew `strace` ;-)
+- `swift build --static-swift-stdlib` does not seem to work. Presumably because
+  the Swift 3 host compiler does not support the necessary flags.
 
 ### Who
 
