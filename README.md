@@ -222,6 +222,11 @@ for iOS.
 
 ## Notes of interest
 
+- `#if swift(>=4.0)` will be true. Seems like a bug in Swift that the version
+  is attached to the driver, not to the active language.
+  In other words: `#if swift` version checks are useless.
+  Same BTW for `#if os` checks in the Package.swift. Those do not account for
+  cross compilers.
 - SwiftPM reuses the `.build` directory even if you call it w/ 
   different destinations. So make sure you clean before building for a
   different architecture.
