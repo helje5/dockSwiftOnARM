@@ -16,7 +16,6 @@ to
 Johannes also provided 
 [a script](https://github.com/apple/swift-package-manager/blob/master/Utilities/build_ubuntu_cross_compilation_toolchain)
 which shows how to build an Ubuntu toolchain for x86-64.
-
 So what we did is take that script and make it produce a Swift 3.1.1 cross 
 compiler toolchain for the Raspberry Pi (armhf) Ubuntu Xenial port.
 
@@ -45,24 +44,22 @@ compiler (because Swift 4 on Raspi is not in shape yet).
 
 Requirements:
 - Xcode 9 or later (http://developer.apple.com/)
-- a Raspi 3 w/ Ubuntu [xyz]
+- a Raspi 3 w/ Ubuntu Xenial
 
 ### Build Toolchain using Script
 
 First download our script and make it executable:
-[build_rpi_ubuntu_cross_compilation_toolchain](https://raw.githubusercontent.com/helje5/dockSwiftOnARM/master/toolchain/build_rpi_ubuntu_cross_compilation_toolchain),
+[build_rpi_ubuntu_cross_compilation_toolchain](https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/master/build_rpi_ubuntu_cross_compilation_toolchain),
 e.g. like:
 
 ```
 pushd /tmp
-curl https://raw.githubusercontent.com/helje5/dockSwiftOnARM/master/toolchain/build_rpi_ubuntu_cross_compilation_toolchain \
+curl https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/master/build_rpi_ubuntu_cross_compilation_toolchain \
   | sed "s/$(printf '\r')\$//" \
   > build_rpi_ubuntu_cross_compilation_toolchain
 chmod +x build_rpi_ubuntu_cross_compilation_toolchain
 ```
 
-You can just call the script and it'll give you instructions, but let's just
-go ahead.
 Next step is to download Swift 3.1.1 tarballs. 
 We need the macOS pkg for the host compiler and a Raspberry Pi tarball for the
 Swift runtime. We use the one provided by Florian Friedrich for the latter:
