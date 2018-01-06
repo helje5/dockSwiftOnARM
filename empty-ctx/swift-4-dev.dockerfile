@@ -7,14 +7,15 @@
 # To build:
 #
 #   git clone https://github.com/swiftdocker/docker-swift.git
-#   cd docker-swift
-#   docker build -t helje5/swift4-test:latest -f Dockerfile .
+#   cd docker-swift/4.0
+#   docker build -t helje5/swift4-test:latest \
+#                -t helje5/swift4-test:4.0.3 -f Dockerfile .
 #
-#	  docker build -t helje5/swift-dev:latest -t helje5/swift-dev:4.0.0 \
-#		       -f empty-ctx/swift-4-dev.dockerfile \
-#		       empty-ctx
+#   docker build -t helje5/swift-dev:latest -t helje5/swift-dev:4.0.0 \
+#  	         -f empty-ctx/swift-4-dev.dockerfile \
+#		    empty-ctx
 # 
-FROM helje5/swift4-test:latest
+# FROM helje5/swift4-test:latest
 # FROM swift:latest
 
 LABEL maintainer "Helge Heß <me@helgehess.eu>"
