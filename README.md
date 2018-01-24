@@ -246,9 +246,47 @@ Brought to you by
 [The Always Right Institute](http://www.alwaysrightinstitute.com)
 and
 [ZeeZide](http://zeezide.de).
-We like feedback, GitHub stars, cool contract work,
+We like 
+[feedback](https://twitter.com/ar_institute), 
+GitHub stars, 
+cool [contract work](http://zeezide.com/en/services/services.html),
 presumably any form of praise you can think of.
 We don't like people who are wrong.
+
+<table width="100%" border="0">
+  <tr>
+    <td align="center" width="20%">
+      <a href="http://apacheexpress.io"
+        ><img src="http://zeezide.com/img/ApexIcon128.png" width="64" height="64" /></a>
+    	<br />
+    	ApacheExpress
+    </td>
+    <td align="center" width="20%">
+      <a href="http://mod-swift.org"
+        ><img src="http://zeezide.com/img/mod_swift-128x128.png" width="64" height="64" /></a>
+    	<br />
+    	mod_swift
+    </td>
+    <td align="center" width="20%">
+      <a href="http://zeeql.io"
+        ><img src="http://zeezide.com/img/ZeeQLIconQL128.png" width="64" height="64" /></a>
+      <br />
+      ZeeQL
+    </td>
+    <td align="center" width="20%">
+      <a href="http://noze.io"
+        ><img src="https://pbs.twimg.com/profile_images/725354235056017409/poiNAOlB_400x400.jpg" width="64" height="64" /></a>
+      <br />
+      Noze.io
+    </td>
+    <td align="center" width="20%">
+      <a href="https://github.com/ZeeZide/UXKit"
+        ><img src="http://zeezide.com/img/UXKitIcon1024.png" width="64" height="64" /></a>
+      <br />
+      UXKit
+    </td>
+  </tr>
+</table>
 
 There is the [swift-arm](https://slackpass.io/swift-arm) Slack channel
 if you have questions about running Swift on ARM/Raspberry Pi.
