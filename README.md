@@ -97,3 +97,6 @@ We don't like people who are wrong.
     </td>
   </tr>
 </table>
+
+There is the [swift-arm](https://slackpass.io/swift-arm) Slack channel
+if you have questions about running Swift on ARM/Raspberry Pi.
