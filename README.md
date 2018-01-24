@@ -13,8 +13,8 @@ Inspired by
 [uraimo/buildSwiftOnARM](https://github.com/uraimo/buildSwiftOnARM).
 
 Also note the companion project:
-[swift-mac2arm-x-compile-toolchain](https://github.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain)
-- a cross compiler toolchain which allows you to build Raspi Swift binaries
+[swift-mac2arm-x-compile-toolchain](https://github.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain),
+a cross compiler toolchain which allows you to build Raspi Swift binaries
 on macOS (and the reverse for the fun of it!).
 
 ### Running Swift w/ Docker on macOS
