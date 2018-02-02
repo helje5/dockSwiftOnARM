@@ -17,6 +17,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update
 
 # Funny: libcurl3 provies libcurl.so.4 :-)
+# Maybe libpython3.5 makes libpython2.7 obsolete?
 RUN apt-get install -y \
   git           \
   libedit2      \
