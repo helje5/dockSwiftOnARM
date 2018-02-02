@@ -5,6 +5,21 @@ all : build-rpi-swift-31 build-rpi-swift-31-dev
 
 PACKAGE_TARGET_DIR=/tmp
 
+# --------------------------- 4.1.x
+
+build-rpi-swift-41 :
+	time docker build -t helje5/rpi-swift:4.1.alpha1 \
+		     -f rpi-swift-4.1.x-uraimo-ctx/rpi-ubuntu-swift-4.1.x.dockerfile \
+		     rpi-swift-4.1.x-uraimo-ctx
+	docker images | grep helje5
+
+build-rpi-swift-41-dev : 
+	time docker build \
+	             -t helje5/rpi-swift-dev:4.1.alpha1  \
+		     -f empty-ctx/rpi-swift-4.1.alpha1-dev.dockerfile \
+		     empty-ctx
+	docker images | grep helje5
+	
 # --------------------------- 4.0.x
 
 build-rpi-swift-40 :
