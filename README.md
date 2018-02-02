@@ -113,7 +113,10 @@ Linking ./.build/arm-linux-gnueabihf/debug/helloworld
 Check whether it actually produced an ARM binary:
 ```
 file .build/debug/helloworld
-.build/debug/helloworld: ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, with debug_info, not stripped
+.build/debug/helloworld: ELF 32-bit LSB shared object, ARM, \
+  EABI5 version 1 (SYSV), dynamically linked, \
+  interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, \
+  with debug_info, not stripped
 ```
 
 Excellent! It worked. Now either copy your binary to a Raspi or test it using
@@ -146,7 +149,7 @@ simple ARM binaries without an actual Raspberry Pi.
 
 ```
 docker run --rm --tty -i -v "$PWD/.build/debug/:/home/swift" \
-  helje5/rpi-swift:3.1.1 \
+  helje5/rpi-swift:4.1.alpha1 \
   ./helloworld
 ```
 
@@ -187,17 +190,28 @@ swift build \
   --destination /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
 Fetching https://github.com/AlwaysRightInstitute/cows.git
 Cloning https://github.com/AlwaysRightInstitute/cows.git
-Resolving https://github.com/AlwaysRightInstitute/cows.git at 1.0.1
+Resolving https://github.com/AlwaysRightInstitute/cows.git at 1.0.2
 Compile Swift Module 'cows' (3 sources)
 Compile Swift Module 'vaca' (1 sources)
 Linking ./.build/debug/vaca
+```
+
+*2018-02-02*: Currently fails with that, presumably a 4.1 compiler issue:
+```
+Compile Swift Module 'cows' (3 sources)
+/private/tmp/vaca/.build/checkouts/cows.git--2440465979168175218/Sources/UniqueRandomArray.swift:36:8: error: value of type '[T]' has no member 'isEmpty'
+    if remainingItems.isEmpty {
+       ^~~~~~~~~~~~~~ ~~~~~~~
+Swift.Collection:20:16: note: did you mean 'isEmpty'?
+    public var isEmpty: Bool { get }
+               ^
 ```
 
 And you get the most awesome Swift tool:
 
 ```
 docker run --rm --tty -i -v "$PWD/.build/debug/:/home/swift" \
-           helje5/rpi-swift:3.1.1 ./vaca
+           helje5/rpi-swift:4.1.alpha1 ./vaca
    (___)
    (o o)
   __\_/__
@@ -255,6 +269,9 @@ cool [contract work](http://zeezide.com/en/services/services.html),
 presumably any form of praise you can think of.
 We don't like people who are wrong.
 
+There is the [swift-arm](https://slackpass.io/swift-arm) Slack channel
+if you have questions about running Swift on ARM/Raspberry Pi.
+
 <table width="100%" border="0">
   <tr>
     <td align="center" width="20%">
@@ -289,6 +306,3 @@ We don't like people who are wrong.
     </td>
   </tr>
 </table>
-
-There is the [swift-arm](https://slackpass.io/swift-arm) Slack channel
-if you have questions about running Swift on ARM/Raspberry Pi.
