@@ -3,7 +3,7 @@
        align="right" width="180" height="180" />
 </h2>
 
-![Swift3](https://img.shields.io/badge/swift-3-blue.svg)
+![Swift4](https://img.shields.io/badge/swift-4-blue.svg)
 ![tuxOS](https://img.shields.io/badge/os-Xenial-green.svg?style=flat)
 ![ARM](https://img.shields.io/badge/cpu-ARM-red.svg?style=flat)
 
@@ -37,10 +37,11 @@ file .build/debug/helloworld
 
 ## Building the ARM toolchain
 
-What we are going to do is build a Swift 3.1.1 cross compilation toolchain
+What we are going to do is build a Swift 4.1-alpha cross compilation toolchain
 for ARM Ubuntu Xenial.
-Note that we are going to use the Swift 4 package manager, but the Swift 3.1
-compiler (because Swift 4 on Raspi is not in shape yet).
+Note that we are going to use the Swift 4 package manager, but the Swift 4.1
+compiler (because Swift 4.0 on Raspi has major issues, 4.1 compiles though
+w/o SPM).
 
 Requirements:
 - Xcode 9 or later (http://developer.apple.com/)
@@ -63,16 +64,16 @@ curl https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-comp
 chmod +x build_rpi_ubuntu_cross_compilation_toolchain
 ```
 
-Next step is to download Swift 3.1.1 tarballs. 
+Next step is to download Swift 4.1 tarballs. 
 We need the macOS pkg for the host compiler and a Raspberry Pi tarball for the
 Swift runtime. We use the one provided by Florian Friedrich for the latter:
 
 ```
 pushd /tmp
-curl -o /tmp/swift-3.1.1-armv7l-ubuntu16.04.tar.gz https://cloud.sersoft.de/nextcloud/index.php/s/0qty8wJxlgfVCcx/download
-curl -o /tmp/swift-3.1.1-RELEASE-osx.pkg https://swift.org/builds/swift-3.1.1-release/xcode/swift-3.1.1-RELEASE/swift-3.1.1-RELEASE-osx.pkg
+curl -L -o /tmp/swift-4.1.alpha-armv7l-ubuntu16.04.tar.gz https://www.dropbox.com/s/403lkj84w0ifcye/raspi-swift-4.1-branch_nospm.tgz?dl=1
+curl -o /tmp/swift-4.1.alpha-osx.pkg https://swift.org/builds/swift-4.1-branch/xcode/swift-4.1-DEVELOPMENT-SNAPSHOT-2018-02-01-a/swift-4.1-DEVELOPMENT-SNAPSHOT-2018-02-01-a-osx.pkg
 ```
-Those are a little heavy (~400 MB), so grab a 🍺 or 🍻.
+Those are a little heavy (~500 MB), so grab a 🍺 or 🍻.
 Once they are available, build the actual toolchain using the script
 (it will take a minute or two to build through the dependencies):
 
@@ -80,8 +81,8 @@ Once they are available, build the actual toolchain using the script
 pushd /tmp
 ./build_rpi_ubuntu_cross_compilation_toolchain \
   /tmp/ \
-  /tmp/swift-3.1.1-RELEASE-osx.pkg \
-  /tmp/swift-3.1.1-armv7l-ubuntu16.04.tar.gz
+  /tmp/swift-4.1.alpha-osx.pkg \
+  /tmp/swift-4.1.alpha-armv7l-ubuntu16.04.tar.gz
 ```
 
 If everything worked fine, it'll end like that:
@@ -91,6 +92,7 @@ OK, your cross compilation toolchain for Raspi Ubuntu Xenial is now ready to be 
  - toolchain: /tmp/cross-toolchain/swift.xctoolchain
  - SwiftPM destination.json: /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
 ```
+
 
 ### Use the Toolchain
 
@@ -105,13 +107,13 @@ swift build --destination /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.jso
 Which gives:
 ```
 Compile Swift Module 'helloworld' (1 sources)
-Linking ./.build/debug/helloworld
+Linking ./.build/arm-linux-gnueabihf/debug/helloworld
 ```
 
 Check whether it actually produced an ARM binary:
 ```
 file .build/debug/helloworld
-.build/debug/helloworld: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, not stripped
+.build/debug/helloworld: ELF 32-bit LSB shared object, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, with debug_info, not stripped
 ```
 
 Excellent! It worked. Now either copy your binary to a Raspi or test it using
