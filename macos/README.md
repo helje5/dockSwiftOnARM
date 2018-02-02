@@ -7,6 +7,9 @@
 ![tuxOS](https://img.shields.io/badge/os-Xenial-green.svg?style=flat)
 ![ARM](https://img.shields.io/badge/cpu-ARM-red.svg?style=flat)
 
+**NOTE**: This has been moved into its own repository:
+[swift-arm2mac-x-compile-toolchain](https://github.com/AlwaysRightInstitute/swift-arm2mac-x-compile-toolchain).
+
 So, I got that new late-2016 MacBook Pro (yes, the touchbar is aweful,
 except for the 
 [Lemmings](https://github.com/erikolsson/Touch-Bar-Lemmings),
