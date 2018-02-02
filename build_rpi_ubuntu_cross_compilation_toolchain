@@ -201,7 +201,7 @@ cd "$tmp"
 tar -xf "$binutils_pkg"
 cd binutils-*
 ./configure --enable-gold
-make
+make -j
 cd gold
 ./configure --enable-gold
 make -j
@@ -241,7 +241,8 @@ rsync -a "$tmp/usr/lib/swift/CoreFoundation" "$linux_sdk_name/usr/include/"
 rm -rf "$tmp"
 
 curl --fail -s -o "$linux_sdk_name/usr/include/Block.h" "$blocks_h_url"
-ln -s swift "$xc_tc_name/usr/bin/swift-autolink-extract"
+# this exists
+#ln -s swift "$xc_tc_name/usr/bin/swift-autolink-extract"
 ln -s "$dest/$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/libdispatch.so" "$linux_sdk_name/usr/lib/"
 ln -s "$dest/$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/libdispatch.a" "$linux_sdk_name/usr/lib/"
 
