@@ -21,9 +21,12 @@ RUN apt-get install -y \
   git           \
   libedit2      \
   libpython2.7 libcurl3 libxml2 libicu55 \
-  libc6-dev
+  libc6-dev	\
+  libatomic1	\
+  libpython3.5
 
-ADD $TARBALL /usr/
+# Uraimo's tarball starts at /
+ADD $TARBALL /
 
 RUN bash -c "echo '/usr/lib/swift/linux' > /etc/ld.so.conf.d/swift.conf;\
              echo '/usr/lib/swift/clang/lib/linux' >> /etc/ld.so.conf.d/swift.conf;\
