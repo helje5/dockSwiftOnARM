@@ -1,6 +1,6 @@
 # Dockerfile
 #
-# docker run -i --tty --rm helje5/swift-dev:4.0.0
+# docker run -i --tty --rm helje5/swift-dev:4.0.3
 #
 # This is an x86_64 image for Swift w/ Emacs and such installed.
 #
@@ -48,7 +48,8 @@ RUN apt-get update && apt-get install -y \
   libedit-dev \
   libxml2 \
   wget sudo gosu \
-  clang-$CLANG_VERSION libc6-dev libxml2-dev bison lsb-release gdb
+  clang-$CLANG_VERSION libc6-dev libxml2-dev bison lsb-release gdb \
+  libsqlite3-dev
 
 RUN bash -c "update-alternatives --quiet --install /usr/bin/clang \
                clang   /usr/bin/clang-$CLANG_VERSION   100;\
