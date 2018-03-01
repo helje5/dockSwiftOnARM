@@ -58,7 +58,7 @@ e.g. like:
 
 ```
 pushd /tmp
-curl https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/master/build_rpi_ubuntu_cross_compilation_toolchain \
+curl https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/swift-4.1-pre1/build_rpi_ubuntu_cross_compilation_toolchain \
   | sed "s/$(printf '\r')\$//" \
   > build_rpi_ubuntu_cross_compilation_toolchain
 chmod +x build_rpi_ubuntu_cross_compilation_toolchain
