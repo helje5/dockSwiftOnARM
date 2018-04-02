@@ -35,16 +35,19 @@ file .build/debug/helloworld
 (We also have a toolchain kit which does the reverse, compile macOS Swift 
  binaries on a Raspberry Pi: [macos](macos/README.md))
 
+
+**NOTE**: This does not work yet w/ Swift SPM 4.1. 4.1 seems to have hardcoded!
+          target names in the package manager.
+
 ## Building the ARM toolchain
 
-What we are going to do is build a Swift 4.1-alpha cross compilation toolchain
+What we are going to do is build a Swift 4.1 cross compilation toolchain
 for ARM Ubuntu Xenial.
-Note that we are going to use the Swift 4 package manager, but the Swift 4.1
-compiler (because Swift 4.0 on Raspi has major issues, 4.1 compiles though
-w/o SPM).
+Here we are going to use the Swift 4.1 package manager and the Swift 4.1
+compiler (Swift 4.1 on Raspi compiles though w/o SPM).
 
 Requirements:
-- Xcode 9 or later (http://developer.apple.com/)
+- Xcode 9.3 or later (http://developer.apple.com/)
 - a Raspi 3 w/ Ubuntu Xenial
 
 Recommended:
@@ -66,12 +69,13 @@ chmod +x build_rpi_ubuntu_cross_compilation_toolchain
 
 Next step is to download Swift 4.1 tarballs. 
 We need the macOS pkg for the host compiler and a Raspberry Pi tarball for the
-Swift runtime. We use the one provided by Florian Friedrich for the latter:
+Swift runtime.
+On Raspi we are using the 4.1-nospm build by Marco Chini (thanks!):
 
 ```
 pushd /tmp
-curl -L -o /tmp/swift-4.1.alpha-armv7l-ubuntu16.04.tar.gz https://www.dropbox.com/s/403lkj84w0ifcye/raspi-swift-4.1-branch_nospm.tgz?dl=1
-curl -o /tmp/swift-4.1.alpha-osx.pkg https://swift.org/builds/swift-4.1-branch/xcode/swift-4.1-DEVELOPMENT-SNAPSHOT-2018-02-01-a/swift-4.1-DEVELOPMENT-SNAPSHOT-2018-02-01-a-osx.pkg
+curl -L -o swift-4.1-armv7l-ubuntu16.04.tar.gz https://www.dropbox.com/s/yauj3tyyh90cl05/swift-4.1-release-NOSPM-ARMV7.tgz?dl=1
+curl -o swift-4.1-osx.pkg https://swift.org/builds/swift-4.1-release/xcode/swift-4.1-RELEASE/swift-4.1-RELEASE-osx.pkg
 ```
 Those are a little heavy (~500 MB), so grab a 🍺 or 🍻.
 Once they are available, build the actual toolchain using the script
@@ -80,9 +84,9 @@ Once they are available, build the actual toolchain using the script
 ```
 pushd /tmp
 ./build_rpi_ubuntu_cross_compilation_toolchain \
-  /tmp/ \
-  /tmp/swift-4.1.alpha-osx.pkg \
-  /tmp/swift-4.1.alpha-armv7l-ubuntu16.04.tar.gz
+  . \
+  swift-4.1-osx.pkg \
+  swift-4.1-armv7l-ubuntu16.04.tar.gz
 ```
 
 If everything worked fine, it'll end like that:
