@@ -15,7 +15,7 @@ ARG TARBALL=swift-4.1-release-NOSPM-ARMV7-ubuntu-16.04-chnmrc.tgz
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update
-RUN apt-get upgrade
+RUN apt-get upgrade -y
 
 # Funny: libcurl3 provies libcurl.so.4 :-)
 # Maybe libpython3.5 makes libpython2.7 obsolete?
