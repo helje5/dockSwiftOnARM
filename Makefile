@@ -8,12 +8,25 @@ PACKAGE_TARGET_DIR=/tmp
 # --------------------------- 4.1.x
 
 build-rpi-swift-41 :
+	time docker build -t helje5/rpi-swift:4.1.0 \
+		     -f rpi-swift-4.1.0-chnmrc-ctx/rpi-ubuntu-swift-4.1.0.dockerfile \
+		     rpi-swift-4.1.0-chnmrc-ctx
+	docker images | grep helje5
+
+build-rpi-swift-41-dev : 
+	time docker build \
+	             -t helje5/rpi-swift-dev:4.1.0  \
+		     -f empty-ctx/rpi-swift-4.1.0-dev.dockerfile \
+		     empty-ctx
+	docker images | grep helje5
+
+build-rpi-swift-41-snap-uraimo :
 	time docker build -t helje5/rpi-swift:4.1.alpha1 \
 		     -f rpi-swift-4.1.x-uraimo-ctx/rpi-ubuntu-swift-4.1.x.dockerfile \
 		     rpi-swift-4.1.x-uraimo-ctx
 	docker images | grep helje5
 
-build-rpi-swift-41-dev : 
+build-rpi-swift-41-snap-uraimo-dev : 
 	time docker build \
 	             -t helje5/rpi-swift-dev:4.1.alpha1  \
 		     -f empty-ctx/rpi-swift-4.1.alpha1-dev.dockerfile \
