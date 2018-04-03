@@ -27,6 +27,17 @@ RUN apt-get install -y \
   libatomic1	\
   libpython3.5
 
+
+# Chnmrc's tarball needs glibc 2.27
+RUN apt-get install -y gawk texinfo
+ADD http://ftp.gnu.org/gnu/glibc/glibc-2.27.tar.bz2 /tmp/glibc-2.27
+RUN mkdir /tmp/glibc-2.27-build
+WORKDIR /tmp/glibc-2.27-build
+RUN ../glibc-2.27/glibc-2.27/configure --prefix=/usr
+RUN make -s -j
+RUN make install
+
+
 # Chnmrc's tarball starts at /
 ADD $TARBALL /
 
