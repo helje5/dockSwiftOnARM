@@ -30,24 +30,9 @@ RUN apt-get install -y \
 
 # Chnmrc's tarball needs glibc 2.27
 
-ARG CLANG_VERSION=3.8
-
-RUN apt-get install -y \
-  gawk texinfo \
-  apt-utils \
-  clang-$CLANG_VERSION libc6-dev libxml2-dev bison lsb-release \
-  autoconf libtool pkg-config
-  
-ADD http://ftp.gnu.org/gnu/glibc/glibc-2.27.tar.gz /tmp
-WORKDIR /tmp
-RUN tar zxf glibc-2.27.tar.gz
-RUN rm glibc-2.27.tar.gz
-RUN mkdir glibc-2.27-build
-WORKDIR /tmp/glibc-2.27-build
-RUN ../glibc-2.27/configure --prefix=/usr
-RUN make -j
-RUN make install
-RUN rm -rf /tmp/glibc*
+ADD http://cdn-fastly.deb.debian.org/debian/pool/main/g/glibc/libc6_2.27-3_armhf.deb /tmp/
+RUN apt install -y /tmp/libc6_2.27-3_armhf.deb || true
+RUN rm -f /tmp/libc6_2.27-3_armhf.deb
 
 
 # Chnmrc's tarball starts at /
