@@ -26,10 +26,17 @@ RUN bash -c "\
   rmdir /usr/lib/python2.7/site-packages.swift \
 "
 
+# special preps for upgraded glibc
+# libc6-dev 
+# Chnmrc's tarball needs glibc 2.27
+ADD http://cdn-fastly.deb.debian.org/debian/pool/main/g/glibc/libc6-dev_2.27-3_armhf.deb /tmp/
+ADD http://cdn-fastly.deb.debian.org/debian/pool/main/g/glibc/libc-dev-bin_2.27-3_armhf.deb /tmp/
+RUN dpkg -i /tmp/libc-dev-bin_2.27-3_armhf.deb /tmp/libc6-dev_2.27-3_armhf.deb
+
 RUN apt-get install -y \
   python                      \
   \
-  clang-$CLANG_VERSION libc6-dev libxml2-dev bison lsb-release gdb \
+  clang-$CLANG_VERSION libxml2-dev bison lsb-release gdb \
   \
   libicu-dev                  \
   autoconf libtool pkg-config \

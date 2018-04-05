@@ -29,10 +29,9 @@ RUN apt-get install -y \
 
 
 # Chnmrc's tarball needs glibc 2.27
-
 ADD http://cdn-fastly.deb.debian.org/debian/pool/main/g/glibc/libc6_2.27-3_armhf.deb /tmp/
 ADD http://cdn-fastly.deb.debian.org/debian/pool/main/g/glibc/libc-bin_2.27-3_armhf.deb /tmp/
-RUN dpkg --auto-deconfigure -i libc6_2.27-3_armhf.deb libc-bin_2.27-3_armhf.deb || true
+RUN dpkg --auto-deconfigure -i /tmp/libc6_2.27-3_armhf.deb /tmp/libc-bin_2.27-3_armhf.deb || true
 RUN apt-get install -y -f
 RUN rm -f /tmp/libc6*.deb
 
