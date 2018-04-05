@@ -27,6 +27,11 @@ Swift version 3.1 (swift-3.1-RELEASE)
 Target: armv7-unknown-linux-gnueabihf
 ```
 
+There is also an image which includes Emacs, vi, etc:
+```shell
+docker run -it --rm  helje5/rpi-swift-dev bash
+```
+
 Note that the REPL doesn't work on the Raspi.
 
 DockerHub:
@@ -36,6 +41,14 @@ DockerHub:
   
 Want to run Server Side Swift on a Raspberry Pi? Use
 [mod_swift](http://mod-swift.org/raspberrypi/).
+
+#### Versions
+
+As of 2018-04-05 the latest working Swift version for Raspi is Swift 3.1.1.
+
+We do provide a docker image for 4.1.0. It basically works, but isn't stable
+(e.g. crashes on some operations). It also doesn't include the Swift Package
+Manager.
 
 ### Setup Raspi w/ Docker and remote-control it from macOS
 
