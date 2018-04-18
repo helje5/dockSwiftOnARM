@@ -10,7 +10,7 @@ FROM ioft/armhf-ubuntu:16.04
 
 LABEL maintainer "Helge Heß <me@helgehess.eu>"
 
-ARG TARBALL=swift-4.1-release-NOSPM-ARMV7-ubuntu-16.04-chnmrc.tgz
+ARG TARBALL=swift-4.1-RELEASE-ARMV7-GLIBC2.23-chnmrc.tgz
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -26,14 +26,6 @@ RUN apt-get install -y \
   libc6-dev	\
   libatomic1	\
   libpython3.5
-
-
-# Chnmrc's tarball needs glibc 2.27
-ADD http://cdn-fastly.deb.debian.org/debian/pool/main/g/glibc/libc6_2.27-3_armhf.deb /tmp/
-ADD http://cdn-fastly.deb.debian.org/debian/pool/main/g/glibc/libc-bin_2.27-3_armhf.deb /tmp/
-RUN dpkg --auto-deconfigure -i /tmp/libc6_2.27-3_armhf.deb /tmp/libc-bin_2.27-3_armhf.deb || true
-RUN apt-get install -y -f
-RUN rm -f /tmp/libc6*.deb
 
 
 # Chnmrc's tarball starts at /
