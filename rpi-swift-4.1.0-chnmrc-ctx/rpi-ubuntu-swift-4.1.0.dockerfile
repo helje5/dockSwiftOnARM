@@ -35,6 +35,11 @@ COPY dispatch-module.modulemap /usr/lib/swift/dispatch/
 RUN bash -c "ln -sf /usr/lib/swift/dispatch/dispatch-module.modulemap \
                     /usr/lib/swift/dispatch/module.modulemap"
 
+# included in wrong location
+RUN cp /usr/lib/swift/linux/armv7l/Dispatch.swiftdoc \
+       /usr/lib/swift/linux/armv7l/Dispatch.swiftmodule \
+       /usr/lib/swift/linux/armv7/
+
 RUN bash -c "echo '/usr/lib/swift/linux' > /etc/ld.so.conf.d/swift.conf;\
              echo '/usr/lib/swift/clang/lib/linux' >> /etc/ld.so.conf.d/swift.conf;\
              echo '/usr/lib/swift/pm' >> /etc/ld.so.conf.d/swift.conf;\
