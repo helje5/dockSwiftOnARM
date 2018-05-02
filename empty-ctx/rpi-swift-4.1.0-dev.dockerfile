@@ -41,7 +41,10 @@ RUN apt-get install -y \
   curl libcurl4-openssl-dev   \
   libedit-dev                 \
   libxml2                     \
-  wget sudo gosu
+  wget sudo gosu              \
+  zlib1g-dev                  \
+  libsqlite3-dev              \
+  telnet netcat
 
 RUN bash -c "update-alternatives --quiet --install /usr/bin/clang \
                clang   /usr/bin/clang-$CLANG_VERSION   100;\

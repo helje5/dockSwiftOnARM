@@ -10,7 +10,7 @@ FROM ioft/armhf-ubuntu:16.04
 
 LABEL maintainer "Helge Heß <me@helgehess.eu>"
 
-ARG TARBALL=swift-4.1-RELEASE-ARMV7-GLIBC2.23-chnmrc.tgz
+ARG TARBALL=swift-4.1-RELEASE-ARMV7-GLIBC2.23-chnmrc-3.tgz
 
 ENV DEBIAN_FRONTEND noninteractive
 
