@@ -19,10 +19,10 @@ function usage() {
     echo >&2
     echo >&2 "Complete example:"
     echo >&2 "  # Download the Swift binaries for Ubuntu and macOS"
-    echo >&2 "  curl -o ~/Downloads/swift-3.1.1-armv7l-ubuntu16.04.tar.gz https://cloud.sersoft.de/nextcloud/index.php/s/0qty8wJxlgfVCcx/download"
-    echo >&2 "  curl -o ~/Downloads/swift-3.1.1-RELEASE-osx.pkg https://swift.org/builds/swift-3.1.1-release/xcode/swift-3.1.1-RELEASE/swift-3.1.1-RELEASE-osx.pkg"
+    echo >&2 "  curl -L -o ~/Downloads/swift-4.1-armv7l-ubuntu16.04.tar.gz https://www.dropbox.com/s/yauj3tyyh90cl05/swift-4.1-release-NOSPM-ARMV7.tgz?dl=1"
+    echo >&2 "  curl -o ~/Downloads/swift-4.1-osx.pkg https://swift.org/builds/swift-4.1-release/xcode/swift-4.1-RELEASE/swift-4.1-RELEASE-osx.pkg"
     echo >&2 "  # Compile the SDK and toolchain from that"
-    echo >&2 "  $0 /tmp/ ~/Downloads/swift-3.1.1-RELEASE-osx.pkg ~/Downloads/swift-3.1.1-armv7l-ubuntu16.04.tar.gz"
+    echo >&2 "  $0 /tmp/ ~/Downloads/swift-4.1-osx.pkg ~/Downloads/swift-4.1-armv7l-ubuntu16.04.tar.gz"
     echo >&2 "  # Create a test application"
     echo >&2 "  mkdir my-test-app"
     echo >&2 "  cd my-test-app"
