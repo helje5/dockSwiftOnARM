@@ -24,7 +24,7 @@ You can build Raspberry Pi Swift binaries on a Mac. Like this:
 ```
 mkdir helloworld && cd helloworld
 swift package init --type=executable
-swift build --destination /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
+swift build --destination /tmp/cross-toolchain/arm64v8-ubuntu-xenial-destination.json
 file .build/debug/helloworld
 .build/debug/helloworld: ELF 32-bit LSB executable, ARM, 
                          EABI5 version 1 (SYSV), dynamically linked, 
@@ -56,15 +56,15 @@ Recommended:
 ### Build Toolchain using Script
 
 First download our script and make it executable:
-[build_rpi_ubuntu_cross_compilation_toolchain](https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/master/build_rpi_ubuntu_cross_compilation_toolchain),
+[build_arm64v8_ubuntu_cross_compilation_toolchain](https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/swift-4.1-arm64v8/build_arm64v8_ubuntu_cross_compilation_toolchain),
 e.g. like:
 
 ```
 pushd /tmp
-curl https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/swift-4.1-pre1/build_rpi_ubuntu_cross_compilation_toolchain \
+curl https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/swift-4.1-arm64v8/build_arm64v8_ubuntu_cross_compilation_toolchain \
   | sed "s/$(printf '\r')\$//" \
-  > build_rpi_ubuntu_cross_compilation_toolchain
-chmod +x build_rpi_ubuntu_cross_compilation_toolchain
+  > build_arm64v8_ubuntu_cross_compilation_toolchain
+chmod +x build_arm64v8_ubuntu_cross_compilation_toolchain
 ```
 
 Next step is to download Swift 4.1 tarballs. 
@@ -83,7 +83,7 @@ Once they are available, build the actual toolchain using the script
 
 ```
 pushd /tmp
-./build_rpi_ubuntu_cross_compilation_toolchain \
+./build_arm64v8_ubuntu_cross_compilation_toolchain \
   . \
   swift-4.1-osx.pkg \
   swift-4.1-armv7l-ubuntu16.04.tar.gz
@@ -92,9 +92,9 @@ pushd /tmp
 If everything worked fine, it'll end like that:
 ```
 OK, your cross compilation toolchain for Raspi Ubuntu Xenial is now ready to be used
- - SDK: /tmp/cross-toolchain/rpi-ubuntu-xenial.sdk
+ - SDK: /tmp/cross-toolchain/arm64v8-ubuntu-xenial.sdk
  - toolchain: /tmp/cross-toolchain/swift.xctoolchain
- - SwiftPM destination.json: /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
+ - SwiftPM destination.json: /tmp/cross-toolchain/arm64v8-ubuntu-xenial-destination.json
 ```
 
 
@@ -105,7 +105,7 @@ Lets create a simple `helloworld` tool first:
 ```
 mkdir helloworld && cd helloworld
 swift package init --type=executable
-swift build --destination /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
+swift build --destination /tmp/cross-toolchain/arm64v8-ubuntu-xenial-destination.json
 ```
 
 Which gives:
@@ -127,7 +127,7 @@ Excellent! It worked. Now either copy your binary to a Raspi or test it using
 QEmu as described below.
 
 If you are not using our 
-[Docker image](https://hub.docker.com/r/helje5/rpi-swift/),
+[Docker image](https://hub.docker.com/r/helje5/arm64v8-swift/),
 you may need to setup the `LD_LIBRARY_PATH`, so that the dynamic linker finds
 the Swift runtime. E.g. like that:
 
@@ -153,7 +153,7 @@ simple ARM binaries without an actual Raspberry Pi.
 
 ```
 docker run --rm --tty -i -v "$PWD/.build/debug/:/home/swift" \
-  helje5/rpi-swift:4.1.alpha1 \
+  helje5/arm64v8-swift:4.1.0 \
   ./helloworld
 ```
 
@@ -191,7 +191,7 @@ Then build the thing:
 
 ```
 swift build \
-  --destination /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json
+  --destination /tmp/cross-toolchain/arm64v8-ubuntu-xenial-destination.json
 Fetching https://github.com/AlwaysRightInstitute/cows.git
 Cloning https://github.com/AlwaysRightInstitute/cows.git
 Resolving https://github.com/AlwaysRightInstitute/cows.git at 1.0.2
@@ -215,7 +215,7 @@ And you get the most awesome Swift tool:
 
 ```
 docker run --rm --tty -i -v "$PWD/.build/debug/:/home/swift" \
-           helje5/rpi-swift:4.1.alpha1 ./vaca
+           helje5/arm64v8-swift:4.1.0 ./vaca
    (___)
    (o o)
   __\_/__
