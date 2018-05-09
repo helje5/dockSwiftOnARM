@@ -10,7 +10,7 @@ set -eu
 
 export PATH="/bin:/usr/bin"
 
-export TC_TARGET="arm-linux-gnueabihf"
+export TC_TARGET="aarch64-linux-gnu"
 
 function usage() {
     echo >&2 "Usage: $0 SWIFT-FOR-MACOS.pkg SWIFT-FOR-LINUX.tar.gz"
@@ -28,7 +28,7 @@ function usage() {
     echo >&2 "  cd my-test-app"
     echo >&2 "  swift package init --type=executable"
     echo >&2 "  # Build it for Ubuntu"
-    echo >&2 "  swift build --destination /tmp/cross-toolchain/rpi-ubuntu-xenial-destination.json"
+    echo >&2 "  swift build --destination /tmp/cross-toolchain/arm64v8-ubuntu-xenial-destination.json"
 
 }
 
@@ -104,11 +104,11 @@ test -f "$linux_swift_pkg"
 # config
 blocks_h_url="https://raw.githubusercontent.com/apple/swift-corelibs-libdispatch/master/src/BlocksRuntime/Block.h"
 xc_tc_name="swift.xctoolchain"
-linux_sdk_name="rpi-ubuntu-xenial.sdk"
+linux_sdk_name="arm64v8-ubuntu-xenial.sdk"
 cross_tc_basename="cross-toolchain"
 binutils_pkg_url="https://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz"
 ubuntu_mirror="http://ports.ubuntu.com/ubuntu-ports"
-packages_file="$ubuntu_mirror/dists/xenial/main/binary-armhf/Packages.gz"
+packages_file="$ubuntu_mirror/dists/xenial/main/binary-arm64/Packages.gz"
 pkg_names=( libc6-dev linux-libc-dev libicu55 libgcc-5-dev libicu-dev libc6 libgcc1 libstdc++-5-dev libstdc++6 )
 pkgs=()
 
@@ -252,7 +252,7 @@ fix_glibc_modulemap "$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/armv7/gl
 
 echo "**** emit json"
 
-cat > "$cross_tc_basename/rpi-ubuntu-xenial-destination.json" <<EOF
+cat > "$cross_tc_basename/arm64v8-ubuntu-xenial-destination.json" <<EOF
 {
     "version": 1,
     "sdk": "$(pwd)/$cross_tc_basename/$linux_sdk_name",
@@ -275,4 +275,4 @@ echo
 echo "OK, your cross compilation toolchain for Raspi Ubuntu Xenial is now ready to be used"
 echo " - SDK: $(pwd)/$cross_tc_basename/$linux_sdk_name"
 echo " - toolchain: $(pwd)/$cross_tc_basename/$xc_tc_name"
-echo " - SwiftPM destination.json: $(pwd)/$cross_tc_basename/rpi-ubuntu-xenial-destination.json"
+echo " - SwiftPM destination.json: $(pwd)/$cross_tc_basename/arm64v8-ubuntu-xenial-destination.json"
