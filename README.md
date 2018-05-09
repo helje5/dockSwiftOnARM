@@ -34,6 +34,20 @@ file .build/debug/helloworld
 
 (We also have a toolchain kit which does the reverse, compile macOS Swift 
  binaries on a Raspberry Pi: [macos](macos/README.md))
+ 
+## UPDATE 2018-05-09
+
+The tested and working version is still Swift 3.1 w/ 32-bit Raspi Ubuntu.
+However, Swift 4.1 builds start popping up, so we are working on
+
+1. Swift 4.1 32-bit Raspi - branch [swift-4.1-release](https://github.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/tree/swift-4.1-release)
+2. Swift 4.1 64-bit Raspi - branch [swift-4.1-arm64v8](https://github.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/tree/swift-4.1-arm64v8)
+
+toolchains.
+
+This was blocked because SPM 4.1 b0rked support for custom target triples
+([PR-1546](https://github.com/apple/swift-package-manager/pull/1546)).
+
 
 ## Building the ARM toolchain
 
