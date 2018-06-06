@@ -2,7 +2,7 @@
 #
 # First download the prebuild binaries (~170MB), does NOT contain SPM!:
 #
-#   curl -L -o swift-4.1-release-NOSPM-ARMV7-ubuntu-16.04-chnmrc.tgz https://www.dropbox.com/s/yauj3tyyh90cl05/swift-4.1-release-NOSPM-ARMV7-ubuntu-16.04-chnmrc.tgz?dl=1
+#   curl -L -o swift-4.1-RELEASE-ARMV7-GLIBC2.23-chnmrc-2018-06-06.tgz https://www.dropbox.com/s/yauj3tyyh90cl05/swift-4.1-release-NOSPM-ARMV7-ubuntu-16.04-chnmrc.tgz?dl=1
 #
 # docker run -i --tty --rm helje5/rpi-swift:4.1.0
 # 
@@ -10,7 +10,7 @@ FROM ioft/armhf-ubuntu:16.04
 
 LABEL maintainer "Helge Heß <me@helgehess.eu>"
 
-ARG TARBALL=swift-4.1-RELEASE-ARMV7-GLIBC2.23-chnmrc-3.tgz
+ARG TARBALL=swift-4.1-RELEASE-ARMV7-GLIBC2.23-chnmrc-2018-06-06.tgz
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -30,15 +30,6 @@ RUN apt-get install -y \
 
 # Chnmrc's tarball starts at /
 ADD $TARBALL /
-
-COPY dispatch-module.modulemap /usr/lib/swift/dispatch/
-RUN bash -c "ln -sf /usr/lib/swift/dispatch/dispatch-module.modulemap \
-                    /usr/lib/swift/dispatch/module.modulemap"
-
-# included in wrong location
-RUN cp /usr/lib/swift/linux/armv7l/Dispatch.swiftdoc \
-       /usr/lib/swift/linux/armv7l/Dispatch.swiftmodule \
-       /usr/lib/swift/linux/armv7/
 
 RUN bash -c "echo '/usr/lib/swift/linux' > /etc/ld.so.conf.d/swift.conf;\
              echo '/usr/lib/swift/clang/lib/linux' >> /etc/ld.so.conf.d/swift.conf;\
