@@ -44,7 +44,9 @@ RUN apt-get install -y \
   wget sudo gosu              \
   zlib1g-dev                  \
   libsqlite3-dev              \
-  telnet netcat
+  telnet netcat               \
+  inetutils-ping dialog       \
+  nfs-common
 
 RUN bash -c "update-alternatives --quiet --install /usr/bin/clang \
                clang   /usr/bin/clang-$CLANG_VERSION   100;\
