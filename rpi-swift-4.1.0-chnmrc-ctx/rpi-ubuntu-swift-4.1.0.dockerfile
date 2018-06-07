@@ -19,13 +19,15 @@ RUN apt-get upgrade -y
 
 # Funny: libcurl3 provies libcurl.so.4 :-)
 # Maybe libpython3.5 makes libpython2.7 obsolete?
+# libcurl3-nss is required by latest chnmrc drop
 RUN apt-get install -y \
   git           \
   libedit2      \
   libpython2.7 libcurl3 libxml2 libicu55 \
   libc6-dev	\
   libatomic1	\
-  libpython3.5
+  libpython3.5 \
+  libcurl3-nss
 
 
 # Chnmrc's tarball starts at /
@@ -36,7 +38,7 @@ RUN bash -c "echo '/usr/lib/swift/linux' > /etc/ld.so.conf.d/swift.conf;\
              echo '/usr/lib/swift/pm' >> /etc/ld.so.conf.d/swift.conf;\
              ldconfig"
 
-RUN useradd --create-home --shell /bin/bash swift
+RUN useradd -u 501 --create-home --shell /bin/bash swift
 
 USER swift
 WORKDIR /home/swift

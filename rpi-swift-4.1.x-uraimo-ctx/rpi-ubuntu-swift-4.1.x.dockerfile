@@ -34,7 +34,7 @@ RUN bash -c "echo '/usr/lib/swift/linux' > /etc/ld.so.conf.d/swift.conf;\
              echo '/usr/lib/swift/pm' >> /etc/ld.so.conf.d/swift.conf;\
              ldconfig"
 
-RUN useradd --create-home --shell /bin/bash swift
+RUN useradd -u 501 --create-home --shell /bin/bash swift
 
 USER swift
 WORKDIR /home/swift
