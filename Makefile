@@ -5,6 +5,20 @@ all : build-rpi-swift-31 build-rpi-swift-31-dev
 
 PACKAGE_TARGET_DIR=/tmp
 
+# --------------------------- 4.2.x
+
+build-arm64-swift-42 :
+	time docker build -t helje5/arm64v8-swift:4.2.1 \
+	     -f arm64v8-4.2.1-futurejones/arm64v8-ubuntu-swift-4.2.1.dockerfile \
+	     ./empty-ctx
+	docker images | grep helje5/arm64v8
+
+build-arm64-swift-42-dev :
+	time docker build -t helje5/arm64v8-swift-dev:4.2.1 \
+	     -f empty-ctx/arm64v8-swift-4.2.1-dev.dockerfile \
+	     ./empty-ctx
+	docker images | grep helje5/arm64v8
+
 # --------------------------- 4.1.x
 
 build-arm64-swift-41 :
