@@ -35,6 +35,16 @@ file .build/debug/helloworld
 (We also have a toolchain kit which does the reverse, compile macOS Swift 
  binaries on a Raspberry Pi: [macos](macos/README.md))
  
+
+## UPDATE 2019-01-15
+
+Swift 4.2 Raspi builds for arm64v8 are now available, and 5.0dev builds too.
+Also
+[PR-1546](https://github.com/apple/swift-package-manager/pull/1546)
+got merged, not sure in which version though.
+
+TODO: Check whether we can get a 4.2.1 X working.
+
  
 ## UPDATE 2018-05-09
 
