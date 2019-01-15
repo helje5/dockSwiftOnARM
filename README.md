@@ -7,7 +7,7 @@
 ![tuxOS](https://img.shields.io/badge/os-Bionic-green.svg?style=flat)
 ![ARM](https://img.shields.io/badge/cpu-ARM-red.svg?style=flat)
 
-End of April
+End of April 2017
 [Johannes Weiß](https://github.com/weissi)
 added
 [custom toolchain support](https://github.com/apple/swift-package-manager/pull/1098)
@@ -26,10 +26,10 @@ mkdir helloworld && cd helloworld
 swift package init --type=executable
 swift build --destination /tmp/cross-toolchain/arm64v8-ubuntu-bionic-destination.json
 file .build/debug/helloworld
-.build/debug/helloworld: ELF 32-bit LSB executable, ARM, 
-                         EABI5 version 1 (SYSV), dynamically linked, 
-                         interpreter /lib/ld-linux-armhf.so.3, 
-                         for GNU/Linux 3.2.0, not stripped
+.build/debug/helloworld: ELF 64-bit LSB shared object, ARM aarch64, \
+                         version 1 (SYSV), dynamically linked, \
+                         interpreter /lib/ld-linux-aarch64.so.1, \
+                         for GNU/Linux 3.7.0, with debug_info, not stripped
 ```
 
 (We also have a toolchain kit which does the reverse, compile macOS Swift 
@@ -71,7 +71,7 @@ On Raspi arm64v8 we are using the 4.2 build by @futurejones (thanks!):
 
 ```
 pushd /tmp
-curl -L -o swift-4.2.1-futurejones-ubuntu-bionic.tar.gz https://www.dropbox.com/s/yauj3tyyh90cl05/TODO
+curl -L -o swift-4.2.1-futurejones-ubuntu-bionic.tar.gz https://www.dropbox.com/s/fzaxi1hz18w01rz/swift-4.2.1-futurejones-ubuntu-bionic.tar.gz?dl=1
 curl -o swift-4.2.1-RELEASE-osx.pkg https://swift.org/builds/swift-4.2.1-release/xcode/swift-4.2.1-RELEASE/swift-4.2.1-RELEASE-osx.pkg
 ```
 Those are a little heavy (~500 MB), so grab a 🍺 or 🍻.
