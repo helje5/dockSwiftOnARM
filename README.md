@@ -67,14 +67,14 @@ And it still is, even Swift 4.2 won't ship this.
 
 ## Building the ARM toolchain
 
-What we are going to do is build a Swift 4.1 cross compilation toolchain
-for ARM Ubuntu Xenial.
-Here we are going to use the Swift 4.1 package manager and the Swift 4.1
-compiler (Swift 4.1 on Raspi compiles though w/o SPM).
+What we are going to do is build a Swift 4.2 cross compilation toolchain
+for ARM Ubuntu Bionic.
+Here we are going to use the Swift 4.2 package manager and the Swift 4.2
+compiler.
 
 Requirements:
-- Xcode 9.3 or later (http://developer.apple.com/)
-- a Raspi 3 w/ Ubuntu Xenial
+- Xcode 10 or later (http://developer.apple.com/)
+- a Raspi 3 w/ Ubuntu Bionic
 
 Recommended:
 - [Docker for Mac](https://docs.docker.com/docker-for-mac/install/)
@@ -82,21 +82,21 @@ Recommended:
 ### Build Toolchain using Script
 
 First download our script and make it executable:
-[build_arm64v8_ubuntu_cross_compilation_toolchain](https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/swift-4.1-arm64v8/build_arm64v8_ubuntu_cross_compilation_toolchain),
+[build_arm64v8_ubuntu_cross_compilation_toolchain](https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/swift-4.2-arm64v8/build_arm64v8_ubuntu_cross_compilation_toolchain),
 e.g. like:
 
 ```
 pushd /tmp
-curl https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/swift-4.1-arm64v8/build_arm64v8_ubuntu_cross_compilation_toolchain \
+curl https://raw.githubusercontent.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/swift-4.2-arm64v8/build_arm64v8_ubuntu_cross_compilation_toolchain \
   | sed "s/$(printf '\r')\$//" \
   > build_arm64v8_ubuntu_cross_compilation_toolchain
 chmod +x build_arm64v8_ubuntu_cross_compilation_toolchain
 ```
 
-Next step is to download Swift 4.1 tarballs. 
+Next step is to download Swift 4.2 tarballs. 
 We need the macOS pkg for the host compiler and a Raspberry Pi tarball for the
 Swift runtime.
-On Raspi we are using the 4.1-nospm build by Marco Chini (thanks!):
+On Raspi we are using the 4.2 build by @futurejones (thanks!):
 
 ```
 pushd /tmp

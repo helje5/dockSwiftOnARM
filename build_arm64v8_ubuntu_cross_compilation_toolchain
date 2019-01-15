@@ -15,20 +15,20 @@ export TC_TARGET="aarch64-linux-gnu"
 function usage() {
     echo >&2 "Usage: $0 SWIFT-FOR-MACOS.pkg SWIFT-FOR-LINUX.tar.gz"
     echo >&2
-    echo >&2 "Example: $0 /tmp/ ~/Downloads/swift-3.1-RELEASE-osx.pkg ~/Downloads/swift-3.1-RELEASE-ubuntu16.04.tar.gz"
+    echo >&2 "Example: $0 /tmp/ ~/Downloads/swift-4.2.1-RELEASE-osx.pkg ~/Downloads/swift-4.2.1-futurejones-ubuntu-bionic.tar.gz"
     echo >&2
     echo >&2 "Complete example:"
     echo >&2 "  # Download the Swift binaries for Ubuntu and macOS"
-    echo >&2 "  curl -L -o ~/Downloads/swift-4.1-arm64v8-ubuntu16.04.tar.gz https://www.dropbox.com/s/yauj3tyyh90cl05/swift-4.1-release-NOSPM-ARMV7.tgz?dl=1"
-    echo >&2 "  curl -o ~/Downloads/swift-4.1-osx.pkg https://swift.org/builds/swift-4.1-release/xcode/swift-4.1-RELEASE/swift-4.1-RELEASE-osx.pkg"
+    echo >&2 "  curl -L -o ~/Downloads/swift-4.2.1-futurejones-ubuntu-bionic.tar.gz TODO"
+    echo >&2 "  curl -o ~/Downloads/swift-4.2.1-osx.pkg https://swift.org/builds/swift-4.2.1-release/xcode/swift-4.2.1-RELEASE/swift-4.2.1-RELEASE-osx.pkg"
     echo >&2 "  # Compile the SDK and toolchain from that"
-    echo >&2 "  $0 /tmp/ ~/Downloads/swift-4.1-osx.pkg ~/Downloads/swift-4.1-arm64v8-ubuntu16.04.tar.gz"
+    echo >&2 "  $0 /tmp/ ~/Downloads/swift-4.2.1-RELEASE-osx.pkg ~/Downloads/swift-4.2.1-futurejones-ubuntu-bionic.tar.gz"
     echo >&2 "  # Create a test application"
     echo >&2 "  mkdir my-test-app"
     echo >&2 "  cd my-test-app"
     echo >&2 "  swift package init --type=executable"
     echo >&2 "  # Build it for Ubuntu"
-    echo >&2 "  swift build --destination /tmp/cross-toolchain/arm64v8-ubuntu-xenial-destination.json"
+    echo >&2 "  swift build --destination /tmp/cross-toolchain/arm64v8-ubuntu-bionic-destination.json"
 
 }
 
@@ -98,18 +98,24 @@ function fix_glibc_modulemap() {
 dest=$(realpath "$1")
 macos_swift_pkg=$(realpath "$2")
 linux_swift_pkg=$(realpath "$3")
-test -f "$macos_swift_pkg"
-test -f "$linux_swift_pkg"
+if ! test -f "$macos_swift_pkg"; then
+  echo "Missing macOS toolchain: $macos_swift_pkg"
+  exit 42
+fi
+if ! test -f "$linux_swift_pkg"; then
+  echo "Missing Raspi toolchain: $linux_swift_pkg"
+  exit 42
+fi
 
 # config
 blocks_h_url="https://raw.githubusercontent.com/apple/swift-corelibs-libdispatch/master/src/BlocksRuntime/Block.h"
 xc_tc_name="swift.xctoolchain"
-linux_sdk_name="arm64v8-ubuntu-xenial.sdk"
+linux_sdk_name="arm64v8-ubuntu-bionic.sdk"
 cross_tc_basename="cross-toolchain"
 binutils_pkg_url="https://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz"
 ubuntu_mirror="http://ports.ubuntu.com/ubuntu-ports"
-packages_file="$ubuntu_mirror/dists/xenial/main/binary-arm64/Packages.gz"
-pkg_names=( libc6-dev linux-libc-dev libicu55 libgcc-5-dev libicu-dev libc6 libgcc1 libstdc++-5-dev libstdc++6 )
+packages_file="$ubuntu_mirror/dists/bionic/main/binary-arm64/Packages.gz"
+pkg_names=( libc6-dev linux-libc-dev libicu60 libgcc-5-dev libicu-dev libc6 libgcc1 libstdc++-5-dev libstdc++6 )
 pkgs=()
 
 # url
@@ -180,6 +186,8 @@ while read -r line; do
     done
 done < <(download_stdout "$packages_file" | gunzip -d -c | grep ^Filename:)
 
+
+# ----------------------------------------------------------------------------
 tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
 (
 cd "$tmp"
@@ -190,6 +198,9 @@ for f in "${pkgs[@]}"; do
 done
 )
 rm -rf "$tmp"
+
+
+# ----------------------------------------------------------------------------
 (
 cd $cross_tc_basename
 mkdir -p "$xc_tc_name/usr/bin"
@@ -198,61 +209,100 @@ binutils_pkg="$(download_with_cache "$binutils_pkg_url" binutils.tar.gz)"
 tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
 (
 cd "$tmp"
+echo "Unpacking binutils: ${binutils_pkg} to ${tmp} .."
 tar -xf "$binutils_pkg"
 cd binutils-*
-./configure --enable-gold
-make -j
+echo "  Configuring binutils .."
+./configure --enable-gold > xt-binutils-configure.log 2>&1
+echo "  .. building binutils .."
+make -j                   > xt-binutils-make.log      2>&1
+echo "  done."
 cd gold
-./configure --enable-gold
-make -j
+echo "  Configuring gold .."
+./configure --enable-gold > xt-gold-configure.log 2>&1
+echo "  .. building gold .."
+make -j                   > xt-gold-make.log      2>&1
+echo "  done."
 )
+echo "done with gold, copy to: ${xc_tc_name}/usr/bin/ld.gold"
 cp "$tmp"/binutils-*/gold/ld-new "$xc_tc_name/usr/bin/ld.gold"
 rm -rf "$tmp"
 
+
+# ----------------------------------------------------------------------------
+echo "Fixing absolute links in ${linux_sdk_name} ..."
 # fix absolute symlinks
 find "$linux_sdk_name" -type l | while read -r line; do
     dst=$(readlink "$line")
     if [[ "${dst:0:1}" = / ]]; then
+        echo "  Patch Link: ${line} dest ${dst}"
         rm "$line"
         echo ln -s "$dest/$cross_tc_basename/$linux_sdk_name$dst" "$line"
         ln -s "$dest/$cross_tc_basename/$linux_sdk_name$dst" "$line"
+    else
+        echo "  Link: ${line} OK."
     fi
 done
-ln -s 5 "$linux_sdk_name/usr/lib/gcc/${TC_TARGET}/5.4.0"
+# HH: can't find that
+#ln -s 5 "$linux_sdk_name/usr/lib/gcc/${TC_TARGET}/5.4.0"
+echo "Fixed absolute links."
 
+
+# ----------------------------------------------------------------------------
 tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
+echo "Unpacking macOS toolchain: ${macos_swift_pkg} to ${tmp} .."
 unpack "$tmp" "$macos_swift_pkg"
+echo ".. copy to ${xc_tc_name} .."
 rsync -a "$tmp/" "$xc_tc_name"
+echo ".. delete tmpdir ..."
 rm -rf "$tmp"
+echo "Did unpack into ${xc_tc_name}."
 
+
+# ----------------------------------------------------------------------------
 tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
 # official release tarballs have a dirname, the Raspi ones usually don't but
 # just directly contain 'usr'
 #   --strip-components 1
+echo "Unpacking Raspi toolchain: ${linux_swift_pkg} to ${tmp} .."
 tar -C "$tmp" -xf "$linux_swift_pkg"
 
+echo ".. copy to ${xc_tc_name} .."
 rsync -a "$tmp/usr/lib/swift/linux"        "$xc_tc_name/usr/lib/swift/"
 rsync -a "$tmp/usr/lib/swift_static/linux" "$xc_tc_name/usr/lib/swift_static/"
+# HH DEBUG
+ls -la "$xc_tc_name/usr/lib/swift/linux"
 (cd "$xc_tc_name/usr/lib/swift/linux"; ln -s armv7 arm)
 
 rsync -a "$tmp/usr/lib/swift/dispatch"     "$linux_sdk_name/usr/include/"
 rsync -a "$tmp/usr/lib/swift/os"           "$linux_sdk_name/usr/include/"
 rsync -a "$tmp/usr/lib/swift/CoreFoundation" "$linux_sdk_name/usr/include/"
+echo ".. delete tmpdir ..."
 rm -rf "$tmp"
+echo "Did unpack into ${xc_tc_name}."
 
+
+# ----------------------------------------------------------------------------
 curl --fail -s -o "$linux_sdk_name/usr/include/Block.h" "$blocks_h_url"
 # this exists
 #ln -s swift "$xc_tc_name/usr/bin/swift-autolink-extract"
+# HH DEBUG
+ls -la "$dest/$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/libdispatch*"
 ln -s "$dest/$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/libdispatch.so" "$linux_sdk_name/usr/lib/"
 ln -s "$dest/$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/libdispatch.a" "$linux_sdk_name/usr/lib/"
 
 # fix up
 )
+
+# HH DEBUG
+ls -la "$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/"
 fix_glibc_modulemap "$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/armv7/glibc.modulemap"
 
+
+# ----------------------------------------------------------------------------
 echo "**** emit json"
 
-cat > "$cross_tc_basename/arm64v8-ubuntu-xenial-destination.json" <<EOF
+cat > "$cross_tc_basename/arm64v8-ubuntu-bionic-destination.json" <<EOF
 {
     "version": 1,
     "sdk": "$(pwd)/$cross_tc_basename/$linux_sdk_name",
@@ -272,7 +322,7 @@ cat > "$cross_tc_basename/arm64v8-ubuntu-xenial-destination.json" <<EOF
 EOF
 
 echo
-echo "OK, your cross compilation toolchain for Raspi Ubuntu Xenial is now ready to be used"
+echo "OK, your cross compilation toolchain for Raspi 64-bit Ubuntu Bionic is now ready to be used"
 echo " - SDK: $(pwd)/$cross_tc_basename/$linux_sdk_name"
 echo " - toolchain: $(pwd)/$cross_tc_basename/$xc_tc_name"
-echo " - SwiftPM destination.json: $(pwd)/$cross_tc_basename/arm64v8-ubuntu-xenial-destination.json"
+echo " - SwiftPM destination.json: $(pwd)/$cross_tc_basename/arm64v8-ubuntu-bionic-destination.json"
