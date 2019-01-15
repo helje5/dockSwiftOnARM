@@ -16,8 +16,8 @@ to
 Johannes also provided 
 [a script](https://github.com/apple/swift-package-manager/blob/master/Utilities/build_ubuntu_cross_compilation_toolchain)
 which shows how to build an Ubuntu toolchain for x86-64.
-So what we did is take that script and make it produce a Swift 3.1.1 cross 
-compiler toolchain for the Raspberry Pi (armhf) Ubuntu Xenial port.
+So what we did is take that script and make it produce a Swift 4.2.1 cross 
+compiler toolchain for the Raspberry Pi (arm64v8) Ubuntu Bionic port.
 
 What this is good for?
 You can build Raspberry Pi Swift binaries on a Mac. Like this:
@@ -36,35 +36,6 @@ file .build/debug/helloworld
  binaries on a Raspberry Pi: [macos](macos/README.md))
  
 
-## UPDATE 2019-01-15
-
-Swift 4.2 Raspi builds for arm64v8 are now available, and 5.0dev builds too.
-Also
-[PR-1546](https://github.com/apple/swift-package-manager/pull/1546)
-got merged, not sure in which version though.
-
-TODO: Check whether we can get a 4.2.1 X working.
-
- 
-## UPDATE 2018-05-09
-
-The tested and working version is still Swift 3.1 w/ 32-bit Raspi Ubuntu.
-However, Swift 4.1 builds start popping up, so we are working on
-
-1. Swift 4.1 32-bit Raspi - branch [swift-4.1-release](https://github.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/tree/swift-4.1-release)
-2. Swift 4.1 64-bit Raspi - branch [swift-4.1-arm64v8](https://github.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain/tree/swift-4.1-arm64v8)
-
-toolchains.
-
-This was blocked because SPM 4.1 b0rked support for custom target triples
-([PR-1546](https://github.com/apple/swift-package-manager/pull/1546)).
-And it still is, even Swift 4.2 won't ship this.
-
-
-
-**NOTE**: This does not work yet w/ Swift SPM 4.1. 4.1 seems to have hardcoded!
-          target names in the package manager.
-
 ## Building the ARM toolchain
 
 What we are going to do is build a Swift 4.2 cross compilation toolchain
@@ -74,7 +45,7 @@ compiler.
 
 Requirements:
 - Xcode 10 or later (http://developer.apple.com/)
-- a Raspi 3 w/ Ubuntu Bionic
+- a Raspi 3 w/ Ubuntu Bionic (e.g. via Hypriot)
 
 Recommended:
 - [Docker for Mac](https://docs.docker.com/docker-for-mac/install/)
@@ -96,12 +67,12 @@ chmod +x build_arm64v8_ubuntu_cross_compilation_toolchain
 Next step is to download Swift 4.2 tarballs. 
 We need the macOS pkg for the host compiler and a Raspberry Pi tarball for the
 Swift runtime.
-On Raspi we are using the 4.2 build by @futurejones (thanks!):
+On Raspi arm64v8 we are using the 4.2 build by @futurejones (thanks!):
 
 ```
 pushd /tmp
-curl -L -o swift-4.1-armv7l-ubuntu16.04.tar.gz https://www.dropbox.com/s/yauj3tyyh90cl05/swift-4.1-release-NOSPM-ARMV7.tgz?dl=1
-curl -o swift-4.1-osx.pkg https://swift.org/builds/swift-4.1-release/xcode/swift-4.1-RELEASE/swift-4.1-RELEASE-osx.pkg
+curl -L -o swift-4.2.1-futurejones-ubuntu-bionic.tar.gz https://www.dropbox.com/s/yauj3tyyh90cl05/TODO
+curl -o swift-4.2.1-RELEASE-osx.pkg https://swift.org/builds/swift-4.2.1-release/xcode/swift-4.2.1-RELEASE/swift-4.2.1-RELEASE-osx.pkg
 ```
 Those are a little heavy (~500 MB), so grab a 🍺 or 🍻.
 Once they are available, build the actual toolchain using the script
@@ -111,16 +82,16 @@ Once they are available, build the actual toolchain using the script
 pushd /tmp
 ./build_arm64v8_ubuntu_cross_compilation_toolchain \
   . \
-  swift-4.1-osx.pkg \
-  swift-4.1-armv7l-ubuntu16.04.tar.gz
+  swift-4.2.1-RELEASE-osx.pkg \
+  swift-4.2.1-futurejones-ubuntu-bionic.tar.gz
 ```
 
 If everything worked fine, it'll end like that:
 ```
 OK, your cross compilation toolchain for Raspi Ubuntu Xenial is now ready to be used
- - SDK: /tmp/cross-toolchain/arm64v8-ubuntu-xenial.sdk
+ - SDK: /tmp/cross-toolchain/arm64v8-ubuntu-bionic.sdk
  - toolchain: /tmp/cross-toolchain/swift.xctoolchain
- - SwiftPM destination.json: /tmp/cross-toolchain/arm64v8-ubuntu-xenial-destination.json
+ - SwiftPM destination.json: /tmp/cross-toolchain/arm64v8-ubuntu-bionic-destination.json
 ```
 
 
@@ -131,22 +102,22 @@ Lets create a simple `helloworld` tool first:
 ```
 mkdir helloworld && cd helloworld
 swift package init --type=executable
-swift build --destination /tmp/cross-toolchain/arm64v8-ubuntu-xenial-destination.json
+swift build --destination /tmp/cross-toolchain/arm64v8-ubuntu-bionic-destination.json
 ```
 
 Which gives:
 ```
 Compile Swift Module 'helloworld' (1 sources)
-Linking ./.build/arm-linux-gnueabihf/debug/helloworld
+Linking ./.build/aarch64-unknown-linux/debug/helloworld
 ```
 
 Check whether it actually produced an ARM binary:
 ```
-file .build/debug/helloworld
-.build/debug/helloworld: ELF 32-bit LSB shared object, ARM, \
-  EABI5 version 1 (SYSV), dynamically linked, \
-  interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, \
-  with debug_info, not stripped
+file ./.build/aarch64-unknown-linux/debug/helloworld
+./.build/aarch64-unknown-linux/debug/helloworld: \
+  ELF 64-bit LSB shared object, ARM aarch64, \
+  version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, \
+  for GNU/Linux 3.7.0, with debug_info, not stripped
 ```
 
 Excellent! It worked. Now either copy your binary to a Raspi or test it using
@@ -179,7 +150,7 @@ simple ARM binaries without an actual Raspberry Pi.
 
 ```
 docker run --rm --tty -i -v "$PWD/.build/debug/:/home/swift" \
-  helje5/arm64v8-swift:4.1.0 \
+  helje5/arm64v8-swift:4.2.1 \
   ./helloworld
 ```
 
@@ -217,10 +188,10 @@ Then build the thing:
 
 ```
 swift build \
-  --destination /tmp/cross-toolchain/arm64v8-ubuntu-xenial-destination.json
+  --destination /tmp/cross-toolchain/arm64v8-ubuntu-bionic-destination.json
 Fetching https://github.com/AlwaysRightInstitute/cows.git
 Cloning https://github.com/AlwaysRightInstitute/cows.git
-Resolving https://github.com/AlwaysRightInstitute/cows.git at 1.0.2
+Resolving https://github.com/AlwaysRightInstitute/cows.git at 1.0.4
 Compile Swift Module 'cows' (3 sources)
 Compile Swift Module 'vaca' (1 sources)
 Linking ./.build/debug/vaca
@@ -241,7 +212,7 @@ And you get the most awesome Swift tool:
 
 ```
 docker run --rm --tty -i -v "$PWD/.build/debug/:/home/swift" \
-           helje5/arm64v8-swift:4.1.0 ./vaca
+           helje5/arm64v8-swift:4.2.1 ./vaca
    (___)
    (o o)
   __\_/__

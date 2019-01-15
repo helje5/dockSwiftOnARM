@@ -10,8 +10,11 @@ set -eu
 
 export PATH="/bin:/usr/bin"
 
+# Note: aarch64-linux-gnu is rejected by swift-pm. We need
+#       aarch64-unknown-linux (arch-vendor-os)
 TARGET_ARCH=aarch64
 export TC_TARGET="${TARGET_ARCH}-linux-gnu"
+export SPM_TARGET="${TARGET_ARCH}-unknown-linux"
 
 function usage() {
     echo >&2 "Usage: $0 SWIFT-FOR-MACOS.pkg SWIFT-FOR-LINUX.tar.gz"
@@ -116,7 +119,8 @@ cross_tc_basename="cross-toolchain"
 binutils_pkg_url="https://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz"
 ubuntu_mirror="http://ports.ubuntu.com/ubuntu-ports"
 packages_file="$ubuntu_mirror/dists/bionic/main/binary-arm64/Packages.gz"
-pkg_names=( libc6-dev linux-libc-dev libicu60 libgcc-5-dev libicu-dev libc6 libgcc1 libstdc++-5-dev libstdc++6 )
+# was libgcc-5-dev, on Bionic we need libgcc-7-dev, libstdc++-7-dev
+pkg_names=( libc6-dev linux-libc-dev libicu60 libgcc-7-dev libicu-dev libc6 libgcc1 libstdc++-7-dev libstdc++6 )
 pkgs=()
 
 # url
@@ -188,7 +192,7 @@ while read -r line; do
 done < <(download_stdout "$packages_file" | gunzip -d -c | grep ^Filename:)
 
 
-# ----------------------------------------------------------------------------
+# --- Unpack Linux Platform SDK ---------------------------------------------
 tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
 (
 cd "$tmp"
@@ -201,7 +205,7 @@ done
 rm -rf "$tmp"
 
 
-# ----------------------------------------------------------------------------
+# --- Build Binutils and Gold ------------------------------------------------
 (
 cd $cross_tc_basename
 mkdir -p "$xc_tc_name/usr/bin"
@@ -231,7 +235,7 @@ cp "$tmp"/binutils-*/gold/ld-new "$xc_tc_name/usr/bin/ld.gold"
 rm -rf "$tmp"
 
 
-# ----------------------------------------------------------------------------
+# --- Patch Absolute Links ---------------------------------------------------
 echo "Fixing absolute links in ${linux_sdk_name} ..."
 # fix absolute symlinks
 find "$linux_sdk_name" -type l | while read -r line; do
@@ -250,7 +254,7 @@ done
 echo "Fixed absolute links."
 
 
-# ----------------------------------------------------------------------------
+# --- Unpack macOS Swift Toolchain -------------------------------------------
 tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
 echo "Unpacking macOS toolchain: ${macos_swift_pkg} to ${tmp} .."
 unpack "$tmp" "$macos_swift_pkg"
@@ -261,7 +265,7 @@ rm -rf "$tmp"
 echo "Did unpack into ${xc_tc_name}."
 
 
-# ----------------------------------------------------------------------------
+# --- Unpack Raspi Swift toolchain -------------------------------------------
 tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
 # official release tarballs have a dirname, the Raspi ones usually don't but
 # just directly contain 'usr'
@@ -305,9 +309,9 @@ echo "**** emit json"
 cat > "$cross_tc_basename/arm64v8-ubuntu-bionic-destination.json" <<EOF
 {
     "version": 1,
-    "sdk": "$(pwd)/$cross_tc_basename/$linux_sdk_name",
-    "toolchain-bin-dir": "$(pwd)/$cross_tc_basename/$xc_tc_name/usr/bin",
-    "target": "${TC_TARGET}",
+    "sdk": "$(pwd)/${cross_tc_basename}/${linux_sdk_name}",
+    "toolchain-bin-dir": "$(pwd)/${cross_tc_basename}/${xc_tc_name}/usr/bin",
+    "target": "${SPM_TARGET}",
     "dynamic-library-extension": "so",
     "extra-cc-flags": [
         "-fPIC"

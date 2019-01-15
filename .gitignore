@@ -3,4 +3,6 @@
 *.gz
 swift-checkout
 buildSwiftOnARM
+helloworld
+vaca
 
