@@ -4,7 +4,7 @@
 </h2>
 
 ![Swift4](https://img.shields.io/badge/swift-4-blue.svg)
-![tuxOS](https://img.shields.io/badge/os-Xenial-green.svg?style=flat)
+![tuxOS](https://img.shields.io/badge/os-Bionic-green.svg?style=flat)
 ![ARM](https://img.shields.io/badge/cpu-ARM-red.svg?style=flat)
 
 End of April
@@ -24,7 +24,7 @@ You can build Raspberry Pi Swift binaries on a Mac. Like this:
 ```
 mkdir helloworld && cd helloworld
 swift package init --type=executable
-swift build --destination /tmp/cross-toolchain/arm64v8-ubuntu-xenial-destination.json
+swift build --destination /tmp/cross-toolchain/arm64v8-ubuntu-bionic-destination.json
 file .build/debug/helloworld
 .build/debug/helloworld: ELF 32-bit LSB executable, ARM, 
                          EABI5 version 1 (SYSV), dynamically linked, 
@@ -88,7 +88,7 @@ pushd /tmp
 
 If everything worked fine, it'll end like that:
 ```
-OK, your cross compilation toolchain for Raspi Ubuntu Xenial is now ready to be used
+OK, your cross compilation toolchain for Raspi Ubuntu Bionic is now ready to be used
  - SDK: /tmp/cross-toolchain/arm64v8-ubuntu-bionic.sdk
  - toolchain: /tmp/cross-toolchain/swift.xctoolchain
  - SwiftPM destination.json: /tmp/cross-toolchain/arm64v8-ubuntu-bionic-destination.json
@@ -190,22 +190,13 @@ Then build the thing:
 swift build \
   --destination /tmp/cross-toolchain/arm64v8-ubuntu-bionic-destination.json
 Fetching https://github.com/AlwaysRightInstitute/cows.git
+Completed resolution in 1.28s
 Cloning https://github.com/AlwaysRightInstitute/cows.git
 Resolving https://github.com/AlwaysRightInstitute/cows.git at 1.0.4
+warning: PackageDescription API v3 is deprecated and will be removed in the future; used by package(s): vaca
 Compile Swift Module 'cows' (3 sources)
 Compile Swift Module 'vaca' (1 sources)
-Linking ./.build/debug/vaca
-```
-
-*2018-02-02*: Currently fails with that, presumably a 4.1 compiler issue:
-```
-Compile Swift Module 'cows' (3 sources)
-/private/tmp/vaca/.build/checkouts/cows.git--2440465979168175218/Sources/UniqueRandomArray.swift:36:8: error: value of type '[T]' has no member 'isEmpty'
-    if remainingItems.isEmpty {
-       ^~~~~~~~~~~~~~ ~~~~~~~
-Swift.Collection:20:16: note: did you mean 'isEmpty'?
-    public var isEmpty: Bool { get }
-               ^
+Linking ./.build/aarch64-unknown-linux/debug/vaca
 ```
 
 And you get the most awesome Swift tool:
@@ -239,14 +230,6 @@ for iOS.
 
 ## Notes of interest
 
-- `#if swift(>=4.0)` will be true. Seems like a bug in Swift that the version
-  is attached to the driver, not to the active language.
-  In other words: `#if swift` version checks are useless.
-  Same BTW for `#if os` checks in the Package.swift. Those do not account for
-  cross compilers.
-- SwiftPM reuses the `.build` directory even if you call it w/ 
-  different destinations. So make sure you clean before building for a
-  different architecture.
 - Ubuntu system headers and such for the toolchain are directly pulled
   from the Debian packages (which are retrieved from the Ubuntu repository)
 - The cross compiler is just a regular clang/swiftc provided as part of
@@ -254,8 +237,9 @@ for iOS.
   and can produce binaries for all supported targets! (didn't know that)
 - To trace filesystem calls on macOS you can use `fs_usage`, e.g.:
   `sudo fs_usage -w -f pathname swift` (I only knew `strace` ;-)
-- `swift build --static-swift-stdlib` does not seem to work. Presumably because
-  the Swift 3 host compiler does not support the necessary flags.
+- `swift build --static-swift-stdlib` does not currently work, but that
+  is an easy fix if desired (`static-stdlib-args.lnk` needs to be fixed to
+  point to the right location)
 
 ### Who
 
