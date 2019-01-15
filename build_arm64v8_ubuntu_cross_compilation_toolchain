@@ -116,7 +116,7 @@ blocks_h_url="https://raw.githubusercontent.com/apple/swift-corelibs-libdispatch
 xc_tc_name="swift.xctoolchain"
 linux_sdk_name="arm64v8-ubuntu-bionic.sdk"
 cross_tc_basename="cross-toolchain"
-binutils_pkg_url="https://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.gz"
+binutils_pkg_url="https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.gz"
 ubuntu_mirror="http://ports.ubuntu.com/ubuntu-ports"
 packages_file="$ubuntu_mirror/dists/bionic/main/binary-arm64/Packages.gz"
 # was libgcc-5-dev, on Bionic we need libgcc-7-dev, libstdc++-7-dev
