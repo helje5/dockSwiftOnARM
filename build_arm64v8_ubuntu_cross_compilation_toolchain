@@ -10,7 +10,8 @@ set -eu
 
 export PATH="/bin:/usr/bin"
 
-export TC_TARGET="aarch64-linux-gnu"
+TARGET_ARCH=aarch64
+export TC_TARGET="${TARGET_ARCH}-linux-gnu"
 
 function usage() {
     echo >&2 "Usage: $0 SWIFT-FOR-MACOS.pkg SWIFT-FOR-LINUX.tar.gz"
@@ -212,16 +213,17 @@ cd "$tmp"
 echo "Unpacking binutils: ${binutils_pkg} to ${tmp} .."
 tar -xf "$binutils_pkg"
 cd binutils-*
-echo "  Configuring binutils .."
+# 4secs on ZeaPro
+echo "  Configuring binutils in ${tmp} (~4s) .."
 ./configure --enable-gold > xt-binutils-configure.log 2>&1
-echo "  .. building binutils .."
-make -j                   > xt-binutils-make.log      2>&1
+echo "  .. building binutils (~1m) .."
+time make -j > xt-binutils-make.log 2>&1
 echo "  done."
 cd gold
-echo "  Configuring gold .."
+echo "  Configuring gold (~11s).."
 ./configure --enable-gold > xt-gold-configure.log 2>&1
-echo "  .. building gold .."
-make -j                   > xt-gold-make.log      2>&1
+echo "  .. building gold (~1m).."
+time make -j > xt-gold-make.log 2>&1
 echo "  done."
 )
 echo "done with gold, copy to: ${xc_tc_name}/usr/bin/ld.gold"
@@ -237,10 +239,10 @@ find "$linux_sdk_name" -type l | while read -r line; do
     if [[ "${dst:0:1}" = / ]]; then
         echo "  Patch Link: ${line} dest ${dst}"
         rm "$line"
-        echo ln -s "$dest/$cross_tc_basename/$linux_sdk_name$dst" "$line"
+        #echo ln -s "$dest/$cross_tc_basename/$linux_sdk_name$dst" "$line"
         ln -s "$dest/$cross_tc_basename/$linux_sdk_name$dst" "$line"
-    else
-        echo "  Link: ${line} OK."
+    #else
+    #    echo "  Link: ${line} OK."
     fi
 done
 # HH: can't find that
@@ -270,9 +272,8 @@ tar -C "$tmp" -xf "$linux_swift_pkg"
 echo ".. copy to ${xc_tc_name} .."
 rsync -a "$tmp/usr/lib/swift/linux"        "$xc_tc_name/usr/lib/swift/"
 rsync -a "$tmp/usr/lib/swift_static/linux" "$xc_tc_name/usr/lib/swift_static/"
-# HH DEBUG
-ls -la "$xc_tc_name/usr/lib/swift/linux"
-(cd "$xc_tc_name/usr/lib/swift/linux"; ln -s armv7 arm)
+# HH: not necessary, name is aarch64
+#(cd "$xc_tc_name/usr/lib/swift/linux"; ln -s armv7 arm)
 
 rsync -a "$tmp/usr/lib/swift/dispatch"     "$linux_sdk_name/usr/include/"
 rsync -a "$tmp/usr/lib/swift/os"           "$linux_sdk_name/usr/include/"
@@ -283,20 +284,19 @@ echo "Did unpack into ${xc_tc_name}."
 
 
 # ----------------------------------------------------------------------------
-curl --fail -s -o "$linux_sdk_name/usr/include/Block.h" "$blocks_h_url"
+# HH: we do have a Block.h
+#curl --fail -s -o "$linux_sdk_name/usr/include/Block.h" "$blocks_h_url"
 # this exists
 #ln -s swift "$xc_tc_name/usr/bin/swift-autolink-extract"
-# HH DEBUG
-ls -la "$dest/$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/libdispatch*"
 ln -s "$dest/$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/libdispatch.so" "$linux_sdk_name/usr/lib/"
-ln -s "$dest/$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/libdispatch.a" "$linux_sdk_name/usr/lib/"
+#ln -s "$dest/$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/libdispatch.a" "$linux_sdk_name/usr/lib/"
 
 # fix up
 )
 
 # HH DEBUG
 ls -la "$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/"
-fix_glibc_modulemap "$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/armv7/glibc.modulemap"
+fix_glibc_modulemap "$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/${TARGET_ARCH}/glibc.modulemap"
 
 
 # ----------------------------------------------------------------------------
