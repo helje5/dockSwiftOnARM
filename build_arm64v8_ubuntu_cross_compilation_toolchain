@@ -132,7 +132,7 @@ binutils_pkg_url="https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.gz"
 ubuntu_mirror="http://ports.ubuntu.com/ubuntu-ports"
 packages_file="$ubuntu_mirror/dists/bionic/main/binary-arm64/Packages.gz"
 # was libgcc-5-dev, on Bionic we need libgcc-7-dev, libstdc++-7-dev
-pkg_names=( libc6-dev linux-libc-dev libicu60 libgcc-7-dev libicu-dev libc6 libgcc1 libstdc++-7-dev libstdc++6 )
+pkg_names=( libc6-dev linux-libc-dev libicu60 libgcc-7-dev libicu-dev libc6 libgcc1 libstdc++-7-dev libstdc++6 zlib1g-dev)
 pkgs=()
 
 # url
