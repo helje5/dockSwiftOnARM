@@ -348,7 +348,7 @@ Server running on: [IPv4]0.0.0.0/0.0.0.0:1337
 Hit it up at: [http://zpi3b.local:1337/](http://zpi3b.local:1337/) and you
 get:
 
-![](images/firefox-cows-service.png)
+<img src="images/firefox-cows-service.png" class="inline" />
 
 
 ### SwiftXcode
