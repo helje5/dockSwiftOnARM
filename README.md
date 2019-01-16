@@ -228,6 +228,141 @@ and [ASCII Cows](https://itunes.apple.com/de/app/ascii-cows/id1176152684)
 for iOS.
 
 
+## SwiftNIO Support
+
+To build NIO projects, you need to point swift-build to the right pkgconfig
+folder in the cross-toolchain, for example:
+```
+export PKG_CONFIG_PATH=/tmp/cross-toolchain/arm64v8-ubuntu-bionic.sdk/usr/lib/aarch64-linux-gnu/pkgconfig
+```
+Otherwise you'll see linker errors. swift-build will still complain that it
+can't find `pkg-config`, you can ignore that:
+```
+warning: failed to retrieve search paths with pkg-config; maybe pkg-config is not installed
+```
+
+### Sample: Random 🐄 Micro Service
+
+Lets build a complete SwiftNIO based random-cow microservice.
+We cross-compile on the Mac and just run the finished binary on the RaspberryPi.
+
+Create a directory for the project, add a `Package.swift` and a `main.swift`
+file. 
+We are again using the `cows` module, and
+[MicroExpress](https://github.com/NozeIO/MicroExpress)
+which is a tinsy NIO wrapper lib:
+```
+mkdir CowsServiceX && cd CowsServiceX
+mkdir -p Sources/CowsServiceX
+
+cat > Package.swift <<EOF
+// swift-tools-version:4.2
+
+import PackageDescription
+
+let package = Package(
+  name: "CowsServiceX",
+  dependencies: [
+    .package(url: "https://github.com/AlwaysRightInstitute/cows.git",
+             from: "1.0.0"),
+    .package(url: "https://github.com/NozeIO/MicroExpress.git",
+             .branch("branches/swift-nio-lib"))
+  ],
+  targets: [
+    .target(name: "CowsServiceX", dependencies: [ "cows", "MicroExpress" ])
+  ]
+)
+EOF
+
+cat > Sources/CowsServiceX/main.swift <<EOF
+import MicroExpress
+import cows
+
+let app = Express()
+
+app.get("/") { _, res, _ in
+  res.send(cows.vaca())
+}
+
+app.listen(1337, "0.0.0.0")
+EOF
+```
+
+To compile this using the toolchain:
+```shell
+$ export PKG_CONFIG_PATH=/tmp/cross-toolchain/arm64v8-ubuntu-bionic.sdk/usr/lib/aarch64-linux-gnu/pkgconfig
+$ swift build --destination /tmp/cross-toolchain/arm64v8-ubuntu-bionic-destination.json
+Fetching https://github.com/AlwaysRightInstitute/cows.git
+Fetching https://github.com/NozeIO/MicroExpress.git
+Fetching https://github.com/apple/swift-nio.git
+Fetching https://github.com/AlwaysRightInstitute/mustache.git
+Fetching https://github.com/apple/swift-nio-zlib-support.git
+Completed resolution in 10.79s
+Cloning https://github.com/AlwaysRightInstitute/cows.git
+Resolving https://github.com/AlwaysRightInstitute/cows.git at 1.0.4
+Cloning https://github.com/apple/swift-nio-zlib-support.git
+Resolving https://github.com/apple/swift-nio-zlib-support.git at 1.0.0
+Cloning https://github.com/apple/swift-nio.git
+Resolving https://github.com/apple/swift-nio.git at 1.12.0
+Cloning https://github.com/NozeIO/MicroExpress.git
+Resolving https://github.com/NozeIO/MicroExpress.git at branches/swift-nio-lib
+Cloning https://github.com/AlwaysRightInstitute/mustache.git
+Resolving https://github.com/AlwaysRightInstitute/mustache.git at 0.5.6
+warning: failed to retrieve search paths with pkg-config; maybe pkg-config is not installed
+Compile CNIOLinux shim.c
+Compile CNIOSHA1 c_nio_sha1.c
+Compile CNIOLinux ifaddrs-android.c
+Compile CNIOZlib empty.c
+Compile CNIOHTTPParser c_nio_http_parser.c
+Compile CNIODarwin shim.c
+Compile CNIOAtomics src/c-atomics.c
+Compile Swift Module 'mustache' (6 sources)
+Compile Swift Module 'cows' (3 sources)
+Compile Swift Module 'NIOPriorityQueue' (2 sources)
+Compile Swift Module 'NIOConcurrencyHelpers' (2 sources)
+Compile Swift Module 'NIO' (55 sources)
+Compile Swift Module 'NIOHTTP1' (9 sources)
+Compile Swift Module 'MicroExpress' (8 sources)
+Compile Swift Module 'CowsServiceX' (1 sources)
+Linking ./.build/aarch64-unknown-linux/debug/CowsServiceX
+$ file ./.build/aarch64-unknown-linux/debug/CowsServiceX
+./.build/aarch64-unknown-linux/debug/CowsServiceX: \
+  ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), \
+  dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, \
+  for GNU/Linux 3.7.0, with debug_info, not stripped
+```
+
+You can then `scp` this to your Raspi, e.g. we use (in combination with 
+docker-machine):
+```shell
+$ eval $(docker-machine env zpi3b)
+$ scp ./.build/aarch64-unknown-linux/debug/CowsServiceX zpi3b:/tmp/
+$ docker run --rm -d -v "/tmp:/tmp" \
+         --name CowsServiceX \
+         -p 1337:1337 \
+         helje5/arm64v8-swift:4.2.1 \
+         /tmp/CowsServiceX
+Server running on: [IPv4]0.0.0.0/0.0.0.0:1337
+```
+
+Hit it up at: [http://zpi3b.local:1337/](http://zpi3b.local:1337/) and you
+get:
+
+![](images/firefox-cows-service.png)
+
+
+### SwiftXcode
+
+All this works as well from within 
+[SwiftXcode](https://swiftxcode.github.io)! 
+Just create a new SwiftXcode NIO project, develop your app on macOS using
+the default template.
+
+To deploy, just create an aggregate target with a script build phase that
+invokes `swift build` and copies the result to your Raspi (or directly
+builds on NFS).
+
+
 ## Notes of interest
 
 - Ubuntu system headers and such for the toolchain are directly pulled
