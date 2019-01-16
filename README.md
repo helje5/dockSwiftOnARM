@@ -230,8 +230,9 @@ for iOS.
 
 ## SwiftNIO Support
 
-To build NIO projects, you need to point swift-build to the right pkgconfig
-folder in the cross-toolchain, for example:
+To build [SwiftNIO](https://github.com/apple/swift-nio) projects, 
+you need to point swift-build to the right pkgconfig folder in the 
+cross-toolchain, for example:
 ```
 export PKG_CONFIG_PATH=/tmp/cross-toolchain/arm64v8-ubuntu-bionic.sdk/usr/lib/aarch64-linux-gnu/pkgconfig
 ```
@@ -348,12 +349,12 @@ Server running on: [IPv4]0.0.0.0/0.0.0.0:1337
 Hit it up at: [http://zpi3b.local:1337/](http://zpi3b.local:1337/) and you
 get:
 
-<img src="images/firefox-cows-service.png" class="inline" />
+<img src="images/firefox-cows-service.png" />
 
 Reload to get a new random cow. It is a proper microservice, so test it out
 using curl:
 
-<img src="images/curl-cows-service.png" class="inline" />
+<img src="images/curl-cows-service.png" />
 
 
 ### SwiftXcode
@@ -363,7 +364,7 @@ All this works as well from within
 Just create a new SwiftXcode NIO project, develop your app on macOS using
 the default template.
 
-To deploy, just create an aggregate target with a script build phase that
+To deploy, create an aggregate target with a script build phase that
 invokes `swift build` and copies the result to your Raspi (or directly
 builds on NFS).
 
@@ -380,6 +381,14 @@ builds on NFS).
 - `swift build --static-swift-stdlib` does not currently work, but that
   is an easy fix if desired (`static-stdlib-args.lnk` needs to be fixed to
   point to the right location)
+
+Links:
+
+- [SwiftyLinkerKit](https://github.com/SwiftyLinkerKit/SwiftyLinkerKit)
+- [LinkerKitIRCBot](https://github.com/SwiftyLinkerKit/LinkerKitIRCBot)
+- [MicroExpress](https://github.com/NozeIO/MicroExpress)
+- [SwiftNIO](https://github.com/apple/swift-nio)
+- [SwiftXcode](https://swiftxcode.github.io)
 
 ### Who
 
