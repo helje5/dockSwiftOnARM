@@ -5,7 +5,7 @@
 
 ![Swift4](https://img.shields.io/badge/swift-4-blue.svg)
 ![tuxOS](https://img.shields.io/badge/os-Bionic-green.svg?style=flat)
-![ARM](https://img.shields.io/badge/cpu-ARM-red.svg?style=flat)
+![ARM](https://img.shields.io/badge/cpu-ARMv8-red.svg?style=flat)
 
 End of April 2017
 [Johannes Weiß](https://github.com/weissi)
@@ -349,6 +349,11 @@ Hit it up at: [http://zpi3b.local:1337/](http://zpi3b.local:1337/) and you
 get:
 
 <img src="images/firefox-cows-service.png" class="inline" />
+
+Reload to get a new random cow. It is a proper microservice, so test it out
+using curl:
+
+<img src="images/curl-cows-service.png" class="inline" />
 
 
 ### SwiftXcode
