@@ -391,7 +391,7 @@ Links:
 - [SwiftXcode](https://swiftxcode.github.io)
 - [Hypriot](https://blog.hypriot.com) - [64bit images](https://github.com/DieterReuter/image-builder-rpi64/releases)
 - DockerHub [helje5/arm64v8-swift](https://cloud.docker.com/u/helje5/repository/docker/helje5/arm64v8-swift) image
-- DockerHub [helje5/arm64v8-swift-dev](https://cloud.docker.com/u/helje5/repository/docker/helje5/arm64v8-swift-dev) image (w/o Emacs etc)
+- DockerHub [helje5/arm64v8-swift-dev](https://cloud.docker.com/u/helje5/repository/docker/helje5/arm64v8-swift-dev) image (w/ Emacs etc.)
 - [SwiftNIO on Raspi](https://helgehess.eu/SwiftNIO-Raspi-Screens.pdf) presentation PDF at [ServerSide.swift Conf](https://www.serversideswift.info)
 
 ### Who
