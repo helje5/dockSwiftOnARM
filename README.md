@@ -4,6 +4,8 @@
 </h2>
 
 ![Swift3](https://img.shields.io/badge/swift-3-blue.svg)
+![Swift4](https://img.shields.io/badge/swift-4-blue.svg)
+![Swift5](https://img.shields.io/badge/swift-5-blue.svg)
 ![tuxOS](https://img.shields.io/badge/os-tuxOS-green.svg?style=flat)
 ![ARM](https://img.shields.io/badge/cpu-ARM-red.svg?style=flat)
 <a href="https://slackpass.io/swift-arm"><img src="https://img.shields.io/badge/Slack-swift/arm-red.svg?style=flat"/></a>

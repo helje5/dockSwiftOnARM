@@ -14,12 +14,14 @@ RUN apt-get upgrade -y
 RUN apt-get install -y \
   git           \
   libedit2      \
-  libpython2.7 libcurl3 libxml2 libicu60 \
-  libc6-dev	\
-  libatomic1	\
-  libpython3.5 \
-  libcurl3-nss
-
+  libpython2.7 libcurl3-gnutls libxml2 libicu60 \
+  libc6-dev	    \
+  libatomic1	  \
+  libpython3.5  \
+  libcurl3-nss  \
+  curl
+# curl seems necessary to grab the right lib, didn't research which one
+# it is :-) /usr/lib/aarch64-linux-gnu/libcurl-* looks the same!
 
 # tarball starts at /
 ADD $TARBALL /
