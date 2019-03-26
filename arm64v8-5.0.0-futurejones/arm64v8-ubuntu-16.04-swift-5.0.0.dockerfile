@@ -1,24 +1,25 @@
 # Dockerfile
 #
-FROM arm64v8/ubuntu:18.04
+FROM arm64v8/ubuntu:16.04
 
 LABEL maintainer "Helge Heß <me@helgehess.eu>"
 
-ARG TARBALL=swift-5.0-aarch64-DEV-18.04_2018-12-26.tar.gz
+ARG TARBALL=swift-5.0-aarch64-RELEASE-Ubuntu-16.04_2019-03-26.tar.gz
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update
 RUN apt-get upgrade -y
 
+# Funny: libcurl3 provies libcurl.so.4 :-)
+# Maybe libpython3.5 makes libpython2.7 obsolete?
 RUN apt-get install -y \
   git           \
   libedit2      \
-  libpython2.7 libcurl3-gnutls libxml2 libicu60 \
-  libc6-dev	    \
-  libatomic1	  \
+  libpython2.7 libcurl3 libxml2 libicu55 \
+  libc6-dev     \
+  libatomic1    \
   libpython3.5  \
-  libcurl3-nss  \
   curl
 # curl seems necessary to grab the right lib, didn't research which one
 # it is :-) /usr/lib/aarch64-linux-gnu/libcurl-* looks the same!
