@@ -22,8 +22,9 @@ DOCKER_LATEST_TAG=$(SWIFTVERSION)-latest
 DERIVED_TARBALL="v$(SWIFTVERSION)-$(SWIFT_OS)-$(SWIFTOSVERSION)/swift-$(SWIFTVERSION)-$(SWIFT_CPU)-RELEASE-$(SWIFT_OS_CAP)-$(SWIFTOSVERSION)_$(BUILDDATE).tar.gz"
 
 all:
-	@echo "use 'fetch' target to fetch tarball"
-	@echo "use 'build' target to build"
+	@echo "use 'make fetch' target to fetch tarball"
+	@echo "use 'make build' target to build"
+	@echo "use 'make run'   to try the container"
 
 fetch :
 	wget $(PKG_DOWNLOAD_URL)/$(DERIVED_TARBALL)
@@ -39,3 +40,7 @@ build:
 publish:
 	time docker push $(DOCKER_USER)/$(DOCKER_IMAGE_NAME):$(DOCKER_FULL_VERSION_TAG)
 	time docker push $(DOCKER_USER)/$(DOCKER_IMAGE_NAME):$(DOCKER_LATEST_TAG)
+
+run:
+	docker run --rm --interactive --tty --name "swift-run" \
+		$(DOCKER_USER)/$(DOCKER_IMAGE_NAME):$(DOCKER_FULL_VERSION_TAG)
