@@ -1,6 +1,6 @@
 # Dockerfile
 #
-FROM helje5/arm64v8-swift:5.0dev-latest
+FROM helje5/arm64v8-swift:5.0.0
 
 LABEL maintainer "Helge Heß <me@helgehess.eu>"
 
