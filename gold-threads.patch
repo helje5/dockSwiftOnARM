@@ -1,0 +1,5 @@
+288,289c288
+<     : once_(PTHREAD_ONCE_INIT)
+<   { }
+---
+>   {once_.__sig = _PTHREAD_ONCE_SIG_init; once_.__opaque[0] = 0;}

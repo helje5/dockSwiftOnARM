@@ -1,9 +1,15 @@
 *.tgz
 *.bz2
 *.gz
+*.pkg
+tmp_*
+cache*
 swift-checkout
 buildSwiftOnARM
-helloworld
 vaca
 CowsServiceX
+Destinations
+SDKs
+Toolchains
+**/.build
 

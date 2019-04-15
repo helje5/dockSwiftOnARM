@@ -1,0 +1,197 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf200
+{\fonttbl\f0\fnil\fcharset0 AvenirNext-Bold;\f1\fnil\fcharset0 AvenirNext-Regular;\f2\fnil\fcharset0 LucidaGrande;
+\f3\fswiss\fcharset0 Helvetica;\f4\fnil\fcharset0 AndaleMono;\f5\fnil\fcharset0 AvenirNext-MediumItalic;
+\f6\fnil\fcharset0 AvenirNext-Italic;}
+{\colortbl;\red255\green255\blue255;\red60\green60\blue60;\red127\green127\blue127;\red127\green127\blue127;
+}
+{\*\expandedcolortbl;;\cssrgb\c30196\c30196\c30196;\cssrgb\c57046\c57047\c57046;\cssrgb\c57046\c57047\c57046;
+}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{square\}}{\leveltext\leveltemplateid1\'01\uc0\u9642 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid101\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid201\'01\uc0\u8259 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
+\margl1440\margr1440\vieww19680\viewh9960\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\b\fs39\fsmilli19800 \cf2 \expnd0\expndtw0\kerning0
+Instructions for MacOS -> arm64 Ubuntu 18.04 Cross Compilation Toolchain\
+\
+Prepping the R/Pi\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs36 \cf2 \
+Requirements: Raspberry Pi 3b or 3b+ as follows: \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0\cf2 \kerning1\expnd0\expndtw0 {\listtext	
+\f2 \uc0\u9642 
+\f1 	}\expnd0\expndtw0\kerning0
+running any 64-bit OS \
+\ls1\ilvl0\kerning1\expnd0\expndtw0 {\listtext	
+\f2 \uc0\u9642 
+\f1 	}\expnd0\expndtw0\kerning0
+docker-compose and it's dependencies installed \
+\ls1\ilvl0\kerning1\expnd0\expndtw0 {\listtext	
+\f2 \uc0\u9642 
+\f1 	}firewall ports open: 8080 and 9293\
+{\listtext	
+\f2 \uc0\u9642 
+\f1 	}You will need to know the IP address or DNS FQDN of the Pi in order to do remote debugging\expnd0\expndtw0\kerning0
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf2 On the R/Pi: \
+
+\f4\fs28 \
+\cf3 mkdir lldb-server\
+cd lldb-server\
+wget https://raw.githubusercontent.com/CSCIX65G/swift-remote-debug/master/docker-compose/arm64/docker-compose.yml \
+docker-compose up -d\
+
+\f0\b \cf2 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs36 \cf2 This will start the lldb-server on the R/Pi, listening on port 9293.   You can now build the cross-compiler on your Mac.\
+\pard\pardeftab720\partightenfactor0
+
+\f0\b\fs39\fsmilli19800 \cf2 \
+Building the ARM toolchain on MacOS\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs36 \cf2 Requirements: \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls2\ilvl0\cf2 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Xcode 10 or later  \
+\ls2\ilvl0\kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}Homebrew coreutils installed with:\
+		
+\f4\fs28 \cf3 \expnd0\expndtw0\kerning0
+brew install coreutils
+\f1\fs36 \cf2 \
+\ls2\ilvl0\kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+The Swift 5.0 Toolchain installed 
+\f5\i and selected as the current toolchain
+\f1\i0  in Xcode\
+\ls2\ilvl0\kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+Homebrew installed\
+\ls2\ilvl0\kerning1\expnd0\expndtw0 {\listtext	\uc0\u8226 	}On a command line verify that you are using Swift 5 by typing: \expnd0\expndtw0\kerning0
+\
+\pard\pardeftab720\partightenfactor0
+
+\f4\fs28 \cf3 	export TOOLCHAINS=swift\
+	swift \'97version\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls3\ilvl0\cf3 \kerning1\expnd0\expndtw0 		
+\f1\fs36 \cf2 Remember that you will need to verify this in every terminal window that you use.  If you are using Swift 4, your builds will not work
+\f4\fs28 \cf3 \expnd0\expndtw0\kerning0
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs36 \cf2 \
+In a directory of your choosing on your Mac do the following (NB the packages fetched below will change over time, these instructions are for @futurejones Swift5-7.0 current as of 2019-02-22):\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+
+\f4\fs28 \cf3 \kerning1\expnd0\expndtw0 \CocoaLigature0 git clone https://github.com/CSCIX65G/swift-mac2arm-x-compile-toolchain.git -b swift-5.0-development\expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\pard\pardeftab720\partightenfactor0
+\cf3 cd \kerning1\expnd0\expndtw0 \CocoaLigature0 swift-mac2arm-x-compile-toolchain\expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\pard\pardeftab720\partightenfactor0
+\cf4 \kerning1\expnd0\expndtw0 \CocoaLigature0 wget https://github.com/futurejones/swift-arm64/releases/download/v5.0-ubuntu-18.04/swift-5.0-aarch64-RELEASE-Ubuntu-18.04_2019-03-26.tar.gz\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+\cf4 wget https://swift.org/builds/swift-5.0-release/xcode/swift-5.0-RELEASE/swift-5.0-RELEASE-osx.pkg\
+./build_cross_compiler . swift-5.0-RELEASE-osx.pkg swift-5.0-aarch64-RELEASE-Ubuntu-18.04_2019-03-26.tar.gz\expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs36 \cf2 \
+The last step will take several minutes to complete. (Particularly the step where it builds the ld.gold linker). When it does finish, you should get a message saying all is well and the directories Toolchains, SDKs, and Destinations, populated with various arm64- files will have been produced.\
+\pard\pardeftab720\partightenfactor0
+
+\f4\fs28 \cf3 \
+cd helloworld\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+\cf3 \kerning1\expnd0\expndtw0 \CocoaLigature0 swift build --destination ../Destinations/arm64-ubuntu-bionic.json\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs36 \cf2 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+If this finishes successfully you have an Arm64 executable in 
+\f4\fs28 \cf3 \kerning1\expnd0\expndtw0 \CocoaLigature0 .build/aarch64-unknown-linux/debug/helloworld
+\f1\fs36 \cf2 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\
+\pard\pardeftab720\partightenfactor0
+
+\f0\b \cf2 Remote debugging on the Pi\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0 \cf2 Now type:\
+\pard\pardeftab720\partightenfactor0
+
+\f4\fs28 \cf3 \
+lldb \kerning1\expnd0\expndtw0 \CocoaLigature0 .build/aarch64-unknown-linux/debug/helloworld\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+\cf3 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs36 \cf2 \expnd0\expndtw0\kerning0
+\CocoaLigature1 This will produce an lldb prompt.  Now for the good stuff:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+
+\f4\fs28 \cf3 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+env LD_LIBRARY_PATH=/swift-runtime//usr/lib/swift/linux:/swift-runtime/usr/lib/aarch64-linux-gnu:/swift-runtime/lib/aarch64-linux-gnu\
+platform connect  connect://[IP or FQDN of your R/Pi]:9293\
+\expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs36 \cf2 The first command tells the lldb-server running on your Pi where to find the swift runtime libraries. The last command should produce output similar to:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+
+\f4\fs24 \cf3 \kerning1\expnd0\expndtw0 \CocoaLigature0   Platform: remote-linux\
+    Triple: aarch64-*-linux-gnu\
+OS Version: 4.14.95 (4.14.95-hypriotos-v8)\
+    Kernel: #1 SMP PREEMPT Thu Jan 31 15:56:11 UTC 2019\
+  Hostname: e16dev-dev\
+ Connected: yes\
+WorkingDir: /debug\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs36 \cf2 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+The first time you launch lldb you 
+\f6\i may
+\f1\i0  need to say:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+
+\f4\fs28 \cf3 \kerning1\expnd0\expndtw0 \CocoaLigature0 platform select remote-linux\expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs36 \cf2 \
+Now say:\
+\pard\pardeftab720\partightenfactor0
+
+\f4\fs28 \cf3 run
+\f1\fs36 \cf2 \
+\
+(I find that sometimes you need exit lldb and rerun the steps above to get the remote process to launch successfully).\
+Running takes a while especially on first launch, because it has to copy the helloworld file to the R/Pi, but you should eventually see something like:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+
+\f4\fs28 \cf3 \kerning1\expnd0\expndtw0 \CocoaLigature0 Process 32 launched: '.build/aarch64-unknown-linux/debug/helloworld' (aarch64)\
+Hello, world!\
+Process 32 exited with status = 0 (0x00000000) \
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs36 \cf2 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+Congrats, you have built and remote debugged an Arm64 executable on your Mac.\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f4\fs28 \cf3 \
+}

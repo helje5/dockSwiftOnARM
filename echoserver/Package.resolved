@@ -1,0 +1,97 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "HeliumLogger",
+        "repositoryURL": "https://github.com/IBM-Swift/HeliumLogger.git",
+        "state": {
+          "branch": "master",
+          "revision": "779865e83149a59894b14950aa83f70b7e81bc27",
+          "version": null
+        }
+      },
+      {
+        "package": "LoggerAPI",
+        "repositoryURL": "https://github.com/IBM-Swift/LoggerAPI.git",
+        "state": {
+          "branch": null,
+          "revision": "e29073bb7cecf3673e56bcb16180e8fd0cb091f6",
+          "version": "1.8.1"
+        }
+      },
+      {
+        "package": "Shell",
+        "repositoryURL": "https://github.com/AlwaysRightInstitute/Shell.git",
+        "state": {
+          "branch": null,
+          "revision": "9982634c51b506d42fcb11b1c85e7ccc145679bd",
+          "version": "0.1.4"
+        }
+      },
+      {
+        "package": "SmokeFramework",
+        "repositoryURL": "https://github.com/amzn/smoke-framework.git",
+        "state": {
+          "branch": "master",
+          "revision": "0d4022125dcb13c7f9d0bdf8bdea198fa08ae157",
+          "version": null
+        }
+      },
+      {
+        "package": "SmokeHTTP",
+        "repositoryURL": "https://github.com/amzn/smoke-http.git",
+        "state": {
+          "branch": null,
+          "revision": "60bc2c4c88700ff46f2cfd1f766c4ac8319488a9",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "swift-nio",
+        "repositoryURL": "https://github.com/apple/swift-nio.git",
+        "state": {
+          "branch": null,
+          "revision": "ba7970fe396e8198b84c6c1b44b38a1d4e2eb6bd",
+          "version": "1.14.1"
+        }
+      },
+      {
+        "package": "swift-nio-extras",
+        "repositoryURL": "https://github.com/apple/swift-nio-extras.git",
+        "state": {
+          "branch": null,
+          "revision": "0dbd54199d06c80a35b441c39ac2ef1b78778740",
+          "version": "0.1.3"
+        }
+      },
+      {
+        "package": "swift-nio-ssl",
+        "repositoryURL": "https://github.com/apple/swift-nio-ssl.git",
+        "state": {
+          "branch": null,
+          "revision": "0f3999f3e3c359cc74480c292644c3419e44a12f",
+          "version": "1.4.0"
+        }
+      },
+      {
+        "package": "swift-nio-ssl-support",
+        "repositoryURL": "https://github.com/apple/swift-nio-ssl-support.git",
+        "state": {
+          "branch": null,
+          "revision": "c02eec4e0e6d351cd092938cf44195a8e669f555",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "swift-nio-zlib-support",
+        "repositoryURL": "https://github.com/apple/swift-nio-zlib-support.git",
+        "state": {
+          "branch": null,
+          "revision": "37760e9a52030bb9011972c5213c3350fa9d41fd",
+          "version": "1.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
