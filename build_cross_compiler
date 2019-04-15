@@ -20,8 +20,11 @@ export PATH="/bin:/usr/bin:/usr/local/bin"
 # --- Configuration ---------------------------------------------
 
 # architecture variables
-ARCH_NAME=arm64
-TARGET_ARCH=aarch64
+#ARCH_NAME=arm64
+ARCH_NAME=${4-'arm64'}
+#TARGET_ARCH=aarch64
+TARGET_ARCH=${5-'aarch64'}
+
 export TC_TARGET="${TARGET_ARCH}-linux-gnu"
 export SPM_TARGET="${TARGET_ARCH}-unknown-linux"
 
@@ -38,8 +41,13 @@ cross_destination_basename="Destinations"
 
 # URLs
 binutils_pkg_url="https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.gz"
-ubuntu_mirror="http://ports.ubuntu.com/ubuntu-ports"
+if [[ "$ARCH_NAME" == "amd64" ]]; then
+   ubuntu_mirror="http://archive.ubuntu.com/ubuntu"
+else
+   ubuntu_mirror="http://ports.ubuntu.com/ubuntu-ports"
+fi
 packages_file="$ubuntu_mirror/dists/bionic/main/binary-${ARCH_NAME}/Packages.gz"
+echo "Packages file = " $packages_file
 
 # verified for Bionic
 pkg_names=( \
@@ -60,6 +68,8 @@ pkg_names=( \
     libroken18-heimdal librtmp1 libsasl2-2 libsasl2-modules libsasl2-modules-db \
     libsqlite3-0 libssl1.1 libwind0-heimdal libxml2 openssl publicsuffix \
     libcom-err2 libp11-kit0 libtasn1-6 libffi6 \
+    libcilkrts5 libmpx2 libquadmath0 libharfbuzz0b libharfbuzz-icu0 \
+    libharfbuzz-gobject0 libgmpxx4ldbl \
 )
 pkgs=()
 
@@ -82,7 +92,7 @@ function usage() {
     echo >&2 "  swift build --destination ~/Library/Destinations/arm64-ubuntu-bionic-destination.json"
 }
 
-if [[ $# -ne 3 ]]; then
+if [[ $# -lt 3 || $# -gt 5 ]]; then
     usage
     exit 1
 fi
@@ -143,7 +153,7 @@ function fix_glibc_modulemap() {
 # where to get stuff from
 dest=$(realpath "$1")
 # make sure the cache directory is created
-mkdir $dest/cache || true
+mkdir $dest/cache_${ARCH_NAME} || true
 macos_swift_pkg=$(realpath "$2")
 linux_swift_pkg=$(realpath "$3")
 if ! test -f "$macos_swift_pkg"; then
@@ -162,9 +172,9 @@ function download_stdout() {
 
 # url, key
 function download_with_cache() {
-    mkdir -p "$dest/cache"
+    mkdir -p "$dest/cache_${ARCH_NAME}"
     local out
-    out="$dest/cache/$2"
+    out="$dest/cache_${ARCH_NAME}/$2"
     if [[ ! -f "$out" ]]; then
         curl --fail -s -o "$out" "$1"
     fi
