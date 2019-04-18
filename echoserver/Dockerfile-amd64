@@ -1,0 +1,11 @@
+FROM scratch
+MAINTAINER Van Simmons <van.simmons@computecycles.com>
+
+VOLUME ["/lib", "/usr/lib"]
+
+COPY ./.build/x86_64-unknown-linux/debug/echoserver ./echoserver
+
+ENV LD_LIBRARY_PATH=/usr/lib/swift/linux
+ENTRYPOINT ["/lib/x86_64-linux-gnu/ld-2.27.so"]
+CMD ["./echoserver"]
+

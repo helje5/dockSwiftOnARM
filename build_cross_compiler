@@ -329,8 +329,6 @@ rsync -a "$tmp/usr/lib/swift/os"           "$dest/$cross_sdk_basename/$linux_sdk
 rsync -a "$tmp/usr/lib/swift/CoreFoundation" "$dest/$cross_sdk_basename/$linux_sdk_name/usr/include/"
 
 rm -rf "$tmp"
-
-#cp "$dest/$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/libdispatch.so" "$dest/$cross_sdk_basename/$linux_sdk_name/usr/lib/"
 )
 
 fix_glibc_modulemap "$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/${TARGET_ARCH}/glibc.modulemap"
