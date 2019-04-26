@@ -48,8 +48,10 @@ else
 fi
 packages_file="$ubuntu_mirror/dists/bionic/main/binary-${ARCH_NAME}/Packages.gz"
 supplemental_packages_file="$ubuntu_mirror/dists/bionic/universe/binary-${ARCH_NAME}/Packages.gz"
-echo "Packages file = " $packages_file
-echo "Supplemental packages file = " $supplemental_packages_file
+updates_file="$ubuntu_mirror/dists/bionic-updates/main/binary-${ARCH_NAME}/Packages.gz"
+universe_updates_file="$ubuntu_mirror/dists/bionic-updates/universe/binary-${ARCH_NAME}/Packages.gz"
+
+distros=($packages_file $supplemental_packages_file $updates_file $universe_updates_file)
 
 # verified for Bionic
 pkg_names=( \
@@ -71,8 +73,8 @@ pkg_names=( \
     libsqlite3-0 libssl1.1 libwind0-heimdal libxml2 openssl publicsuffix \
     libcom-err2 libp11-kit0 libtasn1-6 libffi6 \
     libcilkrts5 libmpx2 libquadmath0 libharfbuzz0b libharfbuzz-icu0 \
-    libharfbuzz-gobject0 libgmpxx4ldbl libllvm6.0 libncurses5 libedit2 \
-    libtinfo5 lldb-6.0 liblldb-6.0 \
+    libharfbuzz-gobject0 libgmpxx4ldbl libllvm7 llvm-7-dev libncurses5 libedit2 \
+    libtinfo5 lldb-7 liblldb-7 \
 )
 
 pkgs=()
@@ -235,31 +237,20 @@ mkdir -p "$cross_runtime_basename/$ARCH_NAME"
 
 # --- Fetch Linux Platform SDK Package Specifications -----------------------
 echo "Construct list of swift package dependencies for ${ARCH_NAME}"
-# oopsie, this is slow but seemingly fast enough :)
-while read -r line; do
-    for pkg_name in "${pkg_names[@]}"; do
-        if [[ "$line" =~ ^Filename:\ (.*\/([^/_]+)_.*$) ]]; then
-            #echo "${BASH_REMATCH[2]}"
-            if [[ "${BASH_REMATCH[2]}" == "$pkg_name" ]]; then
-                new_pkg="$ubuntu_mirror/${BASH_REMATCH[1]}"
-                pkgs+=( "$new_pkg" )
+for distro_name in "${distros[@]}"; do
+    echo "processing ${distro_name}"
+    while read -r line; do
+	for pkg_name in "${pkg_names[@]}"; do
+            if [[ "$line" =~ ^Filename:\ (.*\/([^/_]+)_.*$) ]]; then
+		#echo "${BASH_REMATCH[2]}"
+		if [[ "${BASH_REMATCH[2]}" == "$pkg_name" ]]; then
+                    new_pkg="$ubuntu_mirror/${BASH_REMATCH[1]}"
+                    pkgs+=( "$new_pkg" )
+		fi
             fi
-        fi
-    done
-done < <(download_stdout "$packages_file" | gunzip -d -c | grep ^Filename:)
-
-while read -r line; do
-    for pkg_name in "${pkg_names[@]}"; do
-        if [[ "$line" =~ ^Filename:\ (.*\/([^/_]+)_.*$) ]]; then
-            #echo "${BASH_REMATCH[2]}"
-            if [[ "${BASH_REMATCH[2]}" == "$pkg_name" ]]; then
-                new_pkg="$ubuntu_mirror/${BASH_REMATCH[1]}"
-                pkgs+=( "$new_pkg" )
-		echo "Adding supplemental package: $new_pkg"
-            fi
-        fi
-    done
-done < <(download_stdout "$supplemental_packages_file" | gunzip -d -c | grep ^Filename:)
+	done
+    done < <(download_stdout "$distro_name" | gunzip -d -c | grep ^Filename:)
+done
 
 echo "Download swift package dependencies"
 
