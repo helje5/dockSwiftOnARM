@@ -20,13 +20,22 @@ export PATH="/bin:/usr/bin:/usr/local/bin"
 # --- Configuration ---------------------------------------------
 
 # architecture variables
-#ARCH_NAME=arm64
+#ARCH_NAME=arm64/amd64/armhf
 ARCH_NAME=${4-'arm64'}
-#TARGET_ARCH=aarch64
+
+#TARGET_ARCH=aarch64/x86_64/armv7
 TARGET_ARCH=${5-'aarch64'}
 
-export TC_TARGET="${TARGET_ARCH}-linux-gnu"
-export SPM_TARGET="${TARGET_ARCH}-unknown-linux"
+#GNU_EXTENSION=''/''/eabihf
+GNU_EXTENSION=${6-''}
+
+export TC_TARGET="${TARGET_ARCH}-linux-gnu${GNU_EXTENSION}"
+if [ "${GNU_EXTENSION}" != "" ]; then
+    export SPM_TARGET="${TARGET_ARCH}-unknown-linux-gnu${GNU_EXTENSION}"
+else
+    export SPM_TARGET="${TARGET_ARCH}-unknown-linux"
+fi
+echo SPM_TARGET = ${SPM_TARGET}
 
 # output dirs and files
 xc_tc_name="${ARCH_NAME}-swift.xctoolchain"
@@ -73,8 +82,8 @@ pkg_names=( \
     libsqlite3-0 libssl1.1 libwind0-heimdal libxml2 openssl publicsuffix \
     libcom-err2 libp11-kit0 libtasn1-6 libffi6 \
     libcilkrts5 libmpx2 libquadmath0 libharfbuzz0b libharfbuzz-icu0 \
-    libharfbuzz-gobject0 libgmpxx4ldbl libllvm7 llvm-7-dev libncurses5 libedit2 \
-    libtinfo5 lldb-7 liblldb-7 \
+    libharfbuzz-gobject0 libgmpxx4ldbl libllvm6.0 llvm-6.0-dev libncurses5 libedit2 \
+    libtinfo5 lldb-6.0 liblldb-6.0 \
 )
 
 pkgs=()
@@ -98,7 +107,7 @@ function usage() {
     echo >&2 "  swift build --destination ~/Library/Destinations/arm64-ubuntu-bionic-destination.json"
 }
 
-if [[ $# -lt 3 || $# -gt 5 ]]; then
+if [[ $# -lt 3 || $# -gt 6 ]]; then
     usage
     exit 1
 fi
@@ -353,7 +362,7 @@ cat > "$cross_destination_basename/$destination_name" <<EOF
     "target": "${SPM_TARGET}",
     "dynamic-library-extension": "so",
     "extra-cc-flags": [
-        "-I", "$(pwd)/${cross_sdk_basename}/${linux_sdk_name}/usr/include/${TARGET_ARCH}-linux-gnu",
+        "-I", "$(pwd)/${cross_sdk_basename}/${linux_sdk_name}/usr/include/${TARGET_ARCH}-linux-gnu${GNU_EXTENSION}",
         "-I", "$(pwd)/${cross_sdk_basename}/${linux_sdk_name}/usr/include",
         "-fPIC"
     ],
@@ -362,7 +371,7 @@ cat > "$cross_destination_basename/$destination_name" <<EOF
         "-use-ld=gold", "-tools-directory", "$(pwd)/$cross_tc_basename/$xc_tc_name/usr/bin"
     ],
     "extra-cpp-flags": [
-        "-I", "$(pwd)/${cross_sdk_basename}/${linux_sdk_name}/usr/include/${TARGET_ARCH}-linux-gnu",
+        "-I", "$(pwd)/${cross_sdk_basename}/${linux_sdk_name}/usr/include/${TARGET_ARCH}-linux-gnu${GNU_EXTENSION}",
         "-I", "$(pwd)/${cross_sdk_basename}/${linux_sdk_name}/usr/include"
     ]
 }
