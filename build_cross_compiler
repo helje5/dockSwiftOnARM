@@ -13,104 +13,13 @@
 # This will enable swift containers to run on other OSes which are docker-capable (including Windows). 
 #
 
-set -eu
-
-export PATH="/bin:/usr/bin:/usr/local/bin"
-
-# --- Configuration ---------------------------------------------
-
-# architecture variables
-#ARCH_NAME=arm64/amd64/armhf
-ARCH_NAME=${4-'arm64'}
-
-#TARGET_ARCH=aarch64/x86_64/armv7
-TARGET_ARCH=${5-'aarch64'}
-
-#GNU_EXTENSION=''/''/eabihf
-GNU_EXTENSION=${6-''}
-
-export TC_TARGET="${TARGET_ARCH}-linux-gnu${GNU_EXTENSION}"
-if [ "${GNU_EXTENSION}" != "" ]; then
-    export SPM_TARGET="${TARGET_ARCH}-unknown-linux-gnu${GNU_EXTENSION}"
-else
-    export SPM_TARGET="${TARGET_ARCH}-unknown-linux"
-fi
-echo SPM_TARGET = ${SPM_TARGET}
-
-# output dirs and files
-xc_tc_name="${ARCH_NAME}-swift.xctoolchain"
-linux_sdk_name="${ARCH_NAME}-ubuntu-bionic.sdk"
-destination_name="${ARCH_NAME}-ubuntu-bionic.json"
-
-# output base directory names
-cross_tc_basename="Toolchains"
-cross_sdk_basename="SDKs"
-cross_runtime_basename="Runtimes"
-cross_destination_basename="Destinations"
-
-# URLs
-binutils_pkg_url="https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.gz"
-if [[ "$ARCH_NAME" == "amd64" ]]; then
-   ubuntu_mirror="http://archive.ubuntu.com/ubuntu"
-else
-   ubuntu_mirror="http://ports.ubuntu.com/ubuntu-ports"
-fi
-packages_file="$ubuntu_mirror/dists/bionic/main/binary-${ARCH_NAME}/Packages.gz"
-supplemental_packages_file="$ubuntu_mirror/dists/bionic/universe/binary-${ARCH_NAME}/Packages.gz"
-updates_file="$ubuntu_mirror/dists/bionic-updates/main/binary-${ARCH_NAME}/Packages.gz"
-universe_updates_file="$ubuntu_mirror/dists/bionic-updates/universe/binary-${ARCH_NAME}/Packages.gz"
-
-distros=($packages_file $supplemental_packages_file $updates_file $universe_updates_file)
-
-# verified for Bionic
-pkg_names=( \
-    libc6 libc6-dev linux-libc-dev libicu60 libicu-dev \
-    libgcc1 libgcc-7-dev libstdc++6 libstdc++-7-dev \
-    libatomic1 zlib1g zlib1g-dev libasan4 libtsan0 libxml2 libxml2-dev \
-    liblsan0 libubsan0 libgomp1 libitm1 libiculx60 libcurl4 \
-    libbsd0 libbsd-dev libnghttp2-14 libnghttp2-dev librtmp1 librtmp-dev \
-    libpsl5 libpsl-dev libgmp10 libgmp-dev libgnutls30 libgnutils-dev \
-    libhogweed4 libicu-le-hb0 libicu-le-hb-dev libidn2-0 libidn2-0-dev \
-    liblzma5 liblzma-dev libnettle6 libr3-0 libr3-dev libunistring2 libunistring-dev \
-    libcrypto1.1-udeb libssl1.1 libssl-dev libharfbuzz0-udeb libharfbuzz-dev \
-    libldap-2.4-2 libldap2-dev ca-certificates krb5-locales libasn1-8-heimdal \
-    libatomic1 libbsd0 libcurl4 libgssapi-krb5-2 libgssapi3-heimdal libhcrypto4-heimdal \
-    libheimbase1-heimdal libheimntlm0-heimdal libhx509-5-heimdal libicu60 \
-    libk5crypto3 libkeyutils1 libkrb5-26-heimdal libkrb5-3 \
-    libkrb5support0 libldap-2.4-2 libldap-common libnghttp2-14 libpsl5 \
-    libroken18-heimdal librtmp1 libsasl2-2 libsasl2-modules libsasl2-modules-db \
-    libsqlite3-0 libssl1.1 libwind0-heimdal libxml2 openssl publicsuffix \
-    libcom-err2 libp11-kit0 libtasn1-6 libffi6 \
-    libcilkrts5 libmpx2 libquadmath0 libharfbuzz0b libharfbuzz-icu0 \
-    libharfbuzz-gobject0 libgmpxx4ldbl libllvm6.0 llvm-6.0-dev libncurses5 libedit2 \
-    libtinfo5 lldb-6.0 liblldb-6.0 \
-)
-
-pkgs=()
-
 function usage() {
-    echo >&2 "Usage: $0 SWIFT-FOR-MACOS.pkg SWIFT-FOR-LINUX.tar.gz"
+    echo >&2 "Usage: $0 NAME_OF_CONFIGURATION_FILE_TO_USE"
     echo >&2
-    echo >&2 "Example: $0 /tmp/ swift-5.0-DEVELOPMENT-SNAPSHOT-2019-02-21-a-osx.pkg swift-5.0-aarch64-DEV-Ubuntu-18.04_2019-02-13.tar.gz"
+    echo >&2 "Example: $0 arm64-5.0"
     echo >&2
-    echo >&2 "Complete example:"
-    echo >&2 "  # Download the Swift binaries for Ubuntu and macOS"
-    echo >&2 "  wget https://github.com/futurejones/swift-arm64/releases/download/swift-5.0-dev-ubuntu-18.04-2019-02-13/swift-5.0-aarch64-DEV-Ubuntu-18.04_2019-02-13.tar.gz"
-    echo >&2 "  wget https://swift.org/builds/swift-5.0-branch/xcode/swift-5.0-DEVELOPMENT-SNAPSHOT-2019-02-21-a/swift-5.0-DEVELOPMENT-SNAPSHOT-2019-02-21-a-osx.pkg"
-    echo >&2 "  # Compile the SDK and toolchain from that"
-    echo >&2 "  $0 ~/Library swift-5.0-DEVELOPMENT-SNAPSHOT-2019-02-21-a-osx.pkg swift-5.0-aarch64-DEV-Ubuntu-18.04_2019-02-13.tar.gz"
-    echo >&2 "  # Create a test application"
-    echo >&2 "  mkdir my-test-app"
-    echo >&2 "  cd my-test-app"
-    echo >&2 "  swift package init --type=executable"
-    echo >&2 "  # Build it for Ubuntu"
-    echo >&2 "  swift build --destination ~/Library/Destinations/arm64-ubuntu-bionic-destination.json"
 }
 
-if [[ $# -lt 3 || $# -gt 6 ]]; then
-    usage
-    exit 1
-fi
 
 # This is a funny function. The Glibc.modulemap contains absolute include
 # pathes like so:
@@ -164,22 +73,6 @@ function fix_glibc_modulemap() {
     done
 }
 
-# set -xv
-# where to get stuff from
-dest=$(realpath "$1")
-# make sure the cache directory is created
-mkdir $dest/cache_${ARCH_NAME} || true
-macos_swift_pkg=$(realpath "$2")
-linux_swift_pkg=$(realpath "$3")
-if ! test -f "$macos_swift_pkg"; then
-  echo "Missing macOS toolchain: $macos_swift_pkg"
-  exit 42
-fi
-if ! test -f "$linux_swift_pkg"; then
-  echo "Missing ${ARCH_NAME} toolchain: $linux_swift_pkg"
-  exit 42
-fi
-
 # url
 function download_stdout() {
     curl --fail -s "$1"
@@ -229,6 +122,115 @@ function unpack() {
     "unpack_$ext" "$@"
 }
 
+set -eu
+
+export PATH="/bin:/usr/bin:/usr/local/bin"
+
+if [[ $# -ne 1 ]]; then
+    usage
+    exit 1
+fi
+
+BASEDIR=`pwd`
+echo Constructing x-compiler in: $BASEDIR
+
+CONFIG=$1
+echo Using Configuration: $CONFIG
+
+# version and architecture variables
+#VERSION_NUMBER=5.0
+VERSION_NUMBER=`cat $CONFIG | jq -jc '.version' | sed s/\"//g`
+
+#ARCH_NAME=arm64/amd64/armhf
+ARCH_NAME=`cat $CONFIG | jq -jc '.archName' | sed s/\"//g`
+
+#TARGET_ARCH=aarch64/x86_64/armv7
+TARGET_ARCH=`cat $CONFIG | jq -jc '.targetArch' | sed s/\"//g`
+
+#GNU_EXTENSION=''/''/eabihf
+GNU_EXTENSION=`cat $CONFIG | jq -jc '.gnuExtension' | sed s/\"/\'/g`
+
+export TC_TARGET="${TARGET_ARCH}-linux-gnu${GNU_EXTENSION}"
+if [ "${GNU_EXTENSION}" != "" ]; then
+    SPM_TARGET="${TARGET_ARCH}-unknown-linux-gnu${GNU_EXTENSION}"
+else
+    SPM_TARGET="${TARGET_ARCH}-unknown-linux"
+fi
+echo Constructed SPM_TARGET = ${SPM_TARGET}
+
+# --- Configuration ---------------------------------------------
+
+# get the toolchains
+MAC_TOOLCHAIN_URL=`cat $CONFIG | jq -jc '.macToolchain' | sed s/\"//g`
+MAC_TOOLCHAIN=/tmp/`basename ${MAC_TOOLCHAIN_URL}`
+echo Prepare Mac Toolchain:
+if [ ! -f ${MAC_TOOLCHAIN} ]; then
+	echo "    fetching: $MAC_TOOLCHAIN_URL"
+    wget -q --output-document $MAC_TOOLCHAIN $MAC_TOOLCHAIN_URL
+else
+	echo "    Not fetching previously fetched: $MAC_TOOLCHAIN"
+fi
+
+TARGET_TOOLCHAIN_URL=`cat $CONFIG | jq -jc '.targetToolchain' | sed s/\"//g`
+TARGET_TOOLCHAIN=/tmp/`basename ${TARGET_TOOLCHAIN_URL}`
+echo Prepare Target Toolchain:
+if [ ! -f ${TARGET_TOOLCHAIN} ]; then
+	echo "    fetching: $TARGET_TOOLCHAIN_URL"
+    wget -q --output-document $TARGET_TOOLCHAIN $TARGET_TOOLCHAIN_URL
+else
+	echo "    Not fetching previously fetched: $TARGET_TOOLCHAIN"
+fi
+
+# output dirs and files
+xc_tc_name="${ARCH_NAME}-${VERSION_NUMBER}-swift.xctoolchain"
+linux_sdk_name="${ARCH_NAME}-${VERSION_NUMBER}-ubuntu-bionic.sdk"
+destination_name="${ARCH_NAME}-${VERSION_NUMBER}-ubuntu-bionic.json"
+
+# set -xv
+# where to get stuff from
+dest=$(realpath `cat $CONFIG | jq -jc '.cachePath'`)
+
+# output base directory names
+cross_tc_basename="${dest}/Toolchains"
+cross_sdk_basename="${dest}/SDKs"
+cross_runtime_basename="${dest}/Runtimes"
+cross_destination_basename="${dest}/Destinations"
+
+# URLs
+binutils_pkg_url=`cat $CONFIG | jq -jc '.binutilsSource' | sed s/\"//g`
+echo binutils source: $binutils_pkg_url
+
+apt_mirror=`cat $CONFIG | jq -jc '.packageMirror' | sed s/\"//g`
+echo apt mirror base: $apt_mirror
+
+raw_distros=( \
+	`cat $CONFIG | jq -jc '.packageSources' | sed s/\",\"/\ /g | sed s/\"//g | sed s/"\["//g | sed s/"\]"//g` \
+)
+distros=( `for i in ${raw_distros[@]}; do echo -n " $apt_mirror$i"; done` )
+
+echo "apt package lists (from apt mirror base):"
+for i in `cat $CONFIG | jq -jc '.packageSources' | sed s/\",\"/\ /g | sed s/\"//g | sed s/"\["//g | sed s/"\]"//g `; do echo "    $i"; done
+
+# must be verified for each distro
+pkg_names=( \
+	`cat $CONFIG | jq -jc '.requiredPackages' | sed s/\",\"/\ /g | sed s/\"//g | sed s/"\["//g | sed s/"\]"//g` \
+)
+
+pkgs=()
+
+# make sure the cache directory is created
+mkdir $dest/cache_${ARCH_NAME} || true
+macos_swift_pkg=$(realpath "${MAC_TOOLCHAIN}")
+linux_swift_pkg=$(realpath "${TARGET_TOOLCHAIN}")
+if ! test -f "$macos_swift_pkg"; then
+  echo "Missing macOS toolchain: $macos_swift_pkg"
+  exit 42
+fi
+if ! test -f "$linux_swift_pkg"; then
+  echo "Missing ${ARCH_NAME} toolchain: $linux_swift_pkg"
+  exit 42
+fi
+
 cd "$dest"
 
 rm -rf $cross_sdk_basename/$linux_sdk_name
@@ -240,20 +242,20 @@ mkdir -p "$cross_tc_basename/$xc_tc_name"
 rm -rf $cross_destination_basename/$destination_name
 mkdir -p "$cross_destination_basename"
 
-rm -rf $cross_runtime_basename/$ARCH_NAME
-rm -rf $cross_runtime_basename/${ARCH_NAME}-runtime.tar.gz
-mkdir -p "$cross_runtime_basename/$ARCH_NAME"
+rm -rf $cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER
+rm -rf $cross_runtime_basename/${ARCH_NAME}-${VERSION_NUMBER}-runtime.tar.gz
+mkdir -p "$cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER"
 
 # --- Fetch Linux Platform SDK Package Specifications -----------------------
 echo "Construct list of swift package dependencies for ${ARCH_NAME}"
 for distro_name in "${distros[@]}"; do
-    echo "processing ${distro_name}"
+    echo "    extracting from ${distro_name}"
     while read -r line; do
 	for pkg_name in "${pkg_names[@]}"; do
             if [[ "$line" =~ ^Filename:\ (.*\/([^/_]+)_.*$) ]]; then
 		#echo "${BASH_REMATCH[2]}"
 		if [[ "${BASH_REMATCH[2]}" == "$pkg_name" ]]; then
-                    new_pkg="$ubuntu_mirror/${BASH_REMATCH[1]}"
+                    new_pkg="$apt_mirror/${BASH_REMATCH[1]}"
                     pkgs+=( "$new_pkg" )
 		fi
             fi
@@ -271,8 +273,8 @@ for f in "${pkgs[@]}"; do
     name="$(basename "$f")"
     echo "  downloading ${f}"
     archive="$(download_with_cache "$f" "$name")"
-    echo "    unpacking ${name}"
-    unpack "$dest/$cross_sdk_basename/$linux_sdk_name" "$archive"
+    echo "    unpacking ${archive}"
+    unpack "$cross_sdk_basename/$linux_sdk_name" "$archive"
 done
 )
 rm -rf "$tmp"
@@ -286,14 +288,18 @@ mkdir -p "$xc_tc_name/usr/bin"
 echo "Create binutils for ${ARCH_NAME}"
 echo "  download $binutils_pkg_url"     
 binutils_pkg="$(download_with_cache "$binutils_pkg_url" binutils.tar.gz)"
-tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
 (
+tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
 cd "$tmp"
+
 echo "  unpack binutils.tar.gz"     
 tar -xf "$binutils_pkg"
 cd binutils-*
-echo "  patch broken gold-threads.cc"
-patch -s ./gold/gold-threads.cc ../../gold-threads.patch
+
+cp $BASEDIR/gold-threads.patch $tmp
+
+echo "  patch broken gold-threads.cc in `pwd`"
+patch -s ./gold/gold-threads.cc ../gold-threads.patch
 # 4secs on ZeaPro
 echo "  Configuring binutils (~4s) .."
 ./configure --enable-gold > xt-binutils-configure.log 2>&1
@@ -306,17 +312,19 @@ echo "  Configuring gold (~11s) .."
 echo "  .. building gold (~1m).."
 make -j > xt-gold-make.log 2>&1
 echo "  done."
-)
-cp "$tmp"/binutils-*/gold/ld-new "$xc_tc_name/usr/bin/ld.gold"
+cp "$tmp"/binutils-*/gold/ld-new "$cross_tc_basename/$xc_tc_name/usr/bin/ld.gold"
 rm -rf "$tmp"
+)
 
 # --- Patch Absolute Links ---------------------------------------------------
+(
+cd "$dest"
 echo "Fix absolute links in ${linux_sdk_name} ..."
-find "$dest/$cross_sdk_basename/$linux_sdk_name" -type l | while read -r line; do
+find "$cross_sdk_basename/$linux_sdk_name" -type l | while read -r line; do
     dst=$(readlink "$line")
     if [[ "${dst:0:1}" = / ]]; then
         rm "$line"
-        to=$dest/$cross_sdk_basename/$linux_sdk_name$dst
+        to=$cross_sdk_basename/$linux_sdk_name$dst
         baseNameTo=$(basename "${to}")
         dirNameTo=$(dirname "${to}")
         dirNameFrom=$(dirname "${line}")
@@ -325,6 +333,7 @@ find "$dest/$cross_sdk_basename/$linux_sdk_name" -type l | while read -r line; d
         ln -s "${relativePath}/${baseNameTo}" "$line"
     fi
 done
+)
 
 # --- Unpack macOS Swift Toolchain -------------------------------------------
 tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
@@ -342,13 +351,24 @@ tar -C "$tmp" -xf "$linux_swift_pkg"
 rsync -a "$tmp/usr/lib/swift/linux"        "$xc_tc_name/usr/lib/swift/"
 rsync -a "$tmp/usr/lib/swift_static/linux" "$xc_tc_name/usr/lib/swift_static/"
 
-rsync -a "$tmp/usr/lib/swift/dispatch"     "$dest/$cross_sdk_basename/$linux_sdk_name/usr/include/"
-rsync -a "$tmp/usr/lib/swift/os"           "$dest/$cross_sdk_basename/$linux_sdk_name/usr/include/"
-rsync -a "$tmp/usr/lib/swift/CoreFoundation" "$dest/$cross_sdk_basename/$linux_sdk_name/usr/include/"
+rsync -a "$tmp/usr/lib/swift/dispatch"     "$cross_sdk_basename/$linux_sdk_name/usr/include/"
+rsync -a "$tmp/usr/lib/swift/os"           "$cross_sdk_basename/$linux_sdk_name/usr/include/"
+rsync -a "$tmp/usr/lib/swift/CoreFoundation" "$cross_sdk_basename/$linux_sdk_name/usr/include/"
+
+rm -rf "$cross_sdk_basename/$linux_sdk_name/usr/share/doc"
 
 rm -rf "$tmp"
 )
 
+echo "Verify SDK Links"
+VALID=`find $cross_sdk_basename/$linux_sdk_name -type l -exec sh -c 'file -b "$1" | grep -q ^broken' sh {} \; -print | wc | awk '{print($1)}'`
+if [[ $VALID -ne 0 ]]; then
+    echo "    Invalid links in SDK: $VALID, exiting"
+    exit 77
+fi
+echo "    SDK is valid"
+
+echo "Fixing module map"
 fix_glibc_modulemap "$cross_tc_basename/$xc_tc_name/usr/lib/swift/linux/${TARGET_ARCH}/glibc.modulemap"
 
 # --- Generate the destintation specification  --------------------------------
@@ -356,56 +376,74 @@ echo "Generate ${ARCH_NAME} destination descriptor"
 cat > "$cross_destination_basename/$destination_name" <<EOF
 {
     "version": 1,
-    "sdk": "$(pwd)/${cross_sdk_basename}/${linux_sdk_name}",
-    "sysroot-flag": "$(pwd)/${cross_tc_basename}/${xc_tc_name}",
-    "toolchain-bin-dir": "$(pwd)/${cross_tc_basename}/${xc_tc_name}/usr/bin",
+    "sdk": "${cross_sdk_basename}/${linux_sdk_name}",
+    "sysroot-flag": "${cross_tc_basename}/${xc_tc_name}",
+    "toolchain-bin-dir": "${cross_tc_basename}/${xc_tc_name}/usr/bin",
     "target": "${SPM_TARGET}",
     "dynamic-library-extension": "so",
     "extra-cc-flags": [
-        "-I", "$(pwd)/${cross_sdk_basename}/${linux_sdk_name}/usr/include/${TARGET_ARCH}-linux-gnu${GNU_EXTENSION}",
-        "-I", "$(pwd)/${cross_sdk_basename}/${linux_sdk_name}/usr/include",
+        "-I", "${cross_sdk_basename}/${linux_sdk_name}/usr/include/${TARGET_ARCH}-linux-gnu${GNU_EXTENSION}",
+        "-I", "${cross_sdk_basename}/${linux_sdk_name}/usr/include",
         "-fPIC"
     ],
     "extra-swiftc-flags": [
         "-target", "${SPM_TARGET}",
-        "-use-ld=gold", "-tools-directory", "$(pwd)/$cross_tc_basename/$xc_tc_name/usr/bin"
+        "-use-ld=gold", "-tools-directory", "$cross_tc_basename/$xc_tc_name/usr/bin"
     ],
     "extra-cpp-flags": [
-        "-I", "$(pwd)/${cross_sdk_basename}/${linux_sdk_name}/usr/include/${TARGET_ARCH}-linux-gnu${GNU_EXTENSION}",
-        "-I", "$(pwd)/${cross_sdk_basename}/${linux_sdk_name}/usr/include"
+        "-I", "${cross_sdk_basename}/${linux_sdk_name}/usr/include/${TARGET_ARCH}-linux-gnu${GNU_EXTENSION}",
+        "-I", "${cross_sdk_basename}/${linux_sdk_name}/usr/include"
     ]
 }
 EOF
 
 # --- Create the Runtime tarball ------------------------------------------------
 # generate the runtime lib files for inclusion in the docker container from swift-remote-debug 
-echo "Generate ${ARCH_NAME} SDK tarball: ${cross_sdk_basename}/${ARCH_NAME}-sdk-libs.tar.gz"
-pushd $(pwd)/${cross_sdk_basename}/${linux_sdk_name} >> /dev/null
-tar zcf ../${ARCH_NAME}-sdk-libs.tar.gz `find usr -name "*.so*"` `find lib -name "*.so*"` `find . -name "lldb-server*"`
+echo "Generate ${ARCH_NAME} SDK tarball: ${cross_sdk_basename}/${ARCH_NAME}-${VERSION_NUMBER}-sdk-libs.tar.gz"
+pushd ${cross_sdk_basename}/${linux_sdk_name} >> /dev/null
+tar zcf ../${ARCH_NAME}-${VERSION_NUMBER}-sdk-libs.tar.gz `find usr -name "*.so*"` `find lib -name "*.so*"` `find . -name "lldb-server*"`
 popd >> /dev/null
 
-echo "Generate ${ARCH_NAME} Toolchain tarball: ${cross_tc_basename}/${ARCH_NAME}-toolchain-libs.tar.gz"
-pushd $(pwd)/${cross_tc_basename}/${xc_tc_name} >> /dev/null
-tar zcf ../${ARCH_NAME}-toolchain-libs.tar.gz `find usr/lib/swift/linux -name "*.so*"`
+echo "Generate ${ARCH_NAME} Toolchain tarball: ${cross_tc_basename}/${ARCH_NAME}-${VERSION_NUMBER}-toolchain-libs.tar.gz"
+pushd ${cross_tc_basename}/${xc_tc_name} >> /dev/null
+tar zcf ../${ARCH_NAME}-${VERSION_NUMBER}-toolchain-libs.tar.gz `find usr/lib/swift/linux -name "*.so*"`
 popd >> /dev/null
 
-echo "Generate combined runtime tarball: $cross_runtime_basename/${ARCH_NAME}-runtime.tar.gz"
-mv $(pwd)/${cross_tc_basename}/${ARCH_NAME}-toolchain-libs.tar.gz $cross_runtime_basename/$ARCH_NAME
-mv $(pwd)/${cross_sdk_basename}/${ARCH_NAME}-sdk-libs.tar.gz $cross_runtime_basename/$ARCH_NAME
-pushd $cross_runtime_basename/$ARCH_NAME > /dev/null
-tar zxf ./${ARCH_NAME}-toolchain-libs.tar.gz
-rm -rf ./${ARCH_NAME}-toolchain-libs.tar.gz
-tar zxf ./${ARCH_NAME}-sdk-libs.tar.gz
-rm -rf ./${ARCH_NAME}-sdk-libs.tar.gz
+echo "Generate combined runtime tarball: $cross_runtime_basename/${ARCH_NAME}-${VERSION_NUMBER}-runtime.tar.gz"
+mv ${cross_tc_basename}/${ARCH_NAME}-${VERSION_NUMBER}-toolchain-libs.tar.gz $cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER
+mv ${cross_sdk_basename}/${ARCH_NAME}-${VERSION_NUMBER}-sdk-libs.tar.gz $cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER
+pushd $cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER > /dev/null
+tar zxf ./${ARCH_NAME}-${VERSION_NUMBER}-toolchain-libs.tar.gz
+rm -rf ./${ARCH_NAME}-${VERSION_NUMBER}-toolchain-libs.tar.gz
+tar zxf ./${ARCH_NAME}-${VERSION_NUMBER}-sdk-libs.tar.gz
+rm -rf ./${ARCH_NAME}-${VERSION_NUMBER}-sdk-libs.tar.gz
 rm -rf usr/share usr/bin usr/sbin usr/include || true
-tar zcf ../${ARCH_NAME}-runtime-libs.tar.gz usr lib
+tar zcf ../${ARCH_NAME}-${VERSION_NUMBER}-runtime-libs.tar.gz usr lib
 popd > /dev/null
-rm -rf $cross_runtime_basename/$ARCH_NAME
+rm -rf $cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER
 
+cd $BASEDIR
+(
+cd helloworld
+echo Testing compiler
+rm -rf .build
+echo "   $cross_tc_basename/$xc_tc_name/usr/bin/swift build --destination $cross_destination_basename/$destination_name"
+$cross_tc_basename/$xc_tc_name/usr/bin/swift build \
+	--destination $cross_destination_basename/$destination_name || true
+if [[ ! -f ".build/$SPM_TARGET/debug/helloworld" ]]; then
+    echo Test build of helloworld for $SPM_TARGET failed
+	exit 79
+fi
+)
+	
 # --- Notify completion --------------------------------------------------------
 echo
-echo "Cross compilation toolchain for ${ARCH_NAME} Ubuntu Bionic is now ready to be used"
-echo " - SDK: $(pwd)/$cross_sdk_basename/$linux_sdk_name"
-echo " - Toolchain: $(pwd)/$cross_tc_basename/$xc_tc_name"
-echo " - SwiftPM destination.json: $(pwd)/$cross_tc_basename/${ARCH_NAME}-ubuntu-bionic-destination.json"
-echo " - Runtime Libraries: $(pwd)/${cross_runtime_basename}/${ARCH_NAME}-runtime-libs.tar.gz"
+echo "Cross compilation toolchain for ${ARCH_NAME}-${VERSION_NUMBER} Ubuntu Bionic is now ready to be tested"
+echo " - SDK: $cross_sdk_basename/$linux_sdk_name"
+echo " - Toolchain: $cross_tc_basename/$xc_tc_name"
+echo " - SwiftPM destination.json: $cross_tc_basename/${ARCH_NAME}-${VERSION_NUMBER}-ubuntu-bionic-destination.json"
+echo " - Runtime Libraries: ${cross_runtime_basename}/${ARCH_NAME}-${VERSION_NUMBER}-runtime-libs.tar.gz"
+
+
+
+

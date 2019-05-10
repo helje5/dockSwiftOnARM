@@ -474,7 +474,7 @@
 				<key>LOCATION</key>
 				<integer>0</integer>
 				<key>NAME</key>
-				<string>Swift Cross Compiler (arm64)</string>
+				<string>Swift_Cross_Compiler_arm64</string>
 				<key>OVERWRITE_PERMISSIONS</key>
 				<false/>
 				<key>PAYLOAD_SIZE</key>
