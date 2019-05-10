@@ -137,6 +137,9 @@ echo Constructing x-compiler in: $BASEDIR
 CONFIG=$1
 echo Using Configuration: $CONFIG
 
+#append to all names
+TOOLCHAIN_SUFFIX=`cat $CONFIG | jq -jc '.toolchainSuffix' | sed s/\"//g`
+
 # version and architecture variables
 #VERSION_NUMBER=5.0
 VERSION_NUMBER=`cat $CONFIG | jq -jc '.version' | sed s/\"//g`
@@ -156,7 +159,14 @@ if [ "${GNU_EXTENSION}" != "" ]; then
 else
     SPM_TARGET="${TARGET_ARCH}-unknown-linux"
 fi
-echo Constructed SPM_TARGET = ${SPM_TARGET}
+
+TOOLCHAIN_NAME=${ARCH_NAME}-${VERSION_NUMBER}-${TOOLCHAIN_SUFFIX}
+echo Building ${TOOLCHAIN_NAME}
+
+# output dirs and files
+xc_tc_name="${TOOLCHAIN_NAME}.xctoolchain"
+linux_sdk_name="${TOOLCHAIN_NAME}.sdk"
+destination_name="${TOOLCHAIN_NAME}.json"
 
 # --- Configuration ---------------------------------------------
 
@@ -181,10 +191,8 @@ else
 	echo "    Not fetching previously fetched: $TARGET_TOOLCHAIN"
 fi
 
-# output dirs and files
-xc_tc_name="${ARCH_NAME}-${VERSION_NUMBER}-swift.xctoolchain"
-linux_sdk_name="${ARCH_NAME}-${VERSION_NUMBER}-ubuntu-bionic.sdk"
-destination_name="${ARCH_NAME}-${VERSION_NUMBER}-ubuntu-bionic.json"
+PERFORM_REPACK=`cat $CONFIG | jq -jc '.performTargetToolchainRepack' | sed s/\"//g`
+
 
 # set -xv
 # where to get stuff from
@@ -228,7 +236,7 @@ if ! test -f "$macos_swift_pkg"; then
 fi
 if ! test -f "$linux_swift_pkg"; then
   echo "Missing ${ARCH_NAME} toolchain: $linux_swift_pkg"
-  exit 42
+  exit 43
 fi
 
 cd "$dest"
@@ -247,7 +255,7 @@ rm -rf $cross_runtime_basename/${ARCH_NAME}-${VERSION_NUMBER}-runtime.tar.gz
 mkdir -p "$cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER"
 
 # --- Fetch Linux Platform SDK Package Specifications -----------------------
-echo "Construct list of swift package dependencies for ${ARCH_NAME}"
+echo "Construct list of swift package dependencies for ${ARCH_NAME} (this will take some time)"
 for distro_name in "${distros[@]}"; do
     echo "    extracting from ${distro_name}"
     while read -r line; do
@@ -263,8 +271,7 @@ for distro_name in "${distros[@]}"; do
     done < <(download_stdout "$distro_name" | gunzip -d -c | grep ^Filename:)
 done
 
-echo "Download swift package dependencies"
-
+echo "Download swift package dependencies for SDK and Runtime"
 # --- Unpack Linux Platform SDK ---------------------------------------------
 tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
 (
@@ -346,17 +353,33 @@ rm -rf "$tmp"
 tmp=$(mktemp -d "$dest/tmp_pkgs_XXXXXX")
 
 echo "Unpack ${ARCH_NAME} toolchain: ${linux_swift_pkg}"
+subdir=`tar -tvf ${linux_swift_pkg} | head -1 | awk '{print($9)}' | awk -F/ '{print($1)}'`
+
 tar -C "$tmp" -xf "$linux_swift_pkg"
 
-rsync -a "$tmp/usr/lib/swift/linux"        "$xc_tc_name/usr/lib/swift/"
-rsync -a "$tmp/usr/lib/swift_static/linux" "$xc_tc_name/usr/lib/swift_static/"
+if [ "$subdir" == "usr" ]; then
+	# Normal toolchain
+	echo "    working in top level directory"
 
-rsync -a "$tmp/usr/lib/swift/dispatch"     "$cross_sdk_basename/$linux_sdk_name/usr/include/"
-rsync -a "$tmp/usr/lib/swift/os"           "$cross_sdk_basename/$linux_sdk_name/usr/include/"
-rsync -a "$tmp/usr/lib/swift/CoreFoundation" "$cross_sdk_basename/$linux_sdk_name/usr/include/"
+	rsync -a "$tmp/usr/lib/swift/linux"        "$xc_tc_name/usr/lib/swift/"
+	rsync -a "$tmp/usr/lib/swift_static/linux" "$xc_tc_name/usr/lib/swift_static/"
+
+	rsync -a "$tmp/usr/lib/swift/dispatch"     "$cross_sdk_basename/$linux_sdk_name/usr/include/"
+	rsync -a "$tmp/usr/lib/swift/os"           "$cross_sdk_basename/$linux_sdk_name/usr/include/"
+	rsync -a "$tmp/usr/lib/swift/CoreFoundation" "$cross_sdk_basename/$linux_sdk_name/usr/include/"
+else
+	# Apple-distributed amd64 toolchains put an extra directory layer in the .tar.gz file.  Handle here
+	echo "    working in subdir = ${subdir}"
+
+	rsync -a "$tmp/${subdir}/usr/lib/swift/linux"        "$xc_tc_name/usr/lib/swift/"
+	rsync -a "$tmp/${subdir}/usr/lib/swift_static/linux" "$xc_tc_name/usr/lib/swift_static/"
+
+	rsync -a "$tmp/${subdir}/usr/lib/swift/dispatch"     "$cross_sdk_basename/$linux_sdk_name/usr/include/"
+	rsync -a "$tmp/${subdir}/usr/lib/swift/os"           "$cross_sdk_basename/$linux_sdk_name/usr/include/"
+	rsync -a "$tmp/${subdir}/usr/lib/swift/CoreFoundation" "$cross_sdk_basename/$linux_sdk_name/usr/include/"
+fi
 
 rm -rf "$cross_sdk_basename/$linux_sdk_name/usr/share/doc"
-
 rm -rf "$tmp"
 )
 
@@ -424,16 +447,32 @@ rm -rf $cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER
 
 cd $BASEDIR
 (
-cd helloworld
-echo Testing compiler
-rm -rf .build
-echo "   $cross_tc_basename/$xc_tc_name/usr/bin/swift build --destination $cross_destination_basename/$destination_name"
-$cross_tc_basename/$xc_tc_name/usr/bin/swift build \
-	--destination $cross_destination_basename/$destination_name || true
-if [[ ! -f ".build/$SPM_TARGET/debug/helloworld" ]]; then
-    echo Test build of helloworld for $SPM_TARGET failed
-	exit 79
-fi
+	cd helloworld
+	echo "Testing helloworld with $cross_tc_basename/$xc_tc_name/usr/bin/swift"
+	rm -rf .build
+	$cross_tc_basename/$xc_tc_name/usr/bin/swift build \
+		--destination $cross_destination_basename/$destination_name || true
+	if [[ ! -f ".build/$SPM_TARGET/debug/helloworld" ]]; then
+		rm -rf .build
+    	echo Test build of helloworld for $SPM_TARGET failed
+		exit 79
+	fi
+	rm -rf .build
+)
+
+cd $BASEDIR
+(
+	cd echoserver
+	echo "Testing echoserver with $cross_tc_basename/$xc_tc_name/usr/bin/swift"
+	rm -rf .build
+	$cross_tc_basename/$xc_tc_name/usr/bin/swift build \
+		--destination $cross_destination_basename/$destination_name || true
+	if [[ ! -f ".build/$SPM_TARGET/debug/echoserver" ]]; then
+		rm -rf .build
+	    echo Test build of helloworld for $SPM_TARGET failed
+		exit 80
+	fi
+	rm -rf .build
 )
 	
 # --- Notify completion --------------------------------------------------------

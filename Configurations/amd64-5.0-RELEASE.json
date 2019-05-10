@@ -1,19 +1,19 @@
 {
-	"archName": "arm64",
+	"archName": "amd64",
 	"version": "5.0",
 	"toolchainSuffix": "RELEASE",
-	"targetArch": "aarch64",
+	"targetArch": "x86_64",
 	"gnuExtension": "",
 	"cachePath": "/tmp",
 	"macToolchain": "https://swift.org/builds/swift-5.0-release/xcode/swift-5.0-RELEASE/swift-5.0-RELEASE-osx.pkg",
-	"targetToolchain": "https://github.com/futurejones/swift-arm64/releases/download/v5.0-RELEASE/swift-5.0-RELEASE-aarch64-Ubuntu-18.04_2019-03-26.tar.gz",
+	"targetToolchain": "https://swift.org/builds/swift-5.0-release/ubuntu1804/swift-5.0-RELEASE/swift-5.0-RELEASE-ubuntu18.04.tar.gz",
 	"binutilsSource": "https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.gz",
-	"packageMirror": "http://ports.ubuntu.com/ubuntu-ports",
+	"packageMirror": "http://archive.ubuntu.com/ubuntu",
 	"packageSources": [
-		"/dists/bionic/main/binary-arm64/Packages.gz",
-		"/dists/bionic/universe/binary-arm64/Packages.gz",
-		"/dists/bionic-updates/main/binary-arm64/Packages.gz",
-		"/dists/bionic-updates/universe/binary-arm64/Packages.gz"
+		"/dists/bionic/main/binary-amd64/Packages.gz",
+		"/dists/bionic/universe/binary-amd64/Packages.gz",
+		"/dists/bionic-updates/main/binary-amd64/Packages.gz",
+		"/dists/bionic-updates/universe/binary-amd64/Packages.gz"
 	],
 	"requiredPackages": [
 		"ca-certificates",

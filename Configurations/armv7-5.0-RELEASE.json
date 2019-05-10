@@ -1,19 +1,19 @@
 {
-	"archName": "arm64",
+	"archName": "armhf",
 	"version": "5.0",
 	"toolchainSuffix": "RELEASE",
-	"targetArch": "aarch64",
-	"gnuExtension": "",
+	"targetArch": "armv7",
+	"gnuExtension": "eabihf",
 	"cachePath": "/tmp",
 	"macToolchain": "https://swift.org/builds/swift-5.0-release/xcode/swift-5.0-RELEASE/swift-5.0-RELEASE-osx.pkg",
-	"targetToolchain": "https://github.com/futurejones/swift-arm64/releases/download/v5.0-RELEASE/swift-5.0-RELEASE-aarch64-Ubuntu-18.04_2019-03-26.tar.gz",
+	"targetToolchain": "https://github.com/uraimo/buildSwiftOnARM/releases/download/5.0/swift-5.0-threads_hotfix-RPi23-Ubuntu1804.tgz",
 	"binutilsSource": "https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.gz",
 	"packageMirror": "http://ports.ubuntu.com/ubuntu-ports",
 	"packageSources": [
-		"/dists/bionic/main/binary-arm64/Packages.gz",
-		"/dists/bionic/universe/binary-arm64/Packages.gz",
-		"/dists/bionic-updates/main/binary-arm64/Packages.gz",
-		"/dists/bionic-updates/universe/binary-arm64/Packages.gz"
+		"/dists/bionic/main/binary-armhf/Packages.gz",
+		"/dists/bionic/universe/binary-armhf/Packages.gz",
+		"/dists/bionic-updates/main/binary-armhf/Packages.gz",
+		"/dists/bionic-updates/universe/binary-armhf/Packages.gz"
 	],
 	"requiredPackages": [
 		"ca-certificates",

@@ -1,3 +1,3 @@
-./build_cross_compiler . swift-5.0-RELEASE-osx.pkg swift-5.0-threads_hotfix-RPi23-Ubuntu1804.tgz 5.0 armhf armv7 eabihf
+./build_cross_compiler Configurations/armv7-5.0.json
 ./build_cross_compiler Configurations/arm64-5.0.json
-./build_cross_compiler . swift-5.0-RELEASE-osx.pkg swift-5.0-RELEASE-ubuntu18.04.tar.gz 5.0 amd64 x86_64
+./build_cross_compiler Configurations/amd64-5.0.json

@@ -89,7 +89,7 @@ To build an arm64 cross compiler (for R/Pi 64-bit OSes):\
 \CocoaLigature1 \
 \pard\pardeftab720\partightenfactor0
 
-\f1\fs36 \cf2 To build an arm32 cross compiler (for R/Pi 32-bit OSes):\
+\f1\fs36 \cf2 To build an arm32v7 cross compiler (for R/Pi 32-bit OSes on armv7, e.g. R/Pi 2 and 3):\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
 
 \f4\fs28 \cf4 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
@@ -100,21 +100,14 @@ To build an arm64 cross compiler (for R/Pi 64-bit OSes):\
 \CocoaLigature1 \
 \pard\pardeftab720\partightenfactor0
 \cf2 To build an amd64 cross compiler (one that will run a std cloud instance or in Docker on your mac):\
-\pard\pardeftab720\partightenfactor0
-
-\f4\fs28 \cf4 cd \kerning1\expnd0\expndtw0 \CocoaLigature0 swift-mac2arm-x-compile-toolchain\expnd0\expndtw0\kerning0
-\CocoaLigature1 \
-\pard\pardeftab720\partightenfactor0
-\cf4 \kerning1\expnd0\expndtw0 \CocoaLigature0 wget https://swift.org/builds/swift-5.0-release/ubuntu1804/swift-5.0-RELEASE/swift-5.0-RELEASE-ubuntu18.04.tar.gz\
-#repackage the tar file to match the others.\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
-\cf4 mkdir tmp && cd tmp && tar xf ../swift-5.0-RELEASE-ubuntu18.04.tar.gz && cd swift-5.0-RELEASE-ubuntu18.04 && tar cvf ../../swift-5.0-RELEASE-ubuntu18.04.tar.gz . && cd ../.. && rm -rf tmp\
-./build_cross_compiler . swift-5.0-RELEASE-osx.pkg swift-5.0-RELEASE-ubuntu18.04.tar.gz amd64 x86_64\
-\expnd0\expndtw0\kerning0
-\CocoaLigature1 \
+
+\f4\fs28 \cf4 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+./build_cross_compiler Configurations/amd64-5.0.json\
 \pard\pardeftab720\partightenfactor0
 
-\f1\fs36 \cf2 \
+\f1\fs36 \cf2 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
 The last step on each will take several minutes to complete. (Particularly the steps where it fetches and parses the Ubuntu package files and the one where it builds the ld.gold linker). When it does finish, you should get a message saying all is well and the directories Toolchains, SDKs, and Destinations, populated with various (arm64|arm32|amd64) files will have been produced.\
 \
 Now do the following (based on which cross compiler you have built)\
