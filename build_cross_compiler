@@ -449,7 +449,7 @@ cd $BASEDIR
 (
 	cd helloworld
 	echo "Testing helloworld with $cross_tc_basename/$xc_tc_name/usr/bin/swift"
-	rm -rf .build
+	rm -rf .build Package.resolved
 	$cross_tc_basename/$xc_tc_name/usr/bin/swift build \
 		--destination $cross_destination_basename/$destination_name || true
 	if [[ ! -f ".build/$SPM_TARGET/debug/helloworld" ]]; then
@@ -464,7 +464,7 @@ cd $BASEDIR
 (
 	cd echoserver
 	echo "Testing echoserver with $cross_tc_basename/$xc_tc_name/usr/bin/swift"
-	rm -rf .build
+	rm -rf .build Package.resolved
 	$cross_tc_basename/$xc_tc_name/usr/bin/swift build \
 		--destination $cross_destination_basename/$destination_name || true
 	if [[ ! -f ".build/$SPM_TARGET/debug/echoserver" ]]; then

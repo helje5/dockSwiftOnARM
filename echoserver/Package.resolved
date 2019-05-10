@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/IBM-Swift/HeliumLogger.git",
         "state": {
           "branch": "master",
-          "revision": "779865e83149a59894b14950aa83f70b7e81bc27",
+          "revision": "c108db8b57d79b2cf5b972a8a8395abefccff9ca",
           "version": null
         }
       },
@@ -30,20 +30,20 @@
       },
       {
         "package": "SmokeFramework",
-        "repositoryURL": "https://github.com/amzn/smoke-framework.git",
+        "repositoryURL": "https://github.com/CSCIX65G/smoke-framework.git",
         "state": {
-          "branch": "master",
-          "revision": "0d4022125dcb13c7f9d0bdf8bdea198fa08ae157",
+          "branch": "swift5",
+          "revision": "67f862c0f32611805c834017744150035b381a2f",
           "version": null
         }
       },
       {
         "package": "SmokeHTTP",
-        "repositoryURL": "https://github.com/amzn/smoke-http.git",
+        "repositoryURL": "https://github.com/CSCIX65G/smoke-http.git",
         "state": {
-          "branch": null,
-          "revision": "60bc2c4c88700ff46f2cfd1f766c4ac8319488a9",
-          "version": "1.0.0"
+          "branch": "swift5",
+          "revision": "dd9b4390f57df80f6c9b1e70adfd87bea7f1ca6c",
+          "version": null
         }
       },
       {

@@ -17,7 +17,7 @@ let package = Package(
       .library(name: "EchoService", targets: ["EchoService", "Service"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/amzn/smoke-framework.git", .branch("master")),
+        .package(url: "https://github.com/CSCIX65G/smoke-framework.git", .branch("swift5")),
 	.package(url: "https://github.com/AlwaysRightInstitute/Shell.git", from: "0.1.4"),
         .package(url: "https://github.com/IBM-Swift/HeliumLogger.git", .branch("master"))
     ],
