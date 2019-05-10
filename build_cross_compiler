@@ -167,6 +167,7 @@ echo Building ${TOOLCHAIN_NAME}
 xc_tc_name="${TOOLCHAIN_NAME}.xctoolchain"
 linux_sdk_name="${TOOLCHAIN_NAME}.sdk"
 destination_name="${TOOLCHAIN_NAME}.json"
+runtime_name="${TOOLCHAIN_NAME}-runtime-libs.tar.gz"
 
 # --- Configuration ---------------------------------------------
 
@@ -191,8 +192,7 @@ else
 	echo "    Not fetching previously fetched: $TARGET_TOOLCHAIN"
 fi
 
-PERFORM_REPACK=`cat $CONFIG | jq -jc '.performTargetToolchainRepack' | sed s/\"//g`
-
+INSTALLER_DIR=`cat $CONFIG | jq -jc '.installerDir' | sed s/\"//g`
 
 # set -xv
 # where to get stuff from
@@ -432,7 +432,7 @@ pushd ${cross_tc_basename}/${xc_tc_name} >> /dev/null
 tar zcf ../${ARCH_NAME}-${VERSION_NUMBER}-toolchain-libs.tar.gz `find usr/lib/swift/linux -name "*.so*"`
 popd >> /dev/null
 
-echo "Generate combined runtime tarball: $cross_runtime_basename/${ARCH_NAME}-${VERSION_NUMBER}-runtime.tar.gz"
+echo "Generate combined runtime tarball: $cross_runtime_basename/${runtime_name}"
 mv ${cross_tc_basename}/${ARCH_NAME}-${VERSION_NUMBER}-toolchain-libs.tar.gz $cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER
 mv ${cross_sdk_basename}/${ARCH_NAME}-${VERSION_NUMBER}-sdk-libs.tar.gz $cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER
 pushd $cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER > /dev/null
@@ -441,7 +441,7 @@ rm -rf ./${ARCH_NAME}-${VERSION_NUMBER}-toolchain-libs.tar.gz
 tar zxf ./${ARCH_NAME}-${VERSION_NUMBER}-sdk-libs.tar.gz
 rm -rf ./${ARCH_NAME}-${VERSION_NUMBER}-sdk-libs.tar.gz
 rm -rf usr/share usr/bin usr/sbin usr/include || true
-tar zcf ../${ARCH_NAME}-${VERSION_NUMBER}-runtime-libs.tar.gz usr lib
+tar zcf ../${runtime_name} usr lib
 popd > /dev/null
 rm -rf $cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER
 
@@ -474,14 +474,33 @@ cd $BASEDIR
 	fi
 	rm -rf .build
 )
+
+cd $BASEDIR
+(
+mkdir -p $INSTALLER_DIR/SDKs
+rm -rf "$INSTALLER_DIR/SDKs/$linux_sdk_name"
+mv "$cross_sdk_basename/$linux_sdk_name" "$INSTALLER_DIR/SDKs/$linux_sdk_name"
+
+mkdir -p $INSTALLER_DIR/Toolchains
+rm -rf "$INSTALLER_DIR/Toolchains/$xc_tc_name"
+mv "$cross_tc_basename/$xc_tc_name" "$INSTALLER_DIR/Toolchains/$xc_tc_name"
+
+mkdir -p $INSTALLER_DIR/Runtimes
+rm -rf "$INSTALLER_DIR/Runtimes/${runtime_name}"
+mv "$cross_runtime_basename/$runtime_name" "$INSTALLER_DIR/Runtimes/${runtime_name}"
+
+mkdir -p $INSTALLER_DIR/Destinations
+rm -rf "$INSTALLER_DIR/Destinations/$destination_name"
+cat "$cross_destination_basename/$destination_name" | sed s:${dest}:/Library/Developer:g > "$INSTALLER_DIR/Destinations/$destination_name"
+)
 	
 # --- Notify completion --------------------------------------------------------
 echo
-echo "Cross compilation toolchain for ${ARCH_NAME}-${VERSION_NUMBER} Ubuntu Bionic is now ready to be tested"
-echo " - SDK: $cross_sdk_basename/$linux_sdk_name"
-echo " - Toolchain: $cross_tc_basename/$xc_tc_name"
-echo " - SwiftPM destination.json: $cross_tc_basename/${ARCH_NAME}-${VERSION_NUMBER}-ubuntu-bionic-destination.json"
-echo " - Runtime Libraries: ${cross_runtime_basename}/${ARCH_NAME}-${VERSION_NUMBER}-runtime-libs.tar.gz"
+echo "Cross compilation toolchain for ${TOOLCHAIN_NAME} is now ready for installer generation"
+echo " - SDK: $INSTALLER_DIR/SDKs/$linux_sdk_name"
+echo " - Toolchain: $INSTALLER_DIR/Toolchains/$xc_tc_name"
+echo " - Runtime Libraries: $INSTALLER_DIR/Runtimes/${runtime_name}"
+echo " - SwiftPM destination.json: $INSTALLER_DIR/Destinations/$destination_name"
 
 
 

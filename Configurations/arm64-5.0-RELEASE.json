@@ -4,6 +4,7 @@
 	"toolchainSuffix": "RELEASE",
 	"targetArch": "aarch64",
 	"gnuExtension": "",
+	"installerDir": "./InstallPackagers/SwiftCrossCompiler/Developer",
 	"cachePath": "/tmp",
 	"macToolchain": "https://swift.org/builds/swift-5.0-release/xcode/swift-5.0-RELEASE/swift-5.0-RELEASE-osx.pkg",
 	"targetToolchain": "https://github.com/futurejones/swift-arm64/releases/download/v5.0-RELEASE/swift-5.0-RELEASE-aarch64-Ubuntu-18.04_2019-03-26.tar.gz",

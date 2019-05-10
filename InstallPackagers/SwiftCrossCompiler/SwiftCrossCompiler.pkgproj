@@ -448,8 +448,6 @@
 			<dict>
 				<key>POSTINSTALL_PATH</key>
 				<dict>
-					<key>PATH</key>
-					<string>post_install.sh</string>
 					<key>PATH_TYPE</key>
 					<integer>1</integer>
 				</dict>
@@ -794,7 +792,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>Swift Cross Compiler (arm64)</string>
+			<string>Swift Cross Compiler</string>
 			<key>PAYLOAD_ONLY</key>
 			<false/>
 			<key>TREAT_MISSING_PRESENTATION_DOCUMENTS_AS_WARNING</key>

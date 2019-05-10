@@ -4,6 +4,7 @@
 	"toolchainSuffix": "RELEASE",
 	"targetArch": "armv7",
 	"gnuExtension": "eabihf",
+	"installerDir": "./InstallPackagers/SwiftCrossCompiler/Developer",
 	"cachePath": "/tmp",
 	"macToolchain": "https://swift.org/builds/swift-5.0-release/xcode/swift-5.0-RELEASE/swift-5.0-RELEASE-osx.pkg",
 	"targetToolchain": "https://github.com/uraimo/buildSwiftOnARM/releases/download/5.0/swift-5.0-threads_hotfix-RPi23-Ubuntu1804.tgz",
