@@ -1,7 +1,7 @@
 # Swift Cross Compilation Toolchains
 
 ## Easy way:
-Use the installers at:
+Just use the installers at: [github](https://github.com/CSCIX65G/swift-mac2arm-x-compile-toolchain/releases)
 
 ## Hard way - Build your own: 
 
