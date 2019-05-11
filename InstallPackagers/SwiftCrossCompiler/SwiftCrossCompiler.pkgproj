@@ -598,7 +598,7 @@
 						<key>LANGUAGE</key>
 						<string>English</string>
 						<key>VALUE</key>
-						<string>Swift Cross Compiler (arm64)</string>
+						<string>SwiftCrossCompiler</string>
 					</dict>
 				</array>
 			</dict>
