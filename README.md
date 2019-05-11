@@ -1,7 +1,18 @@
 # Swift Cross Compilation Toolchains
 
-## Easy way:
-Just use the installers at: [github](https://github.com/CSCIX65G/swift-mac2arm-x-compile-toolchain/releases)
+This project extends the work of [Johannes Weiss](https://github.com/weissi) and [Helge Hesse](https://github.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain) to create MacOS cross-compilers which target Ubuntu on amd64 and arm64, respectively.  All real credit goes to them.
+
+This version extends the previous work by:
+
+1. adding targets for armv7 (with armv6 to come shortly, hopefully)
+2. incorporating Swift 5.0
+3. creating a complete runtime library which can be used with Docker containers or natively to provide swift applications with precisely the libraries they were originally compiled with. 
+
+IMO, the last point is the most important.  This makes is possible to deploy “distro-less” docker containers of your swift applications which are extremely small.  I am currently working on several R/Pi servers as examples which use this technique.
+
+## Easy way to get started:
+
+Just use the installers at: [github](https://github.com/CSCIX65G/swift-mac2arm-x-compile-toolchain/releases).  Then skip the hard way immediately below and proceed directly to: `Using your cross-compiler`
 
 ## Hard way - Build your own: 
 
@@ -40,9 +51,10 @@ are the long steps
 
 When it does finish, you should get a message saying all is well and that the directories Toolchains, SDKs, and Destinations, populated with various (arm64|arm32|amd64) files have been produced.
 
-The cross compilers end up under: `./InstallPackagers/SwiftCrossCompiler/Developer` by default.  If you don't want to make installer packages, you can simply copy the files from there to `/Library/Developer`.  NB If you wish to change the installed location from `/Library/Developer` you will need to change the files under Destinations to match your new installed location.  
+The cross compilers end up under: `./InstallPackagers/SwiftCrossCompiler/Developer` by default.  If you don't want to make installer packages, you can simply copy the Toolchains, SDKs and Destinations directories from there to `/Library/Developer`.  NB If you wish to change the installed location from `/Library/Developer` you will need to change the files under Destinations to match your new installed location.  Changes required in the file should be obvious.
 
-Now do the following (based on which cross compiler you have built)
+## Using your cross compiler
+In this directory, you may now do the following (based on which cross compiler you have built)
 
     cd helloworld
     swift build --destination ../Destinations/arm64-ubuntu-bionic.json
@@ -50,6 +62,8 @@ Now do the following (based on which cross compiler you have built)
     swift build --destination ../Destinations/armhf-ubuntu-bionic.json
 
 If this finishes successfully you have an arm64 executable in `.build/aarch64-unknown-linux/debug/helloworld`, an amd64 executable in `.build/x86_64-unknown-linux/debug/helloworld` and an armv7 executable in `.build/armhf-unknown-linux/debug/helloworld`
+
+The same technique may be used on any of your own code which compiles with the Swift Package Manager.
 
 ### Remote execution on a Raspberry Pi
 
