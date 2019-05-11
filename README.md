@@ -1,6 +1,6 @@
 # Swift Cross Compilation Toolchains
 
-This project extends the work of [Johannes Weiss](https://github.com/weissi) and [Helge Hesse](https://github.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain) to create MacOS cross-compilers which target Ubuntu on amd64 and arm64, respectively.  All real credit goes to them.
+This project extends the work of [Johannes Weiss](https://github.com/weissi) and [Helge Heß](https://github.com/AlwaysRightInstitute/swift-mac2arm-x-compile-toolchain) to create MacOS cross-compilers which target Ubuntu on amd64 and arm64, respectively.  All real credit goes to them.
 
 This version extends the previous work by:
 
