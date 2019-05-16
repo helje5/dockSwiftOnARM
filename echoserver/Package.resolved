@@ -21,11 +21,11 @@
       },
       {
         "package": "Shell",
-        "repositoryURL": "https://github.com/AlwaysRightInstitute/Shell.git",
+        "repositoryURL": "https://github.com/CSCIX65G/Shell.git",
         "state": {
-          "branch": null,
-          "revision": "9982634c51b506d42fcb11b1c85e7ccc145679bd",
-          "version": "0.1.4"
+          "branch": "swift5",
+          "revision": "cde5dfc940f6270bc78992346dc13ada9a32123c",
+          "version": null
         }
       },
       {

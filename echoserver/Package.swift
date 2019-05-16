@@ -18,7 +18,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/CSCIX65G/smoke-framework.git", .branch("swift5")),
-	.package(url: "https://github.com/AlwaysRightInstitute/Shell.git", from: "0.1.4"),
+	.package(url: "https://github.com/CSCIX65G/Shell.git", .branch("swift5")),
         .package(url: "https://github.com/IBM-Swift/HeliumLogger.git", .branch("master"))
     ],
     targets: [
