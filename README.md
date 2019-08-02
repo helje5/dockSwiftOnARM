@@ -12,7 +12,7 @@ IMO, the last point is the most important.  This makes is possible to deploy “
 
 ## Easy way to get started:
 
-Just use the installers at: [github](https://github.com/CSCIX65G/swift-mac2arm-x-compile-toolchain/releases).  Then skip the hard way immediately below and proceed directly to: `Using your cross-compiler`
+Just use the installers at: [github](https://github.com/CSCIX65G/SwiftCrossCompilers.git/releases).  Then skip the hard way immediately below and proceed directly to: `Using your cross-compiler`
 
 ## Hard way - Build your own: 
 
@@ -26,8 +26,8 @@ Homebrew coreutils and jq installed with:
 To start, create, the directory and fetch the code to do the build (it’s just a complicated bash script):
 
 ```
-git clone https://github.com/CSCIX65G/swift-mac2arm-x-compile-toolchain.git 
-cd swift-mac2arm-x-compile-toolchain
+git clone https://github.com/CSCIX65G/SwiftCrossCompilers.git
+cd SwiftCrossCompilers
 ```
 To build an arm64 cross compiler (for R/Pi 64-bit OSes):
 
