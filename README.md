@@ -12,7 +12,7 @@ IMO, the last point is the most important.  This makes is possible to deploy “
 
 ## Easy way to get started:
 
-Just use the installers at: [github](https://github.com/CSCIX65G/SwiftCrossCompilers.git/releases).  Then skip the hard way immediately below and proceed directly to: `Using your cross-compiler`
+Just use the installers at: [github](https://github.com/CSCIX65G/SwiftCrossCompilers/releases).  Then skip the hard way immediately below and proceed directly to: `Using your cross-compiler`
 
 ## Hard way - Build your own: 
 
