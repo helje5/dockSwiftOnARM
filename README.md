@@ -4,7 +4,7 @@ This project extends the work of [Johannes Weiss](https://github.com/weissi) and
 
 This version extends the previous work by:
 
-1. adding targets for armv7 (with armv6 to come shortly, hopefully)
+1. adding targets for armv7 and armv6
 2. incorporating Swift 5.0
 3. creating a complete runtime library which can be used with Docker containers or natively to provide swift applications with precisely the libraries they were originally compiled with. 
 
