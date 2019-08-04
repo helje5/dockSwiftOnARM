@@ -36,18 +36,23 @@ To build an arm64 cross compiler (for R/Pi 64-bit OSes):
 To build an arm32v7 cross compiler (for R/Pi 32-bit OSes on armv7, e.g. R/Pi 2 and 3):
 
     ./build_cross_compiler Configurations/armv7-5.0-RELEASE.json
+    
+To build an arm32v6 is a much more complicated task.  As of now you will need to build an entire swift 
+MacOS toolchain from source.  This toolchain must built with this 
+(diff from @uraimo)[https://github.com/uraimo/buildSwiftOnARM/blob/master/swiftpm.diffs/armv6/001-v6target.diff]
+applied. Then you need to make sure that you build the cross compiler using your newly built swift toolchain.
+Strongly recommend just using the pre-builts here.
 
 To build an amd64 cross compiler (one that will run on a std cloud instance or in Docker on your mac):
 
     ./build_cross_compiler Configurations/amd64-5.0-RELEASE.json
 
-Each call to the build script will take several minutes to complete. (Particularly the steps where it:
+Each call to the build script will take several minutes to complete. This is 
+particularly true of the steps where it:
 
 * fetches the toolchain 
 * fetches and parses the Ubuntu package files and 
-* builds the ld.gold linker. 
-
-are the long steps 
+* builds the ld.gold linker 
 
 When it does finish, you should get a message saying all is well and that the directories Toolchains, SDKs, and Destinations, populated with various (arm64|arm32|amd64) files have been produced.
 
@@ -73,10 +78,11 @@ Now type:
 
 This will build the helloworld program and put it into a docker image called helloworld:arm64-latest.  Transport that container to the Pi along with the script `run-arm64.sh` .  That script will run and print "Successful launch!" at the console.
 
-Remote debugging on the Pi
+### Remote debugging on the Pi
+
 Now for the more experimental stuff (I'm still debugging remote lldb):
 
-Now on your mac type:
+On your mac type:
 
     /Library/Developer/Toolchains/arm64-swift.xctoolchain/usr/bin/lldb .build/aarch64-unknown-linux/debug/helloworld
 
