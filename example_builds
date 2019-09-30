@@ -1,3 +1,3 @@
-./build_cross_compiler Configurations/armv7-5.0-RELEASE.json
-./build_cross_compiler Configurations/arm64-5.0-RELEASE.json
-./build_cross_compiler Configurations/amd64-5.0-RELEASE.json
+./build_cross_compiler Configurations/5.1.0-RELEASE/armv7.json
+./build_cross_compiler Configurations/5.1.0-RELEASE/arm64.json
+./build_cross_compiler Configurations/5.1.0-RELEASE/amd64.json

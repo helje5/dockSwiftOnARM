@@ -298,13 +298,12 @@ for i in "${pkg_names[@]}"; do
     [[ -n $skip ]] || missing_packages+=("$i")
 done
 
-HAS_MISSING_PACKAGES=${missing_packages[*]:-}
+HAS_MISSING_PACKAGES=${missing_packages[0]:-}
 
 if [ -z ${HAS_MISSING_PACKAGES} ]; then 
 	echo "All packages found"
 else
 	echo Missing packages: ${missing_packages[*]}
-	exit 67
 fi
 
 echo "Download swift package dependencies for SDK and Runtime"
@@ -500,6 +499,8 @@ cd $BASEDIR
     	echo Test build of helloworld for $SPM_TARGET failed
 		exit 79
 	fi
+	echo "Verifying helloworld build output:"
+	echo "    `file .build/${SPM_TARGET}/debug/helloworld | awk -F: '{print($2)}' | awk -F, '{print($1,$2)}'`"
 	rm -rf .build
 )
 
@@ -514,6 +515,8 @@ cd $BASEDIR
 	    echo Test build of echoserver for $SPM_TARGET failed
 		exit 80
 	fi
+	echo "Verifying echoserver build output:"
+	echo "    `file .build/${SPM_TARGET}/debug/echoserver | awk -F: '{print($2)}' | awk -F, '{print($1,$2)}'`"
 	rm -rf .build
 )
 
