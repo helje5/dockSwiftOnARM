@@ -5,7 +5,7 @@ This project extends the work of [Johannes Weiss](https://github.com/weissi) and
 This version extends the previous work by:
 
 1. adding targets for armv7 and armv6
-2. incorporating Swift 5.0
+2. incorporating Swift 5.1
 3. creating a complete runtime library which can be used with Docker containers or natively to provide swift applications with precisely the libraries they were originally compiled with. 
 
 IMO, the last point is the most important.  This makes is possible to deploy “distro-less” docker containers of your swift applications which are extremely small.  I am currently working on several R/Pi servers as examples which use this technique.
@@ -23,7 +23,7 @@ Homebrew coreutils and jq installed with:
 
 ### Building the  toolchain on MacOS
 
-To start, create, the directory and fetch the code to do the build (it’s just a complicated bash script):
+To start, create the directory and fetch the code to do the build (it’s just a complicated bash script):
 
 ```
 git clone https://github.com/CSCIX65G/SwiftCrossCompilers.git
@@ -31,11 +31,11 @@ cd SwiftCrossCompilers
 ```
 To build an arm64 cross compiler (for R/Pi 64-bit OSes):
 
-    ./build_cross_compiler Configurations/arm64-5.0-RELEASE.json
+    ./build_cross_compiler Configurations/arm64-5.1.0-RELEASE.json
 
 To build an arm32v7 cross compiler (for R/Pi 32-bit OSes on armv7, e.g. R/Pi 2 and 3):
 
-    ./build_cross_compiler Configurations/armv7-5.0-RELEASE.json
+    ./build_cross_compiler Configurations/armv7-5.1.0-RELEASE.json
     
 To build an arm32v6 is a much more complicated task.  As of now you will need to build an entire swift 
 MacOS toolchain from source.  This toolchain must built with this 
@@ -45,7 +45,7 @@ Strongly recommend just using the pre-builts here.
 
 To build an amd64 cross compiler (one that will run on a std cloud instance or in Docker on your mac):
 
-    ./build_cross_compiler Configurations/amd64-5.0-RELEASE.json
+    ./build_cross_compiler Configurations/amd64-5.1.0-RELEASE.json
 
 Each call to the build script will take several minutes to complete. This is 
 particularly true of the steps where it:
@@ -54,17 +54,19 @@ particularly true of the steps where it:
 * fetches and parses the Ubuntu package files and 
 * builds the ld.gold linker 
 
-When it does finish, you should get a message saying all is well and that the directories Toolchains, SDKs, and Destinations, populated with various (arm64|arm32|amd64) files have been produced.
+When it does finish, you should get a message saying all is well and that the following directories: Toolchains, SDKs, and Destinations, have been populated with various (arm64|armhf|amd64) files have been produced.  Note that the armv6 and armv7 output are both named armhf internally.  This is a GNU/LLVM issue which can't really be addressed at this level.  Accordingly if you are building for both the 32-bit platforms, you need to be very careful to clean things out under `./InstallPackagers/SwiftCrossCompiler/Developer` between builds.
 
 The cross compilers end up under: `./InstallPackagers/SwiftCrossCompiler/Developer` by default.  If you don't want to make installer packages, you can simply copy the Toolchains, SDKs and Destinations directories from there to `/Library/Developer`.  NB If you wish to change the installed location from `/Library/Developer` you will need to change the files under Destinations to match your new installed location.  Changes required in the file should be obvious.
 
+If you do want to build your own installer package, you can get (Packages.app)[http://s.sudre.free.fr/Software/Packages/about.html] for free and open `./InstallPackagers/SwiftCrossCompiler/SwiftCrossCompiler.pkgproj`.  You'll want to adjust the version number SwiftCrossCompiler/Settings, then just use the Build/Build menu option.  The output will appear at `InstallPackagers/SwiftCrossCompiler/build/Swift Cross Compiler.pkg`. Just double click that to install.
+
 ## Using your cross compiler
-In this directory, you may now do the following (based on which cross compiler you have built)
+Assuming you have installed the cross compilers in /Library you can do the following from this directory.
 
     cd helloworld
-    swift build --destination ../Destinations/arm64-ubuntu-bionic.json
-    swift build --destination ../Destinations/amd64-ubuntu-bionic.json
-    swift build --destination ../Destinations/armhf-ubuntu-bionic.json
+    swift build --destination /Library/Developer/Destinations/armhf-5.1.0-RELEASE.json
+    swift build --destination /Library/Developer/Destinations/arm64-5.1.0-RELEASE.json
+    swift build --destination /Library/Developer/Destinations/amd64-5.1.0-RELEASE.json
 
 If this finishes successfully you have an arm64 executable in `.build/aarch64-unknown-linux/debug/helloworld`, an amd64 executable in `.build/x86_64-unknown-linux/debug/helloworld` and an armv7 executable in `.build/armhf-unknown-linux/debug/helloworld`
 
