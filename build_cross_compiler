@@ -256,17 +256,16 @@ fi
 
 cd "$dest"
 
-rm -rf $cross_sdk_basename/$linux_sdk_name
+rm -rf $cross_sdk_basename/*
 mkdir -p "$cross_sdk_basename/$linux_sdk_name"
 
-rm -rf $cross_tc_basename/$xc_tc_name
+rm -rf $cross_tc_basename/*
 mkdir -p "$cross_tc_basename/$xc_tc_name"
 
-rm -rf $cross_destination_basename/$destination_name
+rm -rf $cross_destination_basename/*
 mkdir -p "$cross_destination_basename"
 
-rm -rf $cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER
-rm -rf $cross_runtime_basename/${ARCH_NAME}-${VERSION_NUMBER}-runtime.tar.gz
+rm -rf $cross_runtime_basename/*
 mkdir -p "$cross_runtime_basename/$ARCH_NAME-$VERSION_NUMBER"
 
 # --- Fetch Linux Platform SDK Package Specifications -----------------------

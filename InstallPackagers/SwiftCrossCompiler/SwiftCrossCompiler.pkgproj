@@ -435,6 +435,8 @@
 				</dict>
 				<key>PAYLOAD_TYPE</key>
 				<integer>0</integer>
+				<key>PRESERVE_EXTENDED_ATTRIBUTES</key>
+				<false/>
 				<key>SHOW_INVISIBLE</key>
 				<false/>
 				<key>SPLIT_FORKS</key>
@@ -468,7 +470,7 @@
 				<key>FOLLOW_SYMBOLIC_LINKS</key>
 				<false/>
 				<key>IDENTIFIER</key>
-				<string>com.computecycles.pkg.SwiftCrossCompiler</string>
+				<string>com.computecycles.pkg.SwiftCrossCompiler-armv7</string>
 				<key>LOCATION</key>
 				<integer>0</integer>
 				<key>NAME</key>
@@ -484,7 +486,7 @@
 				<key>USE_HFS+_COMPRESSION</key>
 				<false/>
 				<key>VERSION</key>
-				<string>5.1</string>
+				<string>5.1.1</string>
 			</dict>
 			<key>TYPE</key>
 			<integer>0</integer>
@@ -797,7 +799,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>Swift Cross Compiler</string>
+			<string>SwiftCrossCompiler</string>
 			<key>PAYLOAD_ONLY</key>
 			<true/>
 			<key>TREAT_MISSING_PRESENTATION_DOCUMENTS_AS_WARNING</key>

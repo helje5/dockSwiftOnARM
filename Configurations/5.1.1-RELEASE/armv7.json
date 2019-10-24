@@ -1,13 +1,13 @@
 {
 	"archName": "armhf",
-	"version": "5.1.0",
+	"version": "5.1.1",
 	"toolchainSuffix": "RELEASE",
 	"targetArch": "armv7",
 	"gnuExtension": "eabihf",
 	"installerDir": "./InstallPackagers/SwiftCrossCompiler/Developer",
 	"cachePath": "/tmp",
-        "macToolchain": "https://swift.org/builds/swift-5.1-release/xcode/swift-5.1-RELEASE/swift-5.1-RELEASE-osx.pkg",
-        "targetToolchain": "https://github.com/uraimo/buildSwiftOnARM/releases/download/5.1/swift-5.1-armv7-Ubuntu1804.tgz",
+        "macToolchain": "https://swift.org/builds/swift-5.1.1-release/xcode/swift-5.1.1-RELEASE/swift-5.1.1-RELEASE-osx.pkg",
+        "targetToolchain": "https://github.com/uraimo/buildSwiftOnARM/releases/download/5.1.1/swift-5.1.1-armv7-Ubuntu1804.tgz",
 	"binutilsSource": "https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.gz",
 	"packageMirror": "http://ports.ubuntu.com/ubuntu-ports",
 	"packageSources": [

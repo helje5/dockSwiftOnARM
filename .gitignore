@@ -2,6 +2,7 @@
 *.bz2
 *.gz
 *.pkg
+*.pkg.zip
 tmp_*
 cache*
 swift-checkout
@@ -12,4 +13,4 @@ Destinations
 SDKs
 Toolchains
 **/.build
-
+Packages/*

@@ -1,13 +1,13 @@
 {
 	"archName": "amd64",
-	"version": "5.1.0",
+	"version": "5.1.1",
 	"toolchainSuffix": "RELEASE",
 	"targetArch": "x86_64",
 	"gnuExtension": "",
 	"installerDir": "./InstallPackagers/SwiftCrossCompiler/Developer",
 	"cachePath": "/tmp",
-	"macToolchain": "https://swift.org/builds/swift-5.1-release/xcode/swift-5.1-RELEASE/swift-5.1-RELEASE-osx.pkg",
-        "targetToolchain": "https://swift.org/builds/swift-5.1-release/ubuntu1804/swift-5.1-RELEASE/swift-5.1-RELEASE-ubuntu18.04.tar.gz",
+        "macToolchain": "https://swift.org/builds/swift-5.1.1-release/xcode/swift-5.1.1-RELEASE/swift-5.1.1-RELEASE-osx.pkg",
+        "targetToolchain": "https://swift.org/builds/swift-5.1.1-release/ubuntu1804/swift-5.1.1-RELEASE/swift-5.1.1-RELEASE-ubuntu18.04.tar.gz",
 	"binutilsSource": "https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.gz",
 	"packageMirror": "http://archive.ubuntu.com/ubuntu",
 	"packageSources": [

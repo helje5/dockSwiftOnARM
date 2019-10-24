@@ -33,17 +33,17 @@
         "repositoryURL": "https://github.com/CSCIX65G/smoke-framework.git",
         "state": {
           "branch": "swift5",
-          "revision": "67f862c0f32611805c834017744150035b381a2f",
+          "revision": "9ccac104be08fa501b18c6fcaaac6a328b2c88b9",
           "version": null
         }
       },
       {
         "package": "SmokeHTTP",
-        "repositoryURL": "https://github.com/CSCIX65G/smoke-http.git",
+        "repositoryURL": "https://github.com/amzn/smoke-http.git",
         "state": {
-          "branch": "swift5",
-          "revision": "dd9b4390f57df80f6c9b1e70adfd87bea7f1ca6c",
-          "version": null
+          "branch": null,
+          "revision": "705553c6f59d15f8b9fe2fd458a0ad3755ef9bc4",
+          "version": "1.0.1"
         }
       },
       {

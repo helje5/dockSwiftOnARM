@@ -1,13 +1,13 @@
 {
 	"archName": "arm64",
-	"version": "5.1.0",
+	"version": "5.1.1",
 	"toolchainSuffix": "RELEASE",
 	"targetArch": "aarch64",
 	"gnuExtension": "",
 	"installerDir": "./InstallPackagers/SwiftCrossCompiler/Developer",
 	"cachePath": "/tmp",
-        "macToolchain": "https://swift.org/builds/swift-5.1-release/xcode/swift-5.1-RELEASE/swift-5.1-RELEASE-osx.pkg",
-        "targetToolchain": "https://github.com/futurejones/swift-arm64/releases/download/v5.1-RELEASE/swift-5.1-aarch64-RELEASE-Ubuntu-18.04_2019-09-21.tar.gz",
+        "macToolchain": "https://swift.org/builds/swift-5.1.1-release/xcode/swift-5.1.1-RELEASE/swift-5.1.1-RELEASE-osx.pkg",
+        "targetToolchain": "https://github.com/futurejones/swift-arm64/releases/download/v5.1.1-RELEASE/swift-5.1.1-aarch64-RELEASE-Ubuntu-18.04_2019-10-18.tar.gz",
 	"binutilsSource": "https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.gz",
 	"packageMirror": "http://ports.ubuntu.com/ubuntu-ports",
 	"packageSources": [
