@@ -29,48 +29,75 @@ To start, create the directory and fetch the code to do the build (it’s just a
 git clone https://github.com/CSCIX65G/SwiftCrossCompilers.git
 cd SwiftCrossCompilers
 ```
-To build an arm64 cross compiler (for R/Pi 64-bit OSes):
+To build an *arm64* cross compiler (for R/Pi 64-bit OSes):
 
-    ./build_cross_compiler Configurations/arm64-5.1.0-RELEASE.json
+    ./build_cross_compiler  Configurations/5.1.1-RELEASE/arm64.json
 
-To build an arm32v7 cross compiler (for R/Pi 32-bit OSes on armv7, e.g. R/Pi 2 and 3):
+To build an *arm32v7* cross compiler (for R/Pi 32-bit OSes on armv7, e.g. R/Pi 2 and 3) *using the Ubuntu 18.04 runtime libs*:
 
-    ./build_cross_compiler Configurations/armv7-5.1.0-RELEASE.json
+    ./build_cross_compiler  Configurations/5.1.1-RELEASE/armv7-ubuntu.json
     
-To build an arm32v6 is a much more complicated task.  As of now you will need to build an entire swift 
-MacOS toolchain from source.  This toolchain must built with this 
+To build an *arm32v7* cross compiler (for R/Pi 32-bit OSes on armv7, e.g. R/Pi 2 and 3) *using the Raspbian Buster runtime libs*:
+
+    ./build_cross_compiler  Configurations/5.1.1-RELEASE/armv7-raspbian.json
+
+To build an *arm32v6* x-compiler from scratch is a much more complicated task.  As of now you would need to build an entire swift MacOS toolchain from source.  This toolchain must built with this 
 (diff from @uraimo)[https://github.com/uraimo/buildSwiftOnARM/blob/master/swiftpm.diffs/armv6/001-v6target.diff]
-applied. Then you need to make sure that you build the cross compiler using your newly built swift toolchain.
-Strongly recommend just using the pre-builts here.
+applied. Then you need to make sure that you build the cross compiler incorporating your newly built swift toolchain.
 
-To build an amd64 cross compiler (one that will run on a std cloud instance or in Docker on your mac):
+Such a toolchain has been (provided here)[https://github.com/CSCIX65G/SwiftCrossCompilers/releases/download/5.1.1/swift-5.1.1-RELEASE-osx-armv6.pkg] . 
 
-    ./build_cross_compiler Configurations/amd64-5.1.0-RELEASE.json
+So if you are willing to use the pre-built toolchain,  To build an *arm32v6* x-compiler using the Raspbian Buster runtime libs, you can just say:
 
-Each call to the build script will take several minutes to complete. This is 
-particularly true of the steps where it:
+    ./build_cross_compiler  Configurations/5.1.1-RELEASE/armv6.json
+
+We recommend just using the pre-builts as building your own mac-os swift toolchain with patch applied can be a very laborious and error-prone task.
+
+To build an *amd64* cross compiler (for Ubuntu 18.04 running for example on cloud instances):
+
+    ./build_cross_compiler  Configurations/5.1.1-RELEASE/amd64.json
+
+Each call to the build script will take several minutes to complete. This is particularly true of the steps where it:
 
 * fetches the toolchain 
 * fetches and parses the Ubuntu package files and 
 * builds the ld.gold linker 
 
-When it does finish, you should get a message saying all is well and that the following directories: Toolchains, SDKs, and Destinations, have been populated with various (arm64|armhf|amd64) files have been produced.  Note that the armv6 and armv7 output are both named armhf internally.  This is a GNU/LLVM issue which can't really be addressed at this level.  Accordingly if you are building for both the 32-bit platforms, you need to be very careful to clean things out under `./InstallPackagers/SwiftCrossCompiler/Developer` between builds.
+When it does finish, you should get a message saying all is well and that the following directories: Toolchains, SDKs, and Destinations, have been populated with various (arm64|armhf|amd64) files have been produced.  Note that the armv6 and armv7 output are both named armhf internally.  This is a GNU/LLVM issue which can't really be addressed at this level.  
 
-The cross compilers end up under: `./InstallPackagers/SwiftCrossCompiler/Developer` by default.  If you don't want to make installer packages, you can simply copy the Toolchains, SDKs and Destinations directories from there to `/Library/Developer`.  NB If you wish to change the installed location from `/Library/Developer` you will need to change the files under Destinations to match your new installed location.  Changes required in the file should be obvious.
+NB if you are building multiple x-compilers, you need to be very careful to clean things out under `./InstallPackagers/SwiftCrossCompiler/Developer` between builds.
 
-If you do want to build your own installer package, you can get (Packages.app)[http://s.sudre.free.fr/Software/Packages/about.html] for free and open `./InstallPackagers/SwiftCrossCompiler/SwiftCrossCompiler.pkgproj`.  You'll want to adjust the version number SwiftCrossCompiler/Settings, then just use the Build/Build menu option.  The output will appear at `InstallPackagers/SwiftCrossCompiler/build/Swift Cross Compiler.pkg`. Just double click that to install.
+The cross compilers end up under: `./InstallPackagers/SwiftCrossCompiler/Developer` by default.  If you don't want to make installer packages, you can simply copy the Toolchains, SDKs, Runtime and Destinations directories from there to `/Library/Developer`.  NB If you wish to change the installed location from `/Library/Developer` you will need to change the files under Destinations to match your new installed location.  Changes required in the file should be obvious.
+
+If you do want to build your own installer package, you can get (Packages.app)[http://s.sudre.free.fr/Software/Packages/about.html] for free and open `./InstallPackagers/SwiftCrossCompiler/SwiftCrossCompiler.pkgproj`.  You'll want to adjust the version number SwiftCrossCompiler/Settings, then just use the Build/Build menu option.  The output will appear at `InstallPackagers/SwiftCrossCompiler/build/SwiftCrossCompiler.pkg`. Just double click that to install.
 
 ## Using your cross compiler
 Assuming you have installed the cross compilers in /Library you can do the following from this directory.
 
     cd helloworld
-    swift build --destination /Library/Developer/Destinations/armhf-5.1.0-RELEASE.json
-    swift build --destination /Library/Developer/Destinations/arm64-5.1.0-RELEASE.json
-    swift build --destination /Library/Developer/Destinations/amd64-5.1.0-RELEASE.json
+    swift build --destination /Library/Developer/Destinations/arm64-5.1.1-RELEASE.json
+    swift build --destination /Library/Developer/Destinations/amd64-5.1.1-RELEASE.json
 
-If this finishes successfully you have an arm64 executable in `.build/aarch64-unknown-linux/debug/helloworld`, an amd64 executable in `.build/x86_64-unknown-linux/debug/helloworld` and an armv7 executable in `.build/armhf-unknown-linux/debug/helloworld`
+If this finishes successfully you have an:
+    
+arm64 executable in `.build/aarch64-unknown-linux/debug/helloworld`
+amd64 executable in `.build/x86_64-unknown-linux/debug/helloworld`  
 
-The same technique may be used on any of your own code which compiles with the Swift Package Manager.
+You may then do one of the following.
+    
+    swift build --destination /Library/Developer/Destinations/armhf-5.1.1-ubuntu-RELEASE.son
+    swift build --destination /Library/Developer/Destinations/armhf-5.1.1-raspbian-RELEASE.json
+    /Library/Developer/Toolchains/armhf-5.1.1-RELEASE_armv6.xctoolchain/usr/bin/swift build --destination /Library/Developer/Destinations/armhf-5.1.1-armv6-RELEASE.json
+
+You will then have an [armv7-ubuntu | armv7-raspbian | armv6] executable in `.build/armhf-unknown-linux/debug/helloworld`
+
+Note that the reason you may only do one of the last 3 is that they all end up in  `.build/armhf-unknown-linux/debug/helloworld`. The first two are distinguished only by the set of shlibs they link to, the 3rd by the actual instruction set of armv6.  The name overlap is baked in to the way that Swift Package Manager manages its naming Triples (sorry but its not our fault).
+
+The same techniques and commands as above may be used on any of your own code which compiles with the Swift Package Manager.
+
+### Important information about Swift PM.
+
+One key item to watch out for is that if you use `#if os(macos)` or `#if os(linux)` in your Package.swift file to, for example, fetch different dependencies which depend on the target x-compile architecture, you will not get the desired result.  The swiftpm fetch operations are running on the Mac in the case of the cross-compiler where with native compilation they are running on the Pi.  Since swift does not natively support cross-compilation (for non-Apple toolchains), you'll need to roll your own `#if` statements to properly fetch dependencies.
 
 ### Remote execution on a Raspberry Pi
 
