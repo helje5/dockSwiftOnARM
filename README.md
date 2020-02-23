@@ -17,9 +17,9 @@ Just use the installers at: [github](https://github.com/CSCIX65G/SwiftCrossCompi
 ## Hard way - Build your own: 
 
 ### Requirements
-Homebrew coreutils and jq installed with:
+Homebrew coreutils, jq, and wget installed with:
 
-    brew install coreutils jq
+    brew install coreutils jq wget
 
 ### Building the  toolchain on MacOS
 
