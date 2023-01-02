@@ -5,7 +5,21 @@ all : build-rpi-swift-31 build-rpi-swift-31-dev
 
 PACKAGE_TARGET_DIR=/tmp
 
-# --------------------------- 5.5.3
+# --------------------------- 5.7
+
+build-arm64-swift-5.7 :
+	(cd arm64v8-5.7.2-futurejones; make fetch build)
+
+build-arm64-swift-5.7-dev :
+	time docker build \
+	     -t helje5/arm64v8-swift-dev:5.7.2 \
+	     -t helje5/arm64v8-swift-dev:5.7-latest \
+	     -t helje5/arm64v8-swift-dev:latest \
+	     -f empty-ctx/arm64v8-swift-5.7.2-dev.dockerfile \
+	     ./empty-ctx
+	docker images | grep helje5/arm64v8
+
+# --------------------------- 5.5
 
 build-arm64-swift-5.5 :
 	(cd arm64v8-5.5.3-futurejones; make fetch build)
@@ -14,7 +28,6 @@ build-arm64-swift-5.5-dev :
 	time docker build \
 	     -t helje5/arm64v8-swift-dev:5.5.3 \
 	     -t helje5/arm64v8-swift-dev:5.5-latest \
-	     -t helje5/arm64v8-swift-dev:latest \
 	     -f empty-ctx/arm64v8-swift-5.5.3-dev.dockerfile \
 	     ./empty-ctx
 	docker images | grep helje5/arm64v8
@@ -28,7 +41,6 @@ build-arm64-swift-5.3-dev :
 	time docker build \
 	     -t helje5/arm64v8-swift-dev:5.3.2 \
 	     -t helje5/arm64v8-swift-dev:5.3-latest \
-	     -t helje5/arm64v8-swift-dev:latest \
 	     -f empty-ctx/arm64v8-swift-5.3.2-dev.dockerfile \
 	     ./empty-ctx
 	docker images | grep helje5/arm64v8
@@ -64,14 +76,12 @@ build-arm64-swift-42-dev :
 
 build-arm64-swift-41 :
 	time docker build -t helje5/arm64v8-swift:4.1.1 \
-	                  -t helje5/arm64v8-swift:latest \
 	     -f arm64v8-4.1.x-futurejones/arm64v8-ubuntu-swift-4.1.x.dockerfile \
 	     ./empty-ctx
 	docker images | grep helje5/arm64v8
 
 build-arm64-swift-41-dev :
 	time docker build -t helje5/arm64v8-swift-dev:4.1.1 \
-	                  -t helje5/arm64v8-swift-dev:latest \
 	     -f empty-ctx/arm64v8-swift-4.1.1-dev.dockerfile \
 	     ./empty-ctx
 	docker images | grep helje5/arm64v8
