@@ -71,7 +71,7 @@ No idea, still investigating this :-)
 ### Who
 
 Brought to you by
-[The Always Right Institute](http://www.alwaysrightinstitute.com).
+[Helge Heß](https://helgehess.eu).
 We like 
 [feedback](https://twitter.com/ar_institute), 
 GitHub stars, 
