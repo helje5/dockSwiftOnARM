@@ -31,6 +31,7 @@ all:
 	@echo "use 'make run'   to try the container"
 
 docker-local-build:
+	mkdir -p $(PWD)/empty-ctx
 	time docker build \
 	     --no-cache \
 	     -t $(DOCKER_BUILD_TAG_ARM) \
